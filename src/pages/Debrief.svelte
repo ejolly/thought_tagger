@@ -75,7 +75,7 @@
         </div>
         <div class="field is-horizontal">
           <div class="field-label">
-            <label class="label">Sex</label>
+            <label class="label">Gender</label>
           </div>
           <div class="field-body">
             <div class="field is-narrow">
@@ -87,6 +87,10 @@
                 <label class="radio">
                   <input type="radio" bind:group={sex} value={'female'} />
                   Female
+                </label>
+                <label class="radio">
+                  <input type="radio" bind:group={sex} value={'other'} />
+                  Other
                 </label>
               </div>
             </div>
