@@ -30,6 +30,7 @@
   };
 
   // Before we render anything see if we have a db entry for this subject based upon the URL parameters. If not create an entry with a new random stimulus order and put them into the instructions state. If we do, load their trial order and current experiment state
+  // TODO: move logic for MTurk ad here, by checking value of params.assignmentId
   // TODO: Get all audio file names from database sorted by count and shuffle order of those with the same count to make sure multiple users dont do the same audio file when we first start running experiment
   onMount(async () => {
     try {

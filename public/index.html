@@ -34,6 +34,7 @@
         document.body.appendChild(div);
         console.log('Non mturk referal');
       } else if (params.assignmentId === 'ASSIGNMENT_ID_NOT_AVAILABLE') {
+        // TODO: Move this logic to App.svelte
         var div = document.createElement('div');
         var content = document.createTextNode('Mturk ad');
         div.appendChild(content);

@@ -47869,16 +47869,16 @@ var app = (function () {
 
   function get_each_context$1(ctx, list, i) {
     var child_ctx = ctx.slice();
-    child_ctx[22] = list[i];
+    child_ctx[23] = list[i];
     return child_ctx;
-  } // (142:20) {#each raceOptions as raceOption}
+  } // (146:20) {#each raceOptions as raceOption}
 
 
   function create_each_block$1(ctx) {
     var option;
     var t_value =
     /*raceOption*/
-    ctx[22] + "";
+    ctx[23] + "";
     var t;
     var option_value_value;
     var block = {
@@ -47887,9 +47887,9 @@ var app = (function () {
         t = text(t_value);
         option.__value = option_value_value =
         /*raceOption*/
-        ctx[22];
+        ctx[23];
         option.value = option.__value;
-        add_location(option, file$4, 142, 22, 4460);
+        add_location(option, file$4, 146, 22, 4624);
       },
       m: function mount(target, anchor) {
         insert_dev(target, option, anchor);
@@ -47904,7 +47904,7 @@ var app = (function () {
       block: block,
       id: create_each_block$1.name,
       type: "each",
-      source: "(142:20) {#each raceOptions as raceOption}",
+      source: "(146:20) {#each raceOptions as raceOption}",
       ctx: ctx
     });
     return block;
@@ -47946,82 +47946,87 @@ var app = (function () {
     var input2_value_value;
     var t11;
     var t12;
+    var label4;
+    var input3;
+    var input3_value_value;
+    var t13;
+    var t14;
     var div13;
     var div9;
-    var label4;
-    var t14;
+    var label5;
+    var t16;
     var div12;
     var div11;
     var div10;
-    var label5;
-    var input3;
-    var input3_value_value;
-    var t15;
-    var t16;
     var label6;
     var input4;
     var input4_value_value;
     var t17;
     var t18;
+    var label7;
+    var input5;
+    var input5_value_value;
+    var t19;
+    var t20;
     var div18;
     var div14;
-    var label7;
-    var t20;
+    var label8;
+    var t22;
     var div17;
     var div16;
     var div15;
-    var label8;
-    var input5;
-    var input5_value_value;
-    var t21;
-    var t22;
     var label9;
     var input6;
     var input6_value_value;
     var t23;
     var t24;
+    var label10;
+    var input7;
+    var input7_value_value;
+    var t25;
+    var t26;
     var div24;
     var div19;
-    var label10;
-    var t26;
+    var label11;
+    var t28;
     var div23;
     var div22;
     var div21;
     var div20;
     var select;
-    var t27;
-    var p3;
     var t29;
+    var p3;
+    var t31;
     var div28;
     var div25;
-    var label11;
-    var t31;
+    var label12;
+    var t33;
     var div27;
     var div26;
     var p4;
-    var input7;
-    var t32;
+    var input8;
+    var t34;
     var div32;
     var div29;
-    var label12;
-    var t34;
+    var label13;
+    var t36;
     var div31;
     var div30;
     var p5;
-    var input8;
-    var t35;
+    var input9;
+    var t37;
     var div37;
     var div33;
-    var label13;
-    var t37;
+    var label14;
+    var t39;
     var div36;
     var div35;
     var div34;
     var textarea;
-    var t38;
+    var t40;
     var div42;
     var div38;
-    var t39;
+    var t41;
     var div41;
     var div40;
     var div39;
@@ -48062,7 +48067,7 @@ var app = (function () {
         div8 = element("div");
         div4 = element("div");
         label1 = element("label");
-        label1.textContent = "Sex";
+        label1.textContent = "Gender";
         t8 = space();
         div7 = element("div");
         div6 = element("div");
@@ -48075,43 +48080,47 @@ var app = (function () {
         input2 = element("input");
         t11 = text("\n                  Female");
         t12 = space();
+        label4 = element("label");
+        input3 = element("input");
+        t13 = text("\n                  Other");
+        t14 = space();
         div13 = element("div");
         div9 = element("div");
-        label4 = element("label");
-        label4.textContent = "Handedness";
-        t14 = space();
+        label5 = element("label");
+        label5.textContent = "Handedness";
+        t16 = space();
         div12 = element("div");
         div11 = element("div");
         div10 = element("div");
-        label5 = element("label");
-        input3 = element("input");
-        t15 = text("\n                  Left Handed");
-        t16 = space();
         label6 = element("label");
         input4 = element("input");
-        t17 = text("\n                  Right Handed");
+        t17 = text("\n                  Left Handed");
         t18 = space();
+        label7 = element("label");
+        input5 = element("input");
+        t19 = text("\n                  Right Handed");
+        t20 = space();
         div18 = element("div");
         div14 = element("div");
-        label7 = element("label");
-        label7.textContent = "Ethnicity";
-        t20 = space();
+        label8 = element("label");
+        label8.textContent = "Ethnicity";
+        t22 = space();
         div17 = element("div");
         div16 = element("div");
         div15 = element("div");
-        label8 = element("label");
-        input5 = element("input");
-        t21 = text("\n                  Hispanic");
-        t22 = space();
         label9 = element("label");
         input6 = element("input");
-        t23 = text("\n                  Not Hispanic");
+        t23 = text("\n                  Hispanic");
         t24 = space();
+        label10 = element("label");
+        input7 = element("input");
+        t25 = text("\n                  Not Hispanic");
+        t26 = space();
         div24 = element("div");
         div19 = element("div");
-        label10 = element("label");
-        label10.textContent = "Race";
-        t26 = space();
+        label11 = element("label");
+        label11.textContent = "Race";
+        t28 = space();
         div23 = element("div");
         div22 = element("div");
         div21 = element("div");
@@ -48122,43 +48131,43 @@ var app = (function () {
           each_blocks[_i].c();
         }
 
-        t27 = space();
+        t29 = space();
         p3 = element("p");
         p3.textContent = "Cmd/Ctrl+Click to select multiple";
-        t29 = space();
+        t31 = space();
         div28 = element("div");
         div25 = element("div");
-        label11 = element("label");
-        label11.textContent = "Native Language";
-        t31 = space();
+        label12 = element("label");
+        label12.textContent = "Native Language";
+        t33 = space();
         div27 = element("div");
         div26 = element("div");
         p4 = element("p");
-        input7 = element("input");
-        t32 = space();
+        input8 = element("input");
+        t34 = space();
         div32 = element("div");
         div29 = element("div");
-        label12 = element("label");
-        label12.textContent = "Birth Location";
-        t34 = space();
+        label13 = element("label");
+        label13.textContent = "Birth Location";
+        t36 = space();
         div31 = element("div");
         div30 = element("div");
         p5 = element("p");
-        input8 = element("input");
-        t35 = space();
+        input9 = element("input");
+        t37 = space();
         div37 = element("div");
         div33 = element("div");
-        label13 = element("label");
-        label13.textContent = "Feedback";
-        t37 = space();
+        label14 = element("label");
+        label14.textContent = "Feedback";
+        t39 = space();
         div36 = element("div");
         div35 = element("div");
         div34 = element("div");
         textarea = element("textarea");
-        t38 = space();
+        t40 = space();
         div42 = element("div");
         div38 = element("div");
-        t39 = space();
+        t41 = space();
         div41 = element("div");
         div40 = element("div");
         div39 = element("div");
@@ -48194,170 +48203,179 @@ var app = (function () {
         /*$$binding_groups*/
 
         ctx[12][2].push(input1);
-        add_location(input1, file$4, 83, 18, 2322);
+        add_location(input1, file$4, 83, 18, 2325);
         attr_dev(label2, "class", "radio");
-        add_location(label2, file$4, 82, 16, 2282);
+        add_location(label2, file$4, 82, 16, 2285);
         attr_dev(input2, "type", "radio");
         input2.__value = input2_value_value = "female";
         input2.value = input2.__value;
         /*$$binding_groups*/
 
         ctx[12][2].push(input2);
-        add_location(input2, file$4, 87, 18, 2481);
+        add_location(input2, file$4, 87, 18, 2484);
         attr_dev(label3, "class", "radio");
-        add_location(label3, file$4, 86, 16, 2441);
-        attr_dev(div5, "class", "control");
-        add_location(div5, file$4, 81, 14, 2244);
-        attr_dev(div6, "class", "field is-narrow");
-        add_location(div6, file$4, 80, 12, 2200);
-        attr_dev(div7, "class", "field-body");
-        add_location(div7, file$4, 79, 10, 2163);
-        attr_dev(div8, "class", "field is-horizontal");
-        add_location(div8, file$4, 75, 8, 2021);
-        attr_dev(label4, "class", "label");
-        add_location(label4, file$4, 96, 12, 2750);
-        attr_dev(div9, "class", "field-label");
-        add_location(div9, file$4, 95, 10, 2712);
+        add_location(label3, file$4, 86, 16, 2444);
         attr_dev(input3, "type", "radio");
-        input3.__value = input3_value_value = "left";
+        input3.__value = input3_value_value = "other";
         input3.value = input3.__value;
         /*$$binding_groups*/
 
-        ctx[12][1].push(input3);
-        add_location(input3, file$4, 102, 18, 2976);
-        attr_dev(label5, "class", "radio");
-        add_location(label5, file$4, 101, 16, 2936);
+        ctx[12][2].push(input3);
+        add_location(input3, file$4, 91, 18, 2647);
+        attr_dev(label4, "class", "radio");
+        add_location(label4, file$4, 90, 16, 2607);
+        attr_dev(div5, "class", "control");
+        add_location(div5, file$4, 81, 14, 2247);
+        attr_dev(div6, "class", "field is-narrow");
+        add_location(div6, file$4, 80, 12, 2203);
+        attr_dev(div7, "class", "field-body");
+        add_location(div7, file$4, 79, 10, 2166);
+        attr_dev(div8, "class", "field is-horizontal");
+        add_location(div8, file$4, 75, 8, 2021);
+        attr_dev(label5, "class", "label");
+        add_location(label5, file$4, 100, 12, 2914);
+        attr_dev(div9, "class", "field-label");
+        add_location(div9, file$4, 99, 10, 2876);
         attr_dev(input4, "type", "radio");
-        input4.__value = input4_value_value = "right";
+        input4.__value = input4_value_value = "left";
         input4.value = input4.__value;
         /*$$binding_groups*/
 
         ctx[12][1].push(input4);
-        add_location(input4, file$4, 106, 18, 3145);
+        add_location(input4, file$4, 106, 18, 3140);
         attr_dev(label6, "class", "radio");
-        add_location(label6, file$4, 105, 16, 3105);
-        attr_dev(div10, "class", "control");
-        add_location(div10, file$4, 100, 14, 2898);
-        attr_dev(div11, "class", "field is-narrow");
-        add_location(div11, file$4, 99, 12, 2854);
-        attr_dev(div12, "class", "field-body");
-        add_location(div12, file$4, 98, 10, 2817);
-        attr_dev(div13, "class", "field is-horizontal");
-        add_location(div13, file$4, 94, 8, 2668);
-        attr_dev(label7, "class", "label");
-        add_location(label7, file$4, 115, 12, 3422);
-        attr_dev(div14, "class", "field-label");
-        add_location(div14, file$4, 114, 10, 3384);
+        add_location(label6, file$4, 105, 16, 3100);
         attr_dev(input5, "type", "radio");
-        input5.__value = input5_value_value = "hispanic";
+        input5.__value = input5_value_value = "right";
         input5.value = input5.__value;
         /*$$binding_groups*/
 
-        ctx[12][0].push(input5);
-        add_location(input5, file$4, 121, 18, 3647);
-        attr_dev(label8, "class", "radio");
-        add_location(label8, file$4, 120, 16, 3607);
+        ctx[12][1].push(input5);
+        add_location(input5, file$4, 110, 18, 3309);
+        attr_dev(label7, "class", "radio");
+        add_location(label7, file$4, 109, 16, 3269);
+        attr_dev(div10, "class", "control");
+        add_location(div10, file$4, 104, 14, 3062);
+        attr_dev(div11, "class", "field is-narrow");
+        add_location(div11, file$4, 103, 12, 3018);
+        attr_dev(div12, "class", "field-body");
+        add_location(div12, file$4, 102, 10, 2981);
+        attr_dev(div13, "class", "field is-horizontal");
+        add_location(div13, file$4, 98, 8, 2832);
+        attr_dev(label8, "class", "label");
+        add_location(label8, file$4, 119, 12, 3586);
+        attr_dev(div14, "class", "field-label");
+        add_location(div14, file$4, 118, 10, 3548);
         attr_dev(input6, "type", "radio");
-        input6.__value = input6_value_value = "not_hispanic";
+        input6.__value = input6_value_value = "hispanic";
         input6.value = input6.__value;
         /*$$binding_groups*/
 
         ctx[12][0].push(input6);
-        add_location(input6, file$4, 125, 18, 3820);
+        add_location(input6, file$4, 125, 18, 3811);
         attr_dev(label9, "class", "radio");
-        add_location(label9, file$4, 124, 16, 3780);
+        add_location(label9, file$4, 124, 16, 3771);
+        attr_dev(input7, "type", "radio");
+        input7.__value = input7_value_value = "not_hispanic";
+        input7.value = input7.__value;
+        /*$$binding_groups*/
+
+        ctx[12][0].push(input7);
+        add_location(input7, file$4, 129, 18, 3984);
+        attr_dev(label10, "class", "radio");
+        add_location(label10, file$4, 128, 16, 3944);
         attr_dev(div15, "class", "control");
-        add_location(div15, file$4, 119, 14, 3569);
+        add_location(div15, file$4, 123, 14, 3733);
         attr_dev(div16, "class", "field is-narrow");
-        add_location(div16, file$4, 118, 12, 3525);
+        add_location(div16, file$4, 122, 12, 3689);
         attr_dev(div17, "class", "field-body");
-        add_location(div17, file$4, 117, 10, 3488);
+        add_location(div17, file$4, 121, 10, 3652);
         attr_dev(div18, "class", "field is-horizontal");
-        add_location(div18, file$4, 113, 8, 3340);
-        attr_dev(label10, "class", "label");
-        add_location(label10, file$4, 134, 12, 4117);
+        add_location(div18, file$4, 117, 8, 3504);
+        attr_dev(label11, "class", "label");
+        add_location(label11, file$4, 138, 12, 4281);
         attr_dev(div19, "class", "field-label is-normal");
-        add_location(div19, file$4, 133, 10, 4069);
+        add_location(div19, file$4, 137, 10, 4233);
         select.multiple = true;
         if (
         /*race*/
         ctx[4] === void 0) add_render_callback(function () {
           return (
             /*select_change_handler*/
-            ctx[18].call(select)
+            ctx[19].call(select)
           );
         });
-        add_location(select, file$4, 140, 18, 4348);
+        add_location(select, file$4, 144, 18, 4512);
         attr_dev(div20, "class", "select is-multiple");
-        add_location(div20, file$4, 139, 16, 4297);
+        add_location(div20, file$4, 143, 16, 4461);
         attr_dev(div21, "class", "control");
-        add_location(div21, file$4, 138, 14, 4259);
+        add_location(div21, file$4, 142, 14, 4423);
         attr_dev(p3, "class", "help");
-        add_location(p3, file$4, 147, 14, 4623);
+        add_location(p3, file$4, 151, 14, 4787);
         attr_dev(div22, "class", "field");
-        add_location(div22, file$4, 137, 12, 4225);
+        add_location(div22, file$4, 141, 12, 4389);
         attr_dev(div23, "class", "field-body is-narrow");
-        add_location(div23, file$4, 136, 10, 4178);
+        add_location(div23, file$4, 140, 10, 4342);
         attr_dev(div24, "class", "field is-horizontal");
-        add_location(div24, file$4, 132, 8, 4025);
-        attr_dev(label11, "class", "label");
-        add_location(label11, file$4, 153, 12, 4828);
-        attr_dev(div25, "class", "field-label is-normal");
-        add_location(div25, file$4, 152, 10, 4780);
-        attr_dev(input7, "class", "input lang-input svelte-mxensd");
-        attr_dev(input7, "type", "text");
-        add_location(input7, file$4, 158, 16, 5017);
-        attr_dev(p4, "class", "control");
-        add_location(p4, file$4, 157, 14, 4981);
-        attr_dev(div26, "class", "field");
-        add_location(div26, file$4, 156, 12, 4947);
-        attr_dev(div27, "class", "field-body is-narrow");
-        add_location(div27, file$4, 155, 10, 4900);
-        attr_dev(div28, "class", "field is-horizontal");
-        add_location(div28, file$4, 151, 8, 4736);
+        add_location(div24, file$4, 136, 8, 4189);
         attr_dev(label12, "class", "label");
-        add_location(label12, file$4, 165, 12, 5258);
-        attr_dev(div29, "class", "field-label is-normal");
-        add_location(div29, file$4, 164, 10, 5210);
+        add_location(label12, file$4, 157, 12, 4992);
+        attr_dev(div25, "class", "field-label is-normal");
+        add_location(div25, file$4, 156, 10, 4944);
         attr_dev(input8, "class", "input lang-input svelte-mxensd");
         attr_dev(input8, "type", "text");
-        attr_dev(input8, "placeholder", "City, State, Country");
-        add_location(input8, file$4, 170, 16, 5446);
-        attr_dev(p5, "class", "control");
-        add_location(p5, file$4, 169, 14, 5410);
-        attr_dev(div30, "class", "field");
-        add_location(div30, file$4, 168, 12, 5376);
-        attr_dev(div31, "class", "field-body is-narrow");
-        add_location(div31, file$4, 167, 10, 5329);
-        attr_dev(div32, "class", "field is-horizontal");
-        add_location(div32, file$4, 163, 8, 5166);
+        add_location(input8, file$4, 162, 16, 5181);
+        attr_dev(p4, "class", "control");
+        add_location(p4, file$4, 161, 14, 5145);
+        attr_dev(div26, "class", "field");
+        add_location(div26, file$4, 160, 12, 5111);
+        attr_dev(div27, "class", "field-body is-narrow");
+        add_location(div27, file$4, 159, 10, 5064);
+        attr_dev(div28, "class", "field is-horizontal");
+        add_location(div28, file$4, 155, 8, 4900);
         attr_dev(label13, "class", "label");
-        add_location(label13, file$4, 181, 12, 5789);
+        add_location(label13, file$4, 169, 12, 5422);
+        attr_dev(div29, "class", "field-label is-normal");
+        add_location(div29, file$4, 168, 10, 5374);
+        attr_dev(input9, "class", "input lang-input svelte-mxensd");
+        attr_dev(input9, "type", "text");
+        attr_dev(input9, "placeholder", "City, State, Country");
+        add_location(input9, file$4, 174, 16, 5610);
+        attr_dev(p5, "class", "control");
+        add_location(p5, file$4, 173, 14, 5574);
+        attr_dev(div30, "class", "field");
+        add_location(div30, file$4, 172, 12, 5540);
+        attr_dev(div31, "class", "field-body is-narrow");
+        add_location(div31, file$4, 171, 10, 5493);
+        attr_dev(div32, "class", "field is-horizontal");
+        add_location(div32, file$4, 167, 8, 5330);
+        attr_dev(label14, "class", "label");
+        add_location(label14, file$4, 185, 12, 5953);
         attr_dev(div33, "class", "field-label is-normal");
-        add_location(div33, file$4, 180, 10, 5741);
+        add_location(div33, file$4, 184, 10, 5905);
         attr_dev(textarea, "class", "textarea textarea-feedback svelte-mxensd");
         attr_dev(textarea, "placeholder", "Thoughts or suggestions about this HIT");
-        add_location(textarea, file$4, 186, 16, 5963);
+        add_location(textarea, file$4, 190, 16, 6127);
         attr_dev(div34, "class", "control");
-        add_location(div34, file$4, 185, 14, 5925);
+        add_location(div34, file$4, 189, 14, 6089);
         attr_dev(div35, "class", "field");
-        add_location(div35, file$4, 184, 12, 5891);
+        add_location(div35, file$4, 188, 12, 6055);
         attr_dev(div36, "class", "field-body");
-        add_location(div36, file$4, 183, 10, 5854);
+        add_location(div36, file$4, 187, 10, 6018);
         attr_dev(div37, "class", "field is-horizontal");
-        add_location(div37, file$4, 179, 8, 5697);
+        add_location(div37, file$4, 183, 8, 5861);
         attr_dev(div38, "class", "field-label");
-        add_location(div38, file$4, 195, 10, 6264);
+        add_location(div38, file$4, 199, 10, 6428);
         attr_dev(button, "class", "button is-success is-large");
-        add_location(button, file$4, 201, 16, 6470);
+        add_location(button, file$4, 205, 16, 6634);
         attr_dev(div39, "class", "control");
-        add_location(div39, file$4, 200, 14, 6432);
+        add_location(div39, file$4, 204, 14, 6596);
         attr_dev(div40, "class", "field");
-        add_location(div40, file$4, 199, 12, 6398);
+        add_location(div40, file$4, 203, 12, 6562);
         attr_dev(div41, "class", "field-body");
-        add_location(div41, file$4, 198, 10, 6361);
+        add_location(div41, file$4, 202, 10, 6525);
         attr_dev(div42, "class", "field is-horizontal");
-        add_location(div42, file$4, 194, 8, 6220);
+        add_location(div42, file$4, 198, 8, 6384);
         add_location(form, file$4, 62, 6, 1559);
         attr_dev(div43, "class", "column is-three-quarters");
         add_location(div43, file$4, 57, 4, 1330);
@@ -48379,15 +48397,17 @@ var app = (function () {
         /*input5_change_handler*/
         ctx[16]), listen_dev(input6, "change",
         /*input6_change_handler*/
-        ctx[17]), listen_dev(select, "change",
+        ctx[17]), listen_dev(input7, "change",
+        /*input7_change_handler*/
+        ctx[18]), listen_dev(select, "change",
         /*select_change_handler*/
-        ctx[18]), listen_dev(input7, "input",
-        /*input7_input_handler*/
         ctx[19]), listen_dev(input8, "input",
         /*input8_input_handler*/
-        ctx[20]), listen_dev(textarea, "input",
+        ctx[20]), listen_dev(input9, "input",
+        /*input9_input_handler*/
+        ctx[21]), listen_dev(textarea, "input",
         /*textarea_input_handler*/
-        ctx[21]), listen_dev(form, "submit", prevent_default(
+        ctx[22]), listen_dev(form, "submit", prevent_default(
         /*submitHIT*/
         ctx[9]), false, true, false)];
       },
@@ -48436,53 +48456,60 @@ var app = (function () {
         /*sex*/
         ctx[2];
         append_dev(label3, t11);
-        append_dev(form, t12);
+        append_dev(div5, t12);
+        append_dev(div5, label4);
+        append_dev(label4, input3);
+        input3.checked = input3.__value ===
+        /*sex*/
+        ctx[2];
+        append_dev(label4, t13);
+        append_dev(form, t14);
         append_dev(form, div13);
         append_dev(div13, div9);
-        append_dev(div9, label4);
-        append_dev(div13, t14);
+        append_dev(div9, label5);
+        append_dev(div13, t16);
         append_dev(div13, div12);
         append_dev(div12, div11);
         append_dev(div11, div10);
-        append_dev(div10, label5);
-        append_dev(label5, input3);
-        input3.checked = input3.__value ===
-        /*handed*/
-        ctx[7];
-        append_dev(label5, t15);
-        append_dev(div10, t16);
         append_dev(div10, label6);
         append_dev(label6, input4);
         input4.checked = input4.__value ===
         /*handed*/
         ctx[7];
         append_dev(label6, t17);
-        append_dev(form, t18);
+        append_dev(div10, t18);
+        append_dev(div10, label7);
+        append_dev(label7, input5);
+        input5.checked = input5.__value ===
+        /*handed*/
+        ctx[7];
+        append_dev(label7, t19);
+        append_dev(form, t20);
         append_dev(form, div18);
         append_dev(div18, div14);
-        append_dev(div14, label7);
-        append_dev(div18, t20);
+        append_dev(div14, label8);
+        append_dev(div18, t22);
         append_dev(div18, div17);
         append_dev(div17, div16);
         append_dev(div16, div15);
-        append_dev(div15, label8);
-        append_dev(label8, input5);
-        input5.checked = input5.__value ===
-        /*ethnicity*/
-        ctx[3];
-        append_dev(label8, t21);
-        append_dev(div15, t22);
         append_dev(div15, label9);
         append_dev(label9, input6);
         input6.checked = input6.__value ===
         /*ethnicity*/
         ctx[3];
         append_dev(label9, t23);
-        append_dev(form, t24);
+        append_dev(div15, t24);
+        append_dev(div15, label10);
+        append_dev(label10, input7);
+        input7.checked = input7.__value ===
+        /*ethnicity*/
+        ctx[3];
+        append_dev(label10, t25);
+        append_dev(form, t26);
         append_dev(form, div24);
         append_dev(div24, div19);
-        append_dev(div19, label10);
-        append_dev(div24, t26);
+        append_dev(div19, label11);
+        append_dev(div24, t28);
         append_dev(div24, div23);
         append_dev(div23, div22);
         append_dev(div22, div21);
@@ -48496,37 +48523,37 @@ var app = (function () {
         select_options(select,
         /*race*/
         ctx[4]);
-        append_dev(div22, t27);
+        append_dev(div22, t29);
         append_dev(div22, p3);
-        append_dev(form, t29);
+        append_dev(form, t31);
         append_dev(form, div28);
         append_dev(div28, div25);
-        append_dev(div25, label11);
-        append_dev(div28, t31);
+        append_dev(div25, label12);
+        append_dev(div28, t33);
         append_dev(div28, div27);
         append_dev(div27, div26);
         append_dev(div26, p4);
-        append_dev(p4, input7);
-        set_input_value(input7,
+        append_dev(p4, input8);
+        set_input_value(input8,
         /*nativeLang*/
         ctx[5]);
-        append_dev(form, t32);
+        append_dev(form, t34);
         append_dev(form, div32);
         append_dev(div32, div29);
-        append_dev(div29, label12);
-        append_dev(div32, t34);
+        append_dev(div29, label13);
+        append_dev(div32, t36);
         append_dev(div32, div31);
         append_dev(div31, div30);
         append_dev(div30, p5);
-        append_dev(p5, input8);
-        set_input_value(input8,
+        append_dev(p5, input9);
+        set_input_value(input9,
         /*birth*/
         ctx[6]);
-        append_dev(form, t35);
+        append_dev(form, t37);
         append_dev(form, div37);
         append_dev(div37, div33);
-        append_dev(div33, label13);
-        append_dev(div37, t37);
+        append_dev(div33, label14);
+        append_dev(div37, t39);
         append_dev(div37, div36);
         append_dev(div36, div35);
         append_dev(div35, div34);
@@ -48534,10 +48561,10 @@ var app = (function () {
         set_input_value(textarea,
         /*feedback*/
         ctx[1]);
-        append_dev(form, t38);
+        append_dev(form, t40);
         append_dev(form, div42);
         append_dev(div42, div38);
-        append_dev(div42, t39);
+        append_dev(div42, t41);
         append_dev(div42, div41);
         append_dev(div41, div40);
         append_dev(div40, div39);
@@ -48571,11 +48598,11 @@ var app = (function () {
         }
 
         if (dirty[0] &
-        /*handed*/
-        128) {
+        /*sex*/
+        4) {
           input3.checked = input3.__value ===
-          /*handed*/
-          ctx[7];
+          /*sex*/
+          ctx[2];
         }
 
         if (dirty[0] &
@@ -48587,9 +48614,17 @@ var app = (function () {
         }
 
         if (dirty[0] &
+        /*handed*/
+        128) {
+          input5.checked = input5.__value ===
+          /*handed*/
+          ctx[7];
+        }
+
+        if (dirty[0] &
         /*ethnicity*/
         8) {
-          input5.checked = input5.__value ===
+          input6.checked = input6.__value ===
           /*ethnicity*/
           ctx[3];
         }
@@ -48597,7 +48632,7 @@ var app = (function () {
         if (dirty[0] &
         /*ethnicity*/
         8) {
-          input6.checked = input6.__value ===
+          input7.checked = input7.__value ===
           /*ethnicity*/
           ctx[3];
         }
@@ -48642,20 +48677,20 @@ var app = (function () {
 
         if (dirty[0] &
         /*nativeLang*/
-        32 && input7.value !==
+        32 && input8.value !==
         /*nativeLang*/
         ctx[5]) {
-          set_input_value(input7,
+          set_input_value(input8,
           /*nativeLang*/
           ctx[5]);
         }
 
         if (dirty[0] &
         /*birth*/
-        64 && input8.value !==
+        64 && input9.value !==
         /*birth*/
         ctx[6]) {
-          set_input_value(input8,
+          set_input_value(input9,
           /*birth*/
           ctx[6]);
         }
@@ -48684,9 +48719,9 @@ var app = (function () {
         ctx[12][2].indexOf(input2), 1);
         /*$$binding_groups*/
 
-        ctx[12][1].splice(
+        ctx[12][2].splice(
         /*$$binding_groups*/
-        ctx[12][1].indexOf(input3), 1);
+        ctx[12][2].indexOf(input3), 1);
         /*$$binding_groups*/
 
         ctx[12][1].splice(
@@ -48694,14 +48729,19 @@ var app = (function () {
         ctx[12][1].indexOf(input4), 1);
         /*$$binding_groups*/
 
-        ctx[12][0].splice(
+        ctx[12][1].splice(
         /*$$binding_groups*/
-        ctx[12][0].indexOf(input5), 1);
+        ctx[12][1].indexOf(input5), 1);
         /*$$binding_groups*/
 
         ctx[12][0].splice(
         /*$$binding_groups*/
         ctx[12][0].indexOf(input6), 1);
+        /*$$binding_groups*/
+
+        ctx[12][0].splice(
+        /*$$binding_groups*/
+        ctx[12][0].indexOf(input7), 1);
         destroy_each(each_blocks, detaching);
         run_all(dispose);
       }
@@ -48784,8 +48824,8 @@ var app = (function () {
     }
 
     function input3_change_handler() {
-      handed = this.__value;
-      $$invalidate(7, handed);
+      sex = this.__value;
+      $$invalidate(2, sex);
     }
 
     function input4_change_handler() {
@@ -48794,11 +48834,16 @@ var app = (function () {
     }
 
     function input5_change_handler() {
+      handed = this.__value;
+      $$invalidate(7, handed);
+    }
+
+    function input6_change_handler() {
       ethnicity = this.__value;
       $$invalidate(3, ethnicity);
     }
 
-    function input6_change_handler() {
+    function input7_change_handler() {
       ethnicity = this.__value;
       $$invalidate(3, ethnicity);
     }
@@ -48809,12 +48854,12 @@ var app = (function () {
       $$invalidate(8, raceOptions);
     }
 
-    function input7_input_handler() {
+    function input8_input_handler() {
       nativeLang = this.value;
       $$invalidate(5, nativeLang);
     }
 
-    function input8_input_handler() {
+    function input9_input_handler() {
       birth = this.value;
       $$invalidate(6, birth);
     }
@@ -48839,7 +48884,7 @@ var app = (function () {
       if ("handed" in $$props) $$invalidate(7, handed = $$props.handed);
     };
 
-    return [age, feedback, sex, ethnicity, race, nativeLang, birth, handed, raceOptions, submitHIT, input0_input_handler, input1_change_handler, $$binding_groups, input2_change_handler, input3_change_handler, input4_change_handler, input5_change_handler, input6_change_handler, select_change_handler, input7_input_handler, input8_input_handler, textarea_input_handler];
+    return [age, feedback, sex, ethnicity, race, nativeLang, birth, handed, raceOptions, submitHIT, input0_input_handler, input1_change_handler, $$binding_groups, input2_change_handler, input3_change_handler, input4_change_handler, input5_change_handler, input6_change_handler, input7_change_handler, select_change_handler, input8_input_handler, input9_input_handler, textarea_input_handler];
   }
 
   var Debrief =
