@@ -78,11 +78,11 @@
                 assignmentId: params.assignmentId,
                 hitId: params.hitId,
                 startTime: serverTime,
-                currentState: 'instructions',
+                currentState: 'consent',
                 currentTrial: 1,
                 trialOrder
               });
-              currentState = 'instructions';
+              currentState = 'consent';
               console.log('no previous document found...creating new...');
             }
           } catch (error) {
@@ -99,7 +99,9 @@
 <section class="section">
   {#if !currentState}
     <Loading>Loading...</Loading>
-  {:else if currentState === 'instructions' || currentState === 'completed'}
+  {:else if currentState === 'consent' || currentState === 'completed'}
+    <Consent on:finished={() => updateState('instructions')} />
+  {:else if currentState === 'instructions'}
     <Instructions on:finished={() => updateState('quiz')} />
   {:else if currentState === 'quiz'}
     <Quiz
