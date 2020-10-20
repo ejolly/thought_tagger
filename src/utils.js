@@ -44,6 +44,7 @@ export const getURLParams = () => {
     params.assignmentId = 'test-assignment';
     params.hitId = 'test-hit';
   }
+  console.log(params);
   return params;
 };
 
