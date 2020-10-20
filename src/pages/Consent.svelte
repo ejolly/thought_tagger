@@ -1,62 +1,18 @@
 <script>
-  // This is the Instructions page. It loops over the instructions array as a user reads and when click to the last page it notifies the main App.svelte component by dispatching a 'finished' event. When the last page of the instructions are reached the forward button turns into a "Take Quiz" button, but currently there is no quiz and it goes straight to the experiment
   import { createEventDispatcher } from 'svelte';
 
   // Add/remove items here to create more instructions pages
   const consent = [
-    'Please read the following material that explains this research study. We want you to understand what you are being asked to do and what risks and benefits if any are associated with the study. Consent with this form will indicate that you have been informed about the study and that you want to participate.',
+    'We need your consent to proceed. The following material explains this research study. We want you to understand what you are being asked to do and what risks and benefits, if any, are associated with the study. Consent with this form will indicate that you have been informed about the study and that you want to participate.',
 
-    'This project is being conducted by researchers from the department of Psychological and Brain Sciences at Dartmouth College, Hanover, NH, USA. This study aims to understand how individuals experience different feelings in response to narratives.',
+    'This project is being conducted by researchers from the department of Psychological and Brain Sciences at Dartmouth College, Hanover, NH, USA. This study aims to understand INSERT AIM OF STUDY HERE.',
 
-    'Your participation is voluntary. Participation involves periodically making behavioral judgments about how you are feeling in response to video/audio clips, pictures, and text excerpts. The clips will be from public radio, primetime television, or YouTube..'
+    'Your participation is voluntary. Participation involves INSERT BASIC SUMMARY OF PARTICIPATION INVOLVEMENT HERE',
+
+    'If you decide to take part in this study, you will be asked to listen to a variety of media that vary in emotional content. If any of the media presented should make you feel too uncomfortable to continue with the study, you are free to immediately withdraw your participation without giving up payment (send us an email <a href="mailto:eshin.jolly@gmail.com">here</a> after withdrawing for payment information). To be clear: you may immediately end your participation if any aspect of the research procedure makes you too uncomfortable to continue. Lastly, if you have any discomfort or concerns after viewing the media, you are encouraged to contact the principal investigator <a href="mailto:eshin.jolly@gmail.com">here</a>',
+
+    'The information collected will be anonymous and no identifying information will be stored with the data collected during the experiment. Identifying information will not be used in any presentation or paper written about this project and such presentations will represent the aggregation of data from groups of people. <br><br> Do you understand and consent to these terms?'
   ];
-
-  // <h1>We need your consent to proceed</h1>
-  //   <p>
-  //     <strong>(Please scroll down to see all consent information.)</strong>
-  //   </p>
-  //   <div class="consent-box">
-  //     <p class="intro">
-  //       "Please read the following material that explains this research study. We want you to
-  //       understand what you are being asked to do and what risks and benefits --if any-- are
-  //       associated with the study. Consent with this form will indicate that you have been informed
-  //       about the study and that you want to participate."
-  //     </p>
-
-  //     <p>
-  //       This project is being conducted by researchers from the department of Psychological and
-  //       Brain Sciences at Dartmouth College, Hanover, NH, USA. This study aims to understand how
-  //       individuals experience different feelings in response to narratives.
-  //     </p>
-
-  //     <p>
-  //       Your participation is voluntary. Participation involves periodically making behavioral
-  //       judgments about how you are feeling in response to video/audio clips, pictures, and text
-  //       excerpts. The clips will be from public radio, primetime television, or YouTube.
-  //     </p>
-
-  //     <p>
-  //       If you decide to take part in this study, you may be asked to view a variety of media that
-  //       vary in emotional content. If any of the media presented should make you feel too
-  //       uncomfortable to continue with the study, you are free to immediately withdraw your
-  //       participation without giving up payment (send us an email
-  //       <a href="mailto:eshin.jolly@gmail.com">here</a>
-  //       after withdrawing for payment information). To be clear: you may immediately end your
-  //       participation if any aspect of the research procedure makes you too uncomfortable to
-  //       continue. Lastly, if you have any discomfort or concerns after viewing the media, you are
-  //       encouraged to contact the principal investigator
-  //       <a href="mailto:eshin.jolly@gmail.com">here</a>
-  //     </p>
-
-  //     <p>
-  //       The information collected will be anonymous and no identifying information will be stored
-  //       with the data collected during the experiment. Identifying information will not be used in
-  //       any presentation or paper written about this project and such presentations will represent
-  //       the aggregation of data from groups of people.
-  //     </p>
-  //   </div>
-
-  //   <h2>Do you understand and consent to these terms?</h2>
 
   const dispatch = createEventDispatcher();
   let currentPage = 0;
