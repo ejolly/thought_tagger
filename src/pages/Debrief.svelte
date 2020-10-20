@@ -1,5 +1,5 @@
 <script>
-  // This is the debrief page in which we should collect any post survey questions. There's a single button that should save reponses to firebase and then tell PsiTurk we're done.
+  // This is the debrief page in which we should collect any post survey questions. There's a single button that should save reponses to firebase and then tell Mturk we're done.
   import { db, params, serverTime } from '../utils.js';
 
   let age = '';
@@ -33,7 +33,7 @@
       });
       console.log('exit survey added successfully');
       window.top.postMessage('finished', '*');
-      console.log('back to PsiTurk!');
+      console.log('back to MTurk!');
     } catch (error) {
       console.error(error);
     }
@@ -60,7 +60,7 @@
       <p class="subtitle is-6 has-text-centered">
         <em>All questions are optional</em>
       </p>
-      <form on:submit|preventDefault={submitHIT}>
+      <form name="mturk" action="https://www.mturk.com/mturk/externalSubmit" method="POST">
         <div class="field is-horizontal">
           <div class="field-label is-normal">
             <label class="label">Age</label>
@@ -203,7 +203,7 @@
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <button class="button is-success is-large">Submit HIT</button>
+                <button class="button is-success is-large" on:click={submitHIT}>Submit HIT</button>
               </div>
             </div>
           </div>
