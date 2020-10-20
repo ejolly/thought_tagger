@@ -2,6 +2,7 @@
   // This is the debrief page in which we should collect any post survey questions. There's a single button that should save reponses to firebase and then tell Mturk we're done.
   import { db, params, serverTime } from '../utils.js';
 
+  let submitURL = params.turkSubmitTo + '/mturk/externalSubmit';
   let age = '';
   let feedback = '';
   let sex = '';
@@ -61,7 +62,7 @@
       <p class="subtitle is-6 has-text-centered">
         <em>All questions are optional</em>
       </p>
-      <form name="mturk" action="https://www.mturk.com/mturk/externalSubmit" method="POST">
+      <form name="mturk" action={submitURL} method="POST">
         <div class="field is-horizontal">
           <div class="field-label is-normal">
             <label class="label">Age</label>
