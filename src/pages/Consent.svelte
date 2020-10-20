@@ -11,7 +11,7 @@
 
     'If you decide to take part in this study, you will be asked to listen to a variety of media that vary in emotional content. If any of the media presented should make you feel too uncomfortable to continue with the study, you are free to immediately withdraw your participation without giving up payment (send us an email <a href="mailto:eshin.jolly@gmail.com">here</a> after withdrawing for payment information). To be clear: you may immediately end your participation if any aspect of the research procedure makes you too uncomfortable to continue. Lastly, if you have any discomfort or concerns after viewing the media, you are encouraged to contact the principal investigator <a href="mailto:eshin.jolly@gmail.com">here</a>',
 
-    'The information collected will be anonymous and no identifying information will be stored with the data collected during the experiment. Identifying information will not be used in any presentation or paper written about this project and such presentations will represent the aggregation of data from groups of people. <br><br> Do you understand and consent to these terms?'
+    'The information collected will be anonymous and no identifying information will be stored with the data collected during the experiment. Identifying information will not be used in any presentation or paper written about this project and such presentations will represent the aggregation of data from groups of people. <br><br> <strong>Do you understand and consent to these terms?</strong> If so, press Accept, otherwise please return this HIT.'
   ];
 
   const dispatch = createEventDispatcher();
