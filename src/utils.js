@@ -35,13 +35,13 @@ export const getURLParams = () => {
       i += 1;
     }
   }
-  if (!params.workerId && !params.assignmentId && !params.hitId) {
-    console.log('Referring URL is NOT psiTurk....creating fake workerId');
-    console.log('MAKE SURE TO REMOVE THIS IN CODE BEFORE GOING LIVE');
-    params.workerId = 'test-worker';
-    params.assignmentId = 'test-assignment';
-    params.hitId = 'test-hit';
-  }
+  // if (!params.workerId && !params.assignmentId && !params.hitId) {
+  //   console.log('Referring URL is NOT psiTurk....creating fake workerId');
+  //   console.log('MAKE SURE TO REMOVE THIS IN CODE BEFORE GOING LIVE');
+  //   params.workerId = 'test-worker';
+  //   params.assignmentId = 'test-assignment';
+  //   params.hitId = 'test-hit';
+  // }
   console.log(params);
   return params;
 };
