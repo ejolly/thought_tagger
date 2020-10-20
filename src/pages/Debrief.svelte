@@ -29,7 +29,8 @@
         birth,
         handed,
         feedback,
-        HIT_complete: serverTime
+        HIT_complete: serverTime,
+        currentState: 'completed'
       });
       console.log('exit survey added successfully');
       window.top.postMessage('finished', '*');

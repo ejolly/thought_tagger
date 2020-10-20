@@ -99,7 +99,7 @@
 <section class="section">
   {#if !currentState}
     <Loading>Loading...</Loading>
-  {:else if currentState === 'instructions'}
+  {:else if currentState === 'instructions' || currentState === 'completed'}
     <Instructions on:finished={() => updateState('quiz')} />
   {:else if currentState === 'quiz'}
     <Quiz
