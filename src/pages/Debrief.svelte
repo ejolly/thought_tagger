@@ -3,7 +3,6 @@
   import { db, params, serverTime } from '../utils.js';
 
   let submitURL = params.turkSubmitTo + '/mturk/externalSubmit';
-  console.log('attempt:', submitURL);
   let age = '';
   let feedback = '';
   let sex = '';
@@ -65,7 +64,7 @@
       </p>
       <form name="mturk" action={submitURL} method="POST">
         <input type="hidden" name="assignmentId" id="assignmentId" value={params.assignmentId} />
-        <input type="hidden" name="foo" value="1" />
+        <input type="hidden" name="dummy_input_DONT_REMOVE" value="1" />
         <div class="field is-horizontal">
           <div class="field-label is-normal">
             <label class="label">Age</label>
