@@ -4,6 +4,7 @@
   import { db, auth, fisherYatesShuffle, serverTime, params } from './utils.js';
   import Instructions from './pages/Instructions.svelte';
   import Quiz from './pages/Quiz.svelte';
+  import Consent from './pages/Consent.svelte';
   import Experiment from './pages/Experiment.svelte';
   import Debrief from './pages/Debrief.svelte';
   import Loading from './components/Loading.svelte';
