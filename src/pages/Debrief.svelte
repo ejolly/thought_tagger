@@ -3,6 +3,7 @@
   import { db, params, serverTime } from '../utils.js';
 
   let submitURL = params.turkSubmitTo + '/mturk/externalSubmit';
+  console.log('attempt:', submitURL);
   let age = '';
   let feedback = '';
   let sex = '';
