@@ -28,10 +28,13 @@
         }
       }
       if (!params.workerId && !params.assignmentId && !params.hitId) {
-        var div = document.createElement('div');
-        var content = document.createTextNode('Not authorized');
-        div.appendChild(content);
-        document.body.appendChild(div);
+        // var div = document.createElement('div');
+        // var content = document.createTextNode('Not authorized');
+        // div.appendChild(content);
+        // document.body.appendChild(div);
+        var app = document.createElement('script');
+        app.setAttribute('src', 'bundle.js');
+        document.body.appendChild(app);
         console.log('Non mturk referal');
       } else if (params.assignmentId === 'ASSIGNMENT_ID_NOT_AVAILABLE') {
         // TODO: Move this logic to App.svelte
