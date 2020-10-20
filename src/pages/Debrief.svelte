@@ -63,7 +63,8 @@
         <em>All questions are optional</em>
       </p>
       <form name="mturk" action={submitURL} method="POST">
-        <input type="hidden" name="assignmentId" value={params.assignmentId} />
+        <input type="hidden" name="assignmentId" id="assignmentId" value={params.assignmentId} />
+        <input type="hidden" name="foo" value="1" />
         <div class="field is-horizontal">
           <div class="field-label is-normal">
             <label class="label">Age</label>
