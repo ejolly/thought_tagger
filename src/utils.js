@@ -25,6 +25,8 @@ export const serverTime = firebase.database.ServerValue.TIMESTAMP;
 // Functions to parse the URL to get workerID, hitID, and assignmentID
 const unescapeURL = (s) => decodeURIComponent(s.replace(/\+/g, '%20'));
 export const getURLParams = () => {
+  const url = window.location.hostname;
+  console.log('curr host:', url);
   const params = {};
   const m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g);
   if (m) {
