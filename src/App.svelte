@@ -39,7 +39,7 @@
           try {
             await auth.signInWithEmailAndPassword(
               `${params.workerId}@experiment.com`,
-              params.assignmentId
+              params.workerId
             );
             console.log('user found...signing in with credentials');
           } catch (error) {
@@ -47,7 +47,7 @@
               console.log('no user found...creating new credentials');
               await auth.createUserWithEmailAndPassword(
                 `${params.workerId}@experiment.com`,
-                params.assignmentId
+                params.workerId
               );
             } else {
               console.error(error);
