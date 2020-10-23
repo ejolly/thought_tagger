@@ -3,6 +3,7 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/storage';
 import 'firebase/auth';
+import { writable } from 'svelte/store';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBSDQTQrnklilGdmyZcEXMGhIwg0dFpNlY',
@@ -22,6 +23,9 @@ export const storage = firebase.storage();
 export const auth = firebase.auth();
 export const serverTime = firebase.database.ServerValue.TIMESTAMP;
 
+// eslint-disable-next-line no-undef
+export const dev = DEV_MODE ? writable(true) : writable(false);
+
 // Functions to parse the URL to get workerID, hitID, and assignmentID
 const unescapeURL = (s) => decodeURIComponent(s.replace(/\+/g, '%20'));
 export const getURLParams = () => {
@@ -35,13 +39,17 @@ export const getURLParams = () => {
       i += 1;
     }
   }
-  // if (!params.workerId && !params.assignmentId && !params.hitId) {
-  //   console.log('Referring URL is NOT psiTurk....creating fake workerId');
-  //   console.log('MAKE SURE TO REMOVE THIS IN CODE BEFORE GOING LIVE');
-  //   params.workerId = 'test-worker';
-  //   params.assignmentId = 'test-assignment';
-  //   params.hitId = 'test-hit';
-  // }
+  if (!params.workerId && !params.assignmentId && !params.hitId) {
+    // eslint-disable-next-line no-undef
+    if (DEV_MODE) {
+      console.log(
+        'App running in dev mode so HIT submission will not work!\nTo test in the sandbox make sure to deploy the app.'
+      );
+      params.workerId = 'test-worker';
+      params.assignmentId = 'test-assignment';
+      params.hitId = 'test-hit';
+    }
+  }
   console.log(params);
   return params;
 };

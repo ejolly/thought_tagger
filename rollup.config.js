@@ -19,7 +19,7 @@ export default {
   },
   plugins: [
     replace({
-      'process.env.NODE_ENV': JSON.stringify('production')
+      DEV_MODE: true
     }),
     // postcss({
     //   extract: true
@@ -27,7 +27,7 @@ export default {
     svelte({
       // enable run-time checks when not in production
       dev: !production,
-      css: css => {
+      css: (css) => {
         css.write('public/bundle.css');
       },
       onwarn: (warning, handler) => {
@@ -37,26 +37,26 @@ export default {
         handler(warning);
       }
     }),
-    // Babel is being used to make ES2015 features (like arrow functions) available to all browsers. This is called *transpiling*. Additionally babel using using core-js to create *pollyfills* to make turn some JS features that don't exist in some browsers into compatible ones that do exist. This has to increase bundle size a bit but that's the cost of higher compatibility. Refs: 
+    // Babel is being used to make ES2015 features (like arrow functions) available to all browsers. This is called *transpiling*. Additionally babel using using core-js to create *pollyfills* to make turn some JS features that don't exist in some browsers into compatible ones that do exist. This has to increase bundle size a bit but that's the cost of higher compatibility. Refs:
     // http://simey.me/svelte3-rollup-and-babel7/
     // https://github.com/sveltejs/svelte/issues/3388
     // https://github.com/sveltejs/svelte/issues/2621
     // https://blog.az.sg/posts/svelte-and-ie11/
     babel({
-      extensions: [".js", ".mjs", ".html", ".svelte"],
+      extensions: ['.js', '.mjs', '.html', '.svelte'],
       include: ['src/**', 'node_modules/svelte/**'],
       runtimeHelpers: true,
       presets: [
         [
           '@babel/preset-env',
           {
-            "debug": false,
+            debug: false,
             useBuiltIns: 'usage',
             corejs: 3,
-            targets: "> 0.25%, not dead"
-          },
-        ],
-      ],
+            targets: '> 0.25%, not dead'
+          }
+        ]
+      ]
     }),
     postcss(),
     resolve({ browser: true }),

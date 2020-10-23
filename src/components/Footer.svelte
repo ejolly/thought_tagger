@@ -1,0 +1,38 @@
+<script>
+  import { dev } from '../utils';
+  import { createEventDispatcher } from 'svelte';
+
+  const dispatch = createEventDispatcher();
+</script>
+
+<style>
+  .banner {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+  }
+  .icon:hover {
+    cursor: pointer;
+  }
+  p {
+    display: inline;
+  }
+</style>
+
+<div
+  class="has-text-white banner"
+  class:has-background-danger={$dev}
+  class:has-background-primary={!$dev}>
+  {#if $dev}
+    <p>Development mode</p>
+    <span class="icon" on:click={() => dispatch('resetTestWorker')}>
+      <i class="fas fa-redo-alt" />
+    </span>
+  {:else}
+    <p>Contact Banner</p>
+  {/if}
+</div>
