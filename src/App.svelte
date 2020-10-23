@@ -65,12 +65,14 @@
     }
   };
 
-  if (params.workerId && params.assignmentId && params.hitId) {
-    if (param.assignmentId === 'ASSIGNMENT_ID_NOT_AVAILABLE') {
-      currentState = 'mturk-preview';
-    } else {
-      initExperiment = true;
-    }
+  if (params.assignmentId === 'ASSIGNMENT_ID_NOT_AVAILABLE') {
+    currentState = 'mturk-preview';
+  } else if (
+    params.workerId &&
+    params.assignmentId !== 'ASSIGNMENT_ID_NOT_AVAILABLE' &&
+    params.hitId
+  ) {
+    initExperiment = true;
   } else {
     currentState = 'non-mturk';
   }
