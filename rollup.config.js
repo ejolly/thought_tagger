@@ -19,7 +19,7 @@ export default {
   },
   plugins: [
     replace({
-      DEV_MODE: true
+      DEV_MODE: !production
     }),
     // postcss({
     //   extract: true
