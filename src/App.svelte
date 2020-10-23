@@ -9,11 +9,13 @@
   import Debrief from './pages/Debrief.svelte';
   import Loading from './components/Loading.svelte';
   import Footer from './components/Footer.svelte';
-  // import MturkPreview from './pages/MTurkPreview.svelte';
+  import MturkPreview from './pages/MTurkPreview.svelte';
 
   let currentState; // location of participant in app synced with firebase
 
   let trialOrder = []; // container for trials populated by firebase
+
+  let initExperiment = false;
 
   // This function updates the current state of the user to dynamically render different parts of the experiment (i.e. instructions, quiz, etc)
   const updateState = async (newState) => {
@@ -63,13 +65,21 @@
     }
   };
 
-  const initExp = params.workerId && params.assignmentId && params.hitId ? true : false;
+  if (params.workerId && params.assignmentId && params.hitId) {
+    if (param.assignmentId === 'ASSIGNMENT_ID_NOT_AVAILABLE') {
+      currentState = 'mturk-preview';
+    } else {
+      initExperiment = true;
+    }
+  } else {
+    currentState = 'non-mturk';
+  }
 
   // Before we render anything see if we have a db entry for this subject based upon the URL parameters. If not create an entry with a new random stimulus order and put them into the instructions state. If we do, load their trial order and current experiment state
   // TODO: move logic for MTurk ad here, by checking value of params.assignmentId
   // TODO: Get all audio file names from database sorted by count and shuffle order of those with the same count to make sure multiple users dont do the same audio file when we first start running experiment
   onMount(async () => {
-    if (initExp) {
+    if (initExperiment) {
       try {
         auth.onAuthStateChanged(async (user) => {
           if (!user) {
@@ -129,8 +139,6 @@
       } catch (error) {
         console.error(error);
       }
-    } else {
-      currentState = 'non-mturk';
     }
   });
 </script>
@@ -145,6 +153,8 @@
       locally, make sure you launch it with
       <code>npm run dev</code>.
     </p>
+  {:else if currentState === 'mturk-preview'}
+    <MturkPreview />
   {:else if currentState === 'consent' || currentState === 'completed'}
     <Consent on:finished={() => updateState('instructions')} />
   {:else if currentState === 'instructions'}
