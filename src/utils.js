@@ -3,6 +3,7 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/storage';
 import 'firebase/auth';
+import { writable } from 'svelte/store';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBSDQTQrnklilGdmyZcEXMGhIwg0dFpNlY',
@@ -22,8 +23,10 @@ export const storage = firebase.storage();
 export const auth = firebase.auth();
 export const serverTime = firebase.database.ServerValue.TIMESTAMP;
 
+// dev is referenced as a store elsewhere in the code, so cannot be a simple Boolean
 // eslint-disable-next-line no-undef
-export const dev = DEV_MODE;
+export const dev = DEV_MODE ? writable(true) : writable(false)
+console.log(dev);
 
 // Functions to parse the URL to get workerID, hitID, and assignmentID
 const unescapeURL = (s) => decodeURIComponent(s.replace(/\+/g, '%20'));

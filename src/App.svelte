@@ -153,7 +153,8 @@
     <p>
       It seems you are accessing this app without an mturk referral. If you meant to test it
       locally, make sure you launch it with
-      <code>npm run dev</code>.
+      <code>npm run dev</code>
+      .
     </p>
   {:else if currentState === 'mturk-preview'}
     <MturkPreview />

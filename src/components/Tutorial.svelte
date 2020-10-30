@@ -156,6 +156,12 @@
             Do bonus work
           </button>
         </p>
+      {:else if quizState === 'firstattempt'}
+        <p class="card-footer-item">
+          <button class="button is-link" on:click={() => dispatch('toggleTutorial')}>
+            Try again
+          </button>
+        </p>
       {:else if quizState === 'fail'}
         <p class="card-footer-item">
           <button class="button is-success is-large" on:click={() => dispatch('finishedComplete')}>
