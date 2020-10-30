@@ -124,6 +124,13 @@
     tutorialStep = ev.detail.tutorialStep;
   };
 
+  // new function to ensure modal pops open if help is closed upon success
+  const quizSuccess = () => {
+    quizState = 'readyForExperiment';
+    modalOpen = true;
+    tutorialComplete = true;
+  };
+
   // ThoughtTagger Component triggered functions
   const quizAttempt = (ev) => {
     quizAttempts = ev.detail.quizAttempts;
@@ -187,5 +194,5 @@
     on:updateSegmentsCount={updateSegmentsCount}
     on:quizAttempt={quizAttempt}
     on:toggleTutorial={() => (modalOpen = !modalOpen)}
-    on:readyForExperiment={() => (quizState = 'readyForExperiment')} />
+    on:readyForExperiment={quizSuccess} />
 {/await}
