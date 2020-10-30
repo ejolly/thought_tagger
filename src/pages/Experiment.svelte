@@ -13,6 +13,19 @@
   let fileName;
   const dispatch = createEventDispatcher();
 
+  // helper function that uses Google's transaction function to ensure that multi-user conflicts don't lead to an innacurate response count
+  function incrementResponse(recordingRef) {
+    recordingRef.transaction(function(recording) {
+      if (recording) {
+        recording.responses++;
+        console.log('recording responses incremented in firebase');
+      } else {
+        console.log('recording does not exist');
+      }
+      return recording;
+    });
+  }
+
   // Function to get a firebase storage URL for a specific audio file that we can ultimately render with Peaks JS
   // eslint-disable-next-line consistent-return
   const generateFileURL = async () => {
@@ -39,7 +52,18 @@
 
   // Function to try to get the next trial's audio file or tell App.svelte to end the experiment
   // TODO: within this function update the count for this particular audio file in the recordings collection
-  const getNextAudioFile = () => {
+  // RIGHT NOW THIS FUNCTION RUNS SUCCESSFULLY BUT ASYNC IS SOMEHOW OFF (ASK ESHIN)
+  const getNextAudioFile = async () => {
+    // pre if-else statement, use try and awaits (see above)
+    // to get the right collection and increment accordingly
+    let currentTrialNumber = 1; // MAKE SURE TO REMOVE THIS (JUST FOR TESTING)
+    try {
+      const recordingRef = await db.ref(`recordings/${currentTrialNumber}`); // get reference for desired recording
+      let transactionRes = incrementResponse(recordingRef);
+      console.log(transactionRes);
+    } catch (error) {
+      return console.error(error);
+    }
     if (currentTrial === trialOrder.length) {
       dispatch('finished');
     } else {
