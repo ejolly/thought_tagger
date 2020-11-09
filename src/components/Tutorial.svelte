@@ -123,9 +123,7 @@
       {#if !tutorialComplete}
         <p class="card-footer-item">
           <button class="button is-link controls" on:click={backward}>
-            <span class="icon">
-              <i class="fas fa-backward" />
-            </span>
+            <span class="icon"> <i class="fas fa-backward" /> </span>
           </button>
         </p>
         <p class="card-footer-item">
@@ -139,9 +137,7 @@
             </button>
           {:else if tutorialStep !== 2 || numSegments > 0}
             <button class="button is-link controls" on:click={forward}>
-              <span class="icon">
-                <i class="fas fa-forward" />
-              </span>
+              <span class="icon"> <i class="fas fa-forward" /> </span>
             </button>
           {/if}
         </p>

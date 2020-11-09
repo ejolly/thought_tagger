@@ -28,17 +28,18 @@ export const makeRecordingDict = async () => {
   let count = -1; // accounts for quiz.mp3
   let storageRef = storage.ref();
   const recordingDict = {};
-  storageRef.listAll().then(function (res) {
-    res.items.forEach(function (itemRef) {
-      // All the items under listRef.
-      recordingDict[itemRef.location.path] = count;
-      count++;
+  storageRef
+    .listAll()
+    .then(function(res) {
+      res.items.forEach(function(itemRef) {
+        // All the items under listRef.
+        recordingDict[itemRef.location.path] = count;
+        count++;
+      });
+    })
+    .catch(function(error) {
+      // Uh-oh, an error occurred!
     });
-  }).catch(function (error) {
-    // Uh-oh, an error occurred!
-  });
-  console.log('trying to make dictionary');
-  console.log(recordingDict);
   return await recordingDict;
 };
 
@@ -46,8 +47,7 @@ export const recordingDict = makeRecordingDict();
 
 // dev is referenced as a store elsewhere in the code, so cannot be a simple Boolean
 // eslint-disable-next-line no-undef
-export const dev = DEV_MODE ? writable(true) : writable(false)
-console.log(dev);
+export const dev = DEV_MODE ? writable(true) : writable(false);
 
 // Functions to parse the URL to get workerID, hitID, and assignmentID
 const unescapeURL = (s) => decodeURIComponent(s.replace(/\+/g, '%20'));

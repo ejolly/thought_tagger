@@ -10,6 +10,7 @@
   import Loading from './components/Loading.svelte';
   import Footer from './components/Footer.svelte';
   import MturkPreview from './pages/MTurkPreview.svelte';
+  import ReturnHIT from './pages/ReturnHIT.svelte';
 
   let currentState; // location of participant in app synced with firebase
 
@@ -159,7 +160,9 @@
   {:else if currentState === 'mturk-preview'}
     <MturkPreview />
   {:else if currentState === 'consent' || currentState === 'completed'}
-    <Consent on:finished={() => updateState('instructions')} />
+    <Consent
+      on:consent={() => updateState('instructions')}
+      on:reject={() => updateState('noConsent')} />
   {:else if currentState === 'instructions'}
     <Instructions on:finished={() => updateState('quiz')} />
   {:else if currentState === 'quiz'}
@@ -169,7 +172,9 @@
   {:else if currentState === 'experiment'}
     <Experiment {trialOrder} on:finished={() => updateState('debrief')} />
   {:else if currentState === 'debrief'}
-    <Debrief />
+    <Debrief {currentState} />
+  {:else if currentState === 'noConsent'}
+    <ReturnHIT {currentState} />
   {/if}
 </section>
 <Footer on:resetTestWorker={resetTestWorker} />
