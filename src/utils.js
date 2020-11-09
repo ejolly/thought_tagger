@@ -26,24 +26,15 @@ export const serverTime = firebase.database.ServerValue.TIMESTAMP;
 // Creates dictionary to allow for number referencing of recordings
 export const makeRecordingDict = async () => {
   let count = -1; // accounts for quiz.mp3
-  let storageRef = storage.ref();
   const recordingDict = {};
-  storageRef
-    .listAll()
-    .then(function(res) {
-      res.items.forEach(function(itemRef) {
-        // All the items under listRef.
-        recordingDict[itemRef.location.path] = count;
-        count++;
-      });
-    })
-    .catch(function(error) {
-      // Uh-oh, an error occurred!
-    });
-  return await recordingDict;
+  const storageItems = await storage.ref().listAll();
+  storageItems.items.forEach((itemRef) => {
+    // All the items under listRef.
+    recordingDict[itemRef.location.path] = count;
+    count += 1;
+  });
+  return recordingDict;
 };
-
-export const recordingDict = makeRecordingDict();
 
 // dev is referenced as a store elsewhere in the code, so cannot be a simple Boolean
 // eslint-disable-next-line no-undef

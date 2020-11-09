@@ -1,7 +1,7 @@
 <script>
   // This is the main experiment page. It takes as input trialOrder, which gets passed in from App.svelte, which itself gets it from firebase. Then it looks at the current trial number the participant is on, gets the audio file URL and passes that info as parameters to the TagThought component.
   import { createEventDispatcher } from 'svelte';
-  import { db, params, storage, recordingDict } from '../utils.js';
+  import { db, params, storage, makeRecordingDict } from '../utils.js';
   import ThoughtTagger from '../components/ThoughtTagger.svelte';
   import Loading from '../components/Loading.svelte';
 
@@ -54,7 +54,7 @@
   // TODO: within this function update the count for this particular audio file in the recordings collection
   // RIGHT NOW THIS FUNCTION RUNS SUCCESSFULLY BUT ASYNC IS SOMEHOW OFF (ASK ESHIN)
   const getNextAudioFile = async () => {
-    let trialDict = await recordingDict; // async from utils
+    let trialDict = await makeRecordingDict(); // async from utils
     let currentTrialNumber = trialDict[fileName]; // gets firebase number
     console.log('name: ', fileName);
     console.log('number: ', currentTrialNumber);
