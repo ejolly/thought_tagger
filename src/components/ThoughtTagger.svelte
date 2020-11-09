@@ -368,7 +368,7 @@
   {#if rate}
     <!-- Rating row (only if table not displayed) -->
     <div class="columns is-centered">
-      <div class="column is-narrow has-text-centered">
+      <div class="column is-4-desktop is-3-fullhd has-text-centered">
         <div class="field">
           <label class="label has-text-weight-normal is-size-5">
             If the speaker did not talk for the full 2 min how long did they speak for?

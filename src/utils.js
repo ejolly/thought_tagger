@@ -94,3 +94,8 @@ export const fisherYatesShuffle = (array) => {
     [array[i], array[j]] = [array[j], array[i]];
   }
 };
+
+export const globalVars = {
+  bonusPerRecording: 0.5,
+  basePayment: 1.0
+};

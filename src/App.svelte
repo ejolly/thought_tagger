@@ -21,11 +21,13 @@
   // This function updates the current state of the user to dynamically render different parts of the experiment (i.e. instructions, quiz, etc)
   const updateState = async (newState) => {
     // Change to the new state within Svelte
+    const oldState = currentState;
     currentState = newState;
     try {
       const doc = {
         currentState
       };
+      doc[`${oldState}_end`] = serverTime;
       doc[`${currentState}_start`] = serverTime;
       await db.ref(`participants/${params.workerId}`).update(doc);
       console.log('updated user state');
@@ -52,7 +54,7 @@
           workerId: params.workerId,
           assignmentId: params.assignmentId,
           hitId: params.hitId,
-          startTime: serverTime,
+          consent_start: serverTime,
           currentState: 'consent',
           currentTrial: 1,
           trialOrder
@@ -126,7 +128,7 @@
                   workerId: params.workerId,
                   assignmentId: params.assignmentId,
                   hitId: params.hitId,
-                  startTime: serverTime,
+                  consent_start: serverTime,
                   currentState: 'consent',
                   currentTrial: 1,
                   trialOrder
