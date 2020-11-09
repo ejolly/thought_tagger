@@ -26,13 +26,13 @@
 <div
   class="has-text-white banner"
   class:has-background-danger={$dev}
-  class:has-background-primary={!$dev}>
+  class:has-background-grey-light={!$dev}>
   {#if $dev}
     <p>Development mode</p>
     <span class="icon" on:click={() => dispatch('resetTestWorker')}>
       <i class="fas fa-redo-alt" />
     </span>
   {:else}
-    <p>Contact Banner</p>
+    <p>If if you have questions about this HIT please <a href="mailto:computational.social.affective.neuroscience.lab@dartmouth.edu">email us</a>  </p>
   {/if}
 </div>

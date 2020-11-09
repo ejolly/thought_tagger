@@ -371,7 +371,7 @@
       <div class="column is-narrow has-text-centered">
         <div class="field">
           <label class="label has-text-weight-normal is-size-5">
-            When did the speaker stop talking?
+            If the speaker did not talk for the full 2 min how long did they speak for?
           </label>
           <div class="control">
             <input

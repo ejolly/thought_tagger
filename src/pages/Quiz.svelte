@@ -48,7 +48,7 @@
     {
       title: 'Correct!',
       content:
-        '<div class="content"><p>Nice job! You did exactly what were looking for. After you finish tagging thoughts there are 3 additional questions we would like you input before submitting your tags.<ol class="1"><li>The approximate time that the speaker in the recording stopped talking</li><li>The clarity of the audio recording</li><li>The difficulty of identifying thoughts based on the speaker style</li><ol>Please complete these now and click the Next button.</p></div>',
+        '<div class="content"><p>Nice job! You did exactly what were looking for. After you finish tagging thoughts there are 3 additional questions we would like you to answer before submitting your tags. While these recordings are a maximum of 2 min in length not all speakers may have spoken for this length of time and not all recordings are of the same quality. So we would like you to additionally tell us: <ol class="1"><li>The approximate time that the speaker in the recording spoke for</li><li>The clarity of the audio recording</li><li>The difficulty of identifying thoughts based on the speaker style</li><ol>Please complete these now and click the Next button.</p></div>',
       state: 'pass'
     },
     {
