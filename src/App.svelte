@@ -1,7 +1,14 @@
 <script>
   // This is the main Svelte component that will display after a user provides conset within PsiTurk. It serves two main purposes: 1) it initializes a new entry into the firebase database if a workerId from the URL is not found or retrieves an existing record if a workerId is found. Creating a new entry sets up the random trial order the participant will receive for all the recordings. 2) it uses that information to dynamically render different experiment states based upon what a user does i.e. show instructions, show quiz, show experiment, show exit survey. Each of those different states exist as their own .svelte files within the pages/ folder
   import { onMount } from 'svelte';
-  import { db, auth, fisherYatesShuffle, serverTime, params, dev } from './utils.js';
+  import {
+    db,
+    auth,
+    fisherYatesShuffle,
+    serverTime,
+    params,
+    dev,
+  } from './utils.js';
   import Instructions from './pages/Instructions.svelte';
   import Quiz from './pages/Quiz.svelte';
   import Consent from './pages/Consent.svelte';
@@ -25,7 +32,7 @@
     currentState = newState;
     try {
       const doc = {
-        currentState
+        currentState,
       };
       doc[`${oldState}_end`] = serverTime;
       doc[`${currentState}_start`] = serverTime;
@@ -57,7 +64,7 @@
           consent_start: serverTime,
           currentState: 'consent',
           currentTrial: 1,
-          trialOrder
+          trialOrder,
         });
         console.log('reset test-worker');
       } catch (error) {
@@ -108,7 +115,9 @@
           } else {
             console.log('user already authenticated...');
             try {
-              const resp = await db.ref(`participants/${params.workerId}`).once('value');
+              const resp = await db
+                .ref(`participants/${params.workerId}`)
+                .once('value');
               if (resp.val() !== null) {
                 const data = resp.val();
                 currentState = data.currentState;
@@ -131,7 +140,7 @@
                   consent_start: serverTime,
                   currentState: 'consent',
                   currentTrial: 1,
-                  trialOrder
+                  trialOrder,
                 });
                 currentState = 'consent';
                 console.log('no previous document found...creating new...');
@@ -154,8 +163,8 @@
   {:else if currentState === 'non-mturk'}
     <h1 class="title">Oops</h1>
     <p>
-      It seems you are accessing this app without an mturk referral. If you meant to test it
-      locally, make sure you launch it with
+      It seems you are accessing this app without an mturk referral. If you
+      meant to test it locally, make sure you launch it with
       <code>npm run dev</code>
       .
     </p>

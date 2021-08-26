@@ -43,12 +43,16 @@
         </div>
         <footer class="card-footer">
           <p class="card-footer-item">
-            <button class="button is-danger controls" on:click={() => dispatch('reject')}>
+            <button
+              class="button is-danger controls"
+              on:click={() => dispatch('reject')}>
               I do not consent
             </button>
           </p>
           <p class="card-footer-item">
-            <button class="button is-success controls" on:click={() => dispatch('consent')}>
+            <button
+              class="button is-success controls"
+              on:click={() => dispatch('consent')}>
               I consent
             </button>
           </p>

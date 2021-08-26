@@ -16,97 +16,97 @@
     {
       title: 'Overview',
       content:
-        '<p>This brief tutorial will introduce you to the interface you will use to complete the task. Feel free to drag and reposition this popup as you progress through each step of the tutorial.</p>',
-      state: 'overview'
+        '<p>This brief tutorial will introduce you to the interface you will use to complete the task.</p><p><em>Feel free to drag and reposition this popup as you progress through each step of the tutorial.</em></p>',
+      state: 'overview',
     },
     {
       title: 'Recording Display',
       content:
         '<p>This part of the screen contains a visual representation of the audio recording. The top half of this display (in green) shows a zoomed in view of an <strong>audio snippet</strong> of the recording, while the bottom half displays the <strong>full recording</strong> along with a box highlighting the <strong>location of the snippet</strong> within the full recording. Below this are playback controls you can use to play, pause, and adjust the volume of the recording. Playback is synchronized between these controls and the visual display.</p><br><p>You can move to a specific location within the snippet or within the full recording by <strong>clicking</strong> in the top or bottom display respectively. This will move the vertical position indicator to a new timepoint in both displays. You can also scrub through the snippet or full recording by <strong>clicking & dragging</strong> left or right.</p><br/><p>Feel free to click around within this display to get a feel for how you can control your position within the recording. <strong>A help button is located next to the audio controls</strong>. The help button will show or hide this guide.</p>',
-      state: 'recording'
+      state: 'recording',
     },
     {
       title: 'Controls',
       content:
         '<p>Next to the audio controls you will also find buttons to tag a new thought and submit your responses when you are finished tagging thoughts in this audio file. Below this you will see a section that lists your currently tagged thoughts. As you can see currently no thoughts have been tagged so nothing is visible.</p><br/><p><strong>Try clicking the Tag thought button now.</strong></p>',
-      state: 'controls'
+      state: 'controls',
     },
     {
       title: 'Tagging Thoughts',
       content:
         'Notice how this added a row to the table along with markers to the visual display above. The <span class="has-text-weight-bold has-text-grey">start marker (light grey)</span> indicates the beginning of a tag based on your current position in the audio file. The <span class="has-text-weight-bold has-text-grey-darker">end marker (dark grey)</span> indicates the end of a tag and defaults to 5 seconds after the start marker. <br><br>You should edit these times to match when when you think a new thought begins and when that same thought ends. To edit these times first select this thought by <strong>clicking on its row</strong> within the table. Then <strong>drag the markers</strong> in the display above to make an adjustment. Notice how the values in the table change in sync with your actions in the display above. You can also delete a tag or play audio within a tag verify your work using the buttons that appear. After you finish editing just click on the same thought in the table to deselect it.',
-      state: 'overview'
+      state: 'overview',
     },
     {
       title: 'Comprehension Check',
       content:
         '<p>You now know how to use the controls. Try to identify <strong>three thoughts</strong> within this audio file to continue. We will verify your tags to determine your eligibility to continue with this HIT and earn a bonus payment for tagging more files. If you fail to correctly identify these thoughts you will be paid for the HIT but will not be permitted to continute tagging.</p><br><p>You can bring up and toggle through this guide by clicking the help icon next to the audio controls.</p>',
-      state: 'overview'
-    }
+      state: 'overview',
+    },
   ];
   const quiz = [
     {
       title: 'Correct!',
       content:
         '<div class="content"><p>Nice job! You did exactly what were looking for. After you finish tagging thoughts there are 3 additional questions we would like you to answer before submitting your tags. While these recordings are a maximum of 2 min in length not all speakers may have spoken for this length of time and not all recordings are of the same quality. So we would like you to additionally tell us: <ol class="1"><li>The approximate time that the speaker in the recording spoke for</li><li>The clarity of the audio recording</li><li>The difficulty of identifying thoughts based on the speaker style</li><ol>Please complete these now and click the Next button.</p></div>',
-      state: 'pass'
+      state: 'pass',
     },
     {
       title: 'Try Again',
       content:
         '<p>Hmm your tags are not quite what we are looking for. Please adjust your tags and click Done to try verifying your responses again. <br><br> You will only have <strong>1 more chance</strong> to identify the correct tags before you forfeit any bonus payments. Use the help button next to the audio controls to close this guide.</p>',
-      state: 'firstattempt'
+      state: 'firstattempt',
     },
     {
       title: 'Ineligible',
       content:
         '<p>Unfortunately your tags still do not reflect what we are looking for. Therefore you can no longer continue with this HIT and earn bonus payments.<br><br>Do not worry, you will still be compensenated the base payment for this HIT.</p>',
-      state: 'fail'
+      state: 'fail',
     },
     {
       title: 'Begin HIT',
       content:
         '<p>Perfect! You are now eligible to tag more recordings. You will earn a $0.50 bonus for each additional recording you tag thoughts for. Otherwise you can complete this HIT and earn your payment without any bonuses. Please select your preference below </p>',
-      state: 'readyForExperiment'
-    }
+      state: 'readyForExperiment',
+    },
   ];
   const quizAnswers = [
     {
       startTime: 1.0,
-      endTime: 7.0
+      endTime: 7.0,
     },
     {
       startTime: 7.0,
-      endTime: 21.0
+      endTime: 21.0,
     },
     {
       startTime: 22.0,
-      endTime: 35.0
+      endTime: 35.0,
     },
     {
       startTime: 36.0,
-      endTime: 49.0
+      endTime: 49.0,
     },
     {
       startTime: 50.0,
-      endTime: 62.0
+      endTime: 62.0,
     },
     {
       startTime: 62.0,
-      endTime: 70.0
+      endTime: 70.0,
     },
     {
       startTime: 71.0,
-      endTime: 88.0
+      endTime: 88.0,
     },
     {
       startTime: 89.0,
-      endTime: 108.0
+      endTime: 108.0,
     },
     {
       startTime: 109.0,
-      endTime: 120.0
-    }
+      endTime: 120.0,
+    },
   ];
   let modalOpen = true; // always start with open tutorial
   let numSegments = 0; // keep track of the number of tagged thoughts
@@ -159,7 +159,9 @@
   // eslint-disable-next-line consistent-return
   const generateFileUrl = async () => {
     try {
-      const file = storage.refFromURL('gs://thought-segmentation.appspot.com/quiz.mp3');
+      const file = storage.refFromURL(
+        'gs://thought-segmentation.appspot.com/quiz.mp3'
+      );
       const url = await file.getDownloadURL();
       return url;
     } catch (error) {

@@ -33,6 +33,10 @@
       <i class="fas fa-redo-alt" />
     </span>
   {:else}
-    <p>If if you have questions about this HIT please <a href="mailto:computational.social.affective.neuroscience.lab@dartmouth.edu">email us</a>  </p>
+    <p>
+      If if you have questions about this HIT please <a
+        href="mailto:computational.social.affective.neuroscience.lab@dartmouth.edu"
+        >email us</a>
+    </p>
   {/if}
 </div>

@@ -15,7 +15,7 @@
 
   // helper function that uses Google's transaction function to ensure that multi-user conflicts don't lead to an innacurate response count
   function incrementResponse(recordingRef) {
-    recordingRef.transaction(function(recording) {
+    recordingRef.transaction(function (recording) {
       if (recording) {
         recording.responses++;
         console.log('recording responses incremented in firebase');
@@ -31,7 +31,9 @@
   const generateFileURL = async () => {
     try {
       fileName = trialOrder[currentTrial - 1];
-      const file = storage.refFromURL(`gs://thought-segmentation.appspot.com/${fileName}`);
+      const file = storage.refFromURL(
+        `gs://thought-segmentation.appspot.com/${fileName}`
+      );
       const url = await file.getDownloadURL();
       return url;
     } catch (error) {
@@ -42,7 +44,9 @@
   // Before rendering anything see what trial we should be rendering. Because this is an async function we call immediately to dynamically show a loading screen before we get the data in the HTML below
   let filePromise = (async () => {
     try {
-      const resp = await db.ref(`participants/${params.workerId}`).once('value');
+      const resp = await db
+        .ref(`participants/${params.workerId}`)
+        .once('value');
       currentTrial = resp.val().currentTrial;
       return await generateFileURL();
     } catch (error) {
@@ -78,5 +82,10 @@
 {#await filePromise}
   <Loading>Preparing Recording...</Loading>
 {:then src}
-  <ThoughtTagger {params} {src} {currentTrial} {fileName} on:next={getNextAudioFile} />
+  <ThoughtTagger
+    {params}
+    {src}
+    {currentTrial}
+    {fileName}
+    on:next={getNextAudioFile} />
 {/await}

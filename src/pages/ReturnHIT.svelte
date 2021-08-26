@@ -11,7 +11,10 @@
         </div>
         <div class="card-content">
           <div class="content has-text-centered">
-            <p>You have chosen not to consent, and therefore can not complete this HIT.</p>
+            <p>
+              You have chosen not to consent, and therefore can not complete
+              this HIT.
+            </p>
           </div>
         </div>
       </div>

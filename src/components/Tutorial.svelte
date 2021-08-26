@@ -84,7 +84,8 @@
 <style>
   .modal-card {
     border-radius: 6px;
-    box-shadow: 3px 3px 3px rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.1);
+    box-shadow: 3px 3px 3px rgba(10, 10, 10, 0.1),
+      0 0 0 1px rgba(10, 10, 10, 0.1);
     pointer-events: auto;
   }
   .modal {
@@ -143,30 +144,40 @@
         </p>
       {:else if quizState === 'readyForExperiment'}
         <p class="card-footer-item">
-          <button class="button is-warning is-large" on:click={() => dispatch('finishedComplete')}>
+          <button
+            class="button is-warning is-large"
+            on:click={() => dispatch('finishedComplete')}>
             Skip bonus work
           </button>
         </p>
         <p class="card-footer-item">
-          <button class="button is-success is-large" on:click={() => dispatch('finishedContinue')}>
+          <button
+            class="button is-success is-large"
+            on:click={() => dispatch('finishedContinue')}>
             Do bonus work
           </button>
         </p>
       {:else if quizState === 'firstattempt'}
         <p class="card-footer-item">
-          <button class="button is-link" on:click={() => dispatch('toggleTutorial')}>
+          <button
+            class="button is-link"
+            on:click={() => dispatch('toggleTutorial')}>
             Try again
           </button>
         </p>
       {:else if quizState === 'pass'}
         <p class="card-footer-item">
-          <button class="button is-link" on:click={() => dispatch('toggleTutorial')}>
+          <button
+            class="button is-link"
+            on:click={() => dispatch('toggleTutorial')}>
             Hide Help
           </button>
         </p>
       {:else if quizState === 'fail'}
         <p class="card-footer-item">
-          <button class="button is-success is-large" on:click={() => dispatch('finishedComplete')}>
+          <button
+            class="button is-success is-large"
+            on:click={() => dispatch('finishedComplete')}>
             Submit HIT
           </button>
         </p>

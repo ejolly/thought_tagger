@@ -38,7 +38,12 @@
   let time = '';
   let timer;
   let invalidTime = false;
-  $: nextTrialActive = !(clarityRated && confidenceRated && time && !invalidTime);
+  $: nextTrialActive = !(
+    clarityRated &&
+    confidenceRated &&
+    time &&
+    !invalidTime
+  );
   $: ratingActive = segments.length === 0;
 
   const debounce = (v) => {
@@ -58,13 +63,13 @@
       container: document.getElementById('waveform-container'),
       mediaElement: document.getElementById('audio'),
       webAudio: {
-        audioContext: new AudioContext()
+        audioContext: new AudioContext(),
       },
       keyboard: false,
       pointMarkerColor: '#006eb0',
       showPlayheadTime: true,
       inMarkerColor: '#999999',
-      outMarkerColor: '#3d3d3d'
+      outMarkerColor: '#3d3d3d',
     };
     // Initialize peaks.js UI
     peaksInstance = Peaks.init(options, (err) => {
@@ -94,7 +99,7 @@
       if (evName === 'updateSegmentsCount') {
         dispatch('updateSegmentsCount', {
           numSegments: segments.length,
-          moveForward: tutorialStep === 2
+          moveForward: tutorialStep === 2,
         });
       } else if (evName === 'quizAttempt') {
         dispatch('quizAttempt', { quizAttempts, quizPassed });
@@ -115,7 +120,7 @@
       segments.forEach((obj) => {
         toSave[obj._id.replace(/\./g, '_')] = {
           startTime: obj._startTime,
-          endTime: obj._endTime
+          endTime: obj._endTime,
         };
       });
       // Create a nested dictionary of data to save with the key being the current trial number and sub-dictionaries containing the subject id of the person speaking, the character being talked about and the tagged thoughts
@@ -127,9 +132,9 @@
           confidence,
           recordingLength: time,
           thoughts: toSave,
-          submitTime: serverTime
+          submitTime: serverTime,
         },
-        currentTrial: currentTrial + 1
+        currentTrial: currentTrial + 1,
       };
       try {
         await db.ref(`participants/${params.workerId}`).update(doc);
@@ -144,14 +149,18 @@
 
   const verifyTags = () => {
     const nearestValue = (arr, val) =>
-      arr.reduce((p, n) => (Math.abs(p) > Math.abs(n - val) ? n - val : p), Infinity) + val;
+      arr.reduce(
+        (p, n) => (Math.abs(p) > Math.abs(n - val) ? n - val : p),
+        Infinity
+      ) + val;
     const check = [];
     let match;
     const correctStartTimes = quizAnswers.map((obj) => obj.startTime);
     const correctEndTimes = quizAnswers.map((obj) => obj.endTime);
     for (const [i, obj] of segments.entries()) {
       match =
-        nearestValue(correctStartTimes, obj.startTime) === correctStartTimes[i] &&
+        nearestValue(correctStartTimes, obj.startTime) ===
+          correctStartTimes[i] &&
         nearestValue(correctEndTimes, obj.endTime) === correctEndTimes[i];
       check.push(match);
     }
@@ -184,7 +193,7 @@
       startTime: peaksInstance.player.getCurrentTime(),
       endTime: peaksInstance.player.getCurrentTime() + 5,
       labelText: `Thought ${segmentPrevMax.toString()}`,
-      editable: true
+      editable: true,
     });
     // Update the variable that stores all the segments for dynamic rendering
     segments = peaksInstance.segments.getSegments();
@@ -213,7 +222,10 @@
       rowSelected = true;
     }
     // Save the segment id
-    selectedSegmentId = parseInt(row.querySelector('td.segment-id').innerText, 10);
+    selectedSegmentId = parseInt(
+      row.querySelector('td.segment-id').innerText,
+      10
+    );
     selectedSegmentId = `peaks.segment.${selectedSegmentId.toString()}`;
   }
 
@@ -263,7 +275,10 @@
 
 <div
   class="container is-fluid"
-  class:blur={hasTutorial && (tutorialStep === 0 || quizState === 'fail' || quizState === 'readyForExperiment')}>
+  class:blur={hasTutorial &&
+    (tutorialStep === 0 ||
+      quizState === 'fail' ||
+      quizState === 'readyForExperiment')}>
   <!-- Title + Waveform display row -->
   <div class="columns is-centered" id="row-title-waveform">
     <div class="column is-full has-text-centered">
@@ -279,7 +294,9 @@
       <div
         id="waveform-container"
         class:blur={hasTutorial && tutorialStep < 1}
-        class={hasTutorial && tutorialStep === 1 ? 'animated flash slow' : ''} />
+        class={hasTutorial && tutorialStep === 1
+          ? 'animated flash slow'
+          : ''} />
     </div>
   </div>
   <!-- Controls + Button row -->
@@ -294,15 +311,21 @@
                 id="audio"
                 controls="controls"
                 controlslist="nodownload"
-                class={hasTutorial && tutorialStep === 1 ? 'animated flash slow' : ''}>
+                class={hasTutorial && tutorialStep === 1
+                  ? 'animated flash slow'
+                  : ''}>
                 <source {src} type="audio/wav" />
                 Your browser does not support the audio element.
               </audio>
             </div>
             <div
-              class={hasTutorial && tutorialStep === 4 ? 'column animated shake delay-2s' : 'column'}>
+              class={hasTutorial && tutorialStep === 4
+                ? 'column animated shake delay-2s'
+                : 'column'}>
               {#if hasTutorial}
-                <span class="icon is-large" on:click={() => dispatch('toggleTutorial')}>
+                <span
+                  class="icon is-large"
+                  on:click={() => dispatch('toggleTutorial')}>
                   <i class="fas fa-question-circle fa-2x fa-fw" />
                 </span>
               {/if}
@@ -312,7 +335,9 @@
         <div class="column">
           {#if rate}
             <button
-              class={hasTutorial ? 'button is-primary is-large animated flash delay-1s' : 'button is-primary is-large'}
+              class={hasTutorial
+                ? 'button is-primary is-large animated flash delay-1s'
+                : 'button is-primary is-large'}
               on:click={finish}
               disabled={nextTrialActive}>
               Next
@@ -323,7 +348,9 @@
                 <div class="columns button-row">
                   <div class="column button-col">
                     <button
-                      class={hasTutorial && tutorialStep === 2 ? 'button is-primary is-large animated flash delay-1s' : 'button is-primary is-large'}
+                      class={hasTutorial && tutorialStep === 2
+                        ? 'button is-primary is-large animated flash delay-1s'
+                        : 'button is-primary is-large'}
                       class:blur={hasTutorial && tutorialStep < 2}
                       on:click={addSegment}>
                       Tag
@@ -339,7 +366,9 @@
                 </div>
                 <div class="columns">
                   <div class="column">
-                    <p class="is-size-7" class:is-invisible={segments.length === 0}>
+                    <p
+                      class="is-size-7"
+                      class:is-invisible={segments.length === 0}>
                       Select a row below to edit a Thought
                     </p>
                   </div>
@@ -371,23 +400,30 @@
       <div class="column is-4-desktop is-3-fullhd has-text-centered">
         <div class="field">
           <label class="label has-text-weight-normal is-size-5">
-            If the speaker did not talk for the full 2 min how long did they speak for?
+            If the speaker did not talk for the full 2 min how long did they
+            speak for?
           </label>
           <div class="control">
             <input
-              class={invalidTime ? 'input age-input is-danger' : 'input age-input'}
+              class={invalidTime
+                ? 'input age-input is-danger'
+                : 'input age-input'}
               type="text"
               bind:value={time}
               on:keyup={(ev) => debounce(ev.target.value)}
               placeholder="Please enter a timestamp like MM:SS" />
           </div>
           {#if invalidTime}
-            <p class="help is-danger">Invalid timestamp. Please use MM:SS format.</p>
+            <p class="help is-danger">
+              Invalid timestamp. Please use MM:SS format.
+            </p>
           {/if}
         </div>
       </div>
       <div class="column is-4-desktop is-3-fullhd has-text-centered">
-        <p class="has-text-centered is-size-5">How clear was the quality of the recording?</p>
+        <p class="has-text-centered is-size-5">
+          How clear was the quality of the recording?
+        </p>
         <input
           step="1"
           min="0"
@@ -405,7 +441,9 @@
         </div>
       </div>
       <div class="column is-4-desktop is-3-fullhd has-text-centered">
-        <p class="has-text-centered is-size-5">How easy was it to tag different thoughts?</p>
+        <p class="has-text-centered is-size-5">
+          How easy was it to tag different thoughts?
+        </p>
         <input
           step="1"
           min="0"
@@ -425,7 +463,9 @@
     </div>
   {:else}
     <!-- Table row only if rating now displayed -->
-    <div class="columns is-centered" class:blur={hasTutorial && tutorialStep < 2}>
+    <div
+      class="columns is-centered"
+      class:blur={hasTutorial && tutorialStep < 2}>
       <div class="column is-full has-text-centered">
         {#if segments && segments.length}
           <div class="table-container">
@@ -440,7 +480,8 @@
               <tbody>
                 {#each segments as segment, i (segment.id)}
                   <tr on:click={selectSegment} class="table-row">
-                    <td type="text" class="segment-id">{segment.id.split('.').slice(-1)[0]}</td>
+                    <td type="text" class="segment-id"
+                      >{segment.id.split('.').slice(-1)[0]}</td>
                     <td type="number">{segment.startTime.toFixed(2)}</td>
                     <td type="number">{segment.endTime.toFixed(2)}</td>
                   </tr>

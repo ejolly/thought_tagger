@@ -14,16 +14,15 @@ module.exports = {
   rules: {
     'no-var': 1,
     'no-console': 0,
-    'no-unused-vars': [1, { "args": "none" }],
+    'no-unused-vars': [1, { args: 'none' }],
     'prefer-const': 1,
     'import/prefer-default-export': 0,
     'comma-dangle': 0,
     'max-len': 0,
     'no-restricted-syntax': 0,
     'prefer-template': 1,
-    'quotes': 1,
+    quotes: 1,
     'no-trailing-spaces': 1,
-    'operator-linebreak': 1,
     'no-alert': 0,
     'no-underscore-dangle': 0,
     'import/no-extraneous-dependencies': 0,
@@ -50,4 +49,4 @@ module.exports = {
       processor: 'svelte3/svelte3'
     }
   ]
-}
+};

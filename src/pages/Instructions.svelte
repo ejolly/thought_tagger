@@ -9,7 +9,7 @@
 
     `To faciliate this task, the next screen will walk you through a guided tutorial that teaches you how to use our custom interface for <em>tagging</em> thoughts. A short comprehension quiz is provided at the end of this tutorial to check the quality of your tags. You will have <strong>2 attempts</strong> to pass this quiz.<br><br> If you fail to pass this quiz you will only be paid the base amount for accepting this HIT.<br><br> If you pass this quiz you will be eligible to earn bonus payments for each audio recording you tag at the rate of <strong>$${globalVars.bonusPerRecording} per recording.</strong>`,
 
-    'If these instructions make sense and you would like to begin, click the button below to proceed to the tutorial. Otherwise, please return this HIT.'
+    'If these instructions make sense and you would like to begin, click the button below to proceed to the tutorial. Otherwise, please return this HIT.',
   ];
 
   const dispatch = createEventDispatcher();

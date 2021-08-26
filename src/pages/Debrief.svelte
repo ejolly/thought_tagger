@@ -14,7 +14,7 @@
     'Native-American / Alaskan-Native',
     'Pacific-Islander / Native-Hawaiian',
     'White / Caucasian',
-    'Other / Unknown'
+    'Other / Unknown',
   ];
   let nativeLang = '';
   let birth = '';
@@ -31,7 +31,7 @@
         handed,
         feedback,
         HIT_complete: serverTime,
-        currentState: 'completed'
+        currentState: 'completed',
       });
       console.log('exit survey added successfully');
       window.top.postMessage('finished', '*');
@@ -63,7 +63,11 @@
         <em>All questions are optional</em>
       </p>
       <form name="mturk" action={submitURL} method="POST">
-        <input type="hidden" name="assignmentId" id="assignmentId" value={params.assignmentId} />
+        <input
+          type="hidden"
+          name="assignmentId"
+          id="assignmentId"
+          value={params.assignmentId} />
         <input type="hidden" name="dummy_input_DONT_REMOVE" value="1" />
         <div class="field is-horizontal">
           <div class="field-label is-normal">
@@ -127,11 +131,17 @@
             <div class="field is-narrow">
               <div class="control">
                 <label class="radio">
-                  <input type="radio" bind:group={ethnicity} value={'hispanic'} />
+                  <input
+                    type="radio"
+                    bind:group={ethnicity}
+                    value={'hispanic'} />
                   Hispanic
                 </label>
                 <label class="radio">
-                  <input type="radio" bind:group={ethnicity} value={'not_hispanic'} />
+                  <input
+                    type="radio"
+                    bind:group={ethnicity}
+                    value={'not_hispanic'} />
                   Not Hispanic
                 </label>
               </div>
@@ -164,7 +174,10 @@
           <div class="field-body is-narrow">
             <div class="field">
               <p class="control">
-                <input class="input lang-input" type="text" bind:value={nativeLang} />
+                <input
+                  class="input lang-input"
+                  type="text"
+                  bind:value={nativeLang} />
               </p>
             </div>
           </div>
@@ -207,7 +220,8 @@
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <button class="button is-success is-large" on:click={submitHIT}>Submit HIT</button>
+                <button class="button is-success is-large" on:click={submitHIT}
+                  >Submit HIT</button>
               </div>
             </div>
           </div>
