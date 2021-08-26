@@ -1,7 +1,11 @@
+<!--  This is the debrief page in which collect any post survey questions. There's a single button that saves reponses to firebase and then tells Mturk we're done. -->
 <script>
-  // This is the debrief page in which we should collect any post survey questions. There's a single button that should save reponses to firebase and then tell Mturk we're done.
+  // IMPORTS
+  // -------------------------------------------
   import { db, params, serverTime } from '../utils.js';
 
+  // COMPONENT VARIABLES
+  // -------------------------------------------
   let submitURL = params.turkSubmitTo + '/mturk/externalSubmit';
   let age = '';
   let feedback = '';
@@ -19,6 +23,10 @@
   let nativeLang = '';
   let birth = '';
   let handed = '';
+
+  // COMPONENT LOGIC
+  // -------------------------------------------
+  // Update completion status in firebase and submit the HIT to mturk using the recommended external HIT strategy of posting a form from within the iframe to the external window
   const submitHIT = async () => {
     try {
       await db.ref(`participants/${params.workerId}`).update({

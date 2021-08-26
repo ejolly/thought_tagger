@@ -1,16 +1,16 @@
+<!-- The Quiz component renders the Tutorial.svelte and ThoughtTagger.svelte components as children
+with properties set to ensure that user understands how to complete the task while evaluting their comprehension -->
 <script>
   import { storage } from '../utils.js';
 
-  // Import components
+  // IMPORTS
+  // -------------------------------------------
   import ThoughtTagger from '../components/ThoughtTagger.svelte';
   import Tutorial from '../components/Tutorial.svelte';
   import Loading from '../components/Loading.svelte';
 
-  // TODO: Store quizState in firebase and render if it's anything other than 'overview'
-  // TODO: Store quizAttempts in firebase and loadup prior to mounting
-  // TODO: Store quizPass/quizFail in firebase and loadup just incase they refresh while still in quiz but haven't gone to experiment yet
-  // TODO: Store continue or reject for additional work in firebase
-
+  // COMPONENT VARIABLES
+  // -------------------------------------------
   // Variables to be passed to ThoughtTagger and Modal
   const tutorial = [
     {
@@ -119,6 +119,8 @@
   const maxQuizAttempts = 2; // Maximum number of permitted quiz attempts; used to change quiz state
   let quizPassed = false; // where the quiz was passed; used to change quiz state
 
+  // COMPONENT LOGIC
+  // -------------------------------------------
   // Tutorial Component triggered functions
   const updateTutorialState = (ev) => {
     tutorialStep = ev.detail.tutorialStep;
@@ -147,6 +149,7 @@
     modalOpen = true;
     tutorialComplete = true;
   };
+
   const updateSegmentsCount = (ev) => {
     numSegments = ev.detail.numSegments;
     if (ev.detail.moveForward) {
@@ -168,6 +171,7 @@
       console.error(error);
     }
   };
+
   // eslint-disable-next-line prefer-const
   let quizAudio = generateFileUrl();
 </script>

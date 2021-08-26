@@ -1,3 +1,5 @@
+<!-- This is the return HIT component that only renders if a user doesn't consent to participation
+after accepting the HIT. -->
 <script>
 </script>
 

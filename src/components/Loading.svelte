@@ -1,5 +1,5 @@
+<!-- This component is just for displaying while we wait for firebase data -->
 <script>
-  // This component is just for displaying while we wait for firebase responses
 </script>
 
 <style>

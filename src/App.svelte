@@ -1,14 +1,9 @@
+<!-- This is the main Svelte component that will display after a user provides conset within PsiTurk. It serves two main purposes: 1) it initializes a new entry into the firebase database if a workerId from the URL is not found or retrieves an existing record if a workerId is found. Creating a new entry sets up the random trial order the participant will receive for all the recordings. 2) it uses that information to dynamically render different experiment states based upon what a user does i.e. show instructions, show quiz, show experiment, show exit survey. Each of those different states exist as their own .svelte files within the pages/ folder -->
 <script>
-  // This is the main Svelte component that will display after a user provides conset within PsiTurk. It serves two main purposes: 1) it initializes a new entry into the firebase database if a workerId from the URL is not found or retrieves an existing record if a workerId is found. Creating a new entry sets up the random trial order the participant will receive for all the recordings. 2) it uses that information to dynamically render different experiment states based upon what a user does i.e. show instructions, show quiz, show experiment, show exit survey. Each of those different states exist as their own .svelte files within the pages/ folder
+  // IMPORTS
+  // -------------------------------------------
   import { onMount } from 'svelte';
-  import {
-    db,
-    auth,
-    fisherYatesShuffle,
-    serverTime,
-    params,
-    dev,
-  } from './utils.js';
+  import { db, auth, fisherYatesShuffle, serverTime, params } from './utils.js';
   import Instructions from './pages/Instructions.svelte';
   import Quiz from './pages/Quiz.svelte';
   import Consent from './pages/Consent.svelte';
@@ -19,15 +14,32 @@
   import MturkPreview from './pages/MTurkPreview.svelte';
   import ReturnHIT from './pages/ReturnHIT.svelte';
 
+  // COMPONENT VARIABLES
+  // -------------------------------------------
   let currentState; // location of participant in app synced with firebase
-
   let trialOrder = []; // container for trials populated by firebase
+  let initExperiment = false; // whether to launch the app, stay in mturk preview mode or display a message if the live app is accessed outside of Mturk
 
-  let initExperiment = false;
+  // Check how the app was navigated to:
+  if (params.assignmentId === 'ASSIGNMENT_ID_NOT_AVAILABLE') {
+    // 1) No assignmentId so HIT is being previewed
+    currentState = 'mturk-preview';
+  } else if (
+    params.workerId &&
+    params.assignmentId !== 'ASSIGNMENT_ID_NOT_AVAILABLE' &&
+    params.hitId
+  ) {
+    // 2) WorkedId, assignmentId, and hitID so the HIT was accepted
+    initExperiment = true;
+  } else {
+    // 3) No URL params so the app was navigated to from outside of mturk
+    currentState = 'non-mturk';
+  }
 
-  // This function updates the current state of the user to dynamically render different parts of the experiment (i.e. instructions, quiz, etc)
+  // COMPONENT LOGIC
+  // -------------------------------------------
+  // Update the app state and write to firebase
   const updateState = async (newState) => {
-    // Change to the new state within Svelte
     const oldState = currentState;
     currentState = newState;
     try {
@@ -42,8 +54,9 @@
       console.error(error);
     }
   };
+
+  // Reset the firebase doc for test-worker and go back to the first app screen
   const resetTestWorker = async (newState) => {
-    // Change to the new state within Svelte
     if (params.workerId === 'test-worker') {
       currentState = 'consent';
       trialOrder = [];
@@ -66,7 +79,7 @@
           currentTrial: 1,
           trialOrder,
         });
-        console.log('reset test-worker');
+        console.log('reset test-worker in firebase');
       } catch (error) {
         console.error(error);
       }
@@ -75,21 +88,12 @@
     }
   };
 
-  if (params.assignmentId === 'ASSIGNMENT_ID_NOT_AVAILABLE') {
-    currentState = 'mturk-preview';
-  } else if (
-    params.workerId &&
-    params.assignmentId !== 'ASSIGNMENT_ID_NOT_AVAILABLE' &&
-    params.hitId
-  ) {
-    initExperiment = true;
-  } else {
-    currentState = 'non-mturk';
-  }
-
-  // Before we render anything see if we have a db entry for this subject based upon the URL parameters. If not create an entry with a new random stimulus order and put them into the instructions state. If we do, load their trial order and current experiment state
-  // TODO: move logic for MTurk ad here, by checking value of params.assignmentId
-  // TODO: Get all audio file names from database sorted by count and shuffle order of those with the same count to make sure multiple users dont do the same audio file when we first start running experiment
+  // If we're in situation 2 above (i.e. initExperiment) then handle firebase auth
+  // Check to see if there's an existing user and doc under
+  // U:workerId@experiment.com
+  // P: workerId
+  // If there is, load it up, i.e. resume from previous state
+  // Otherwise create a new entry, shuffle recordings, and send them to consent
   onMount(async () => {
     if (initExperiment) {
       try {
@@ -157,6 +161,7 @@
   });
 </script>
 
+<!-- Core state management ("client-side router") that determines what a user sees -->
 <section class="section">
   {#if !currentState}
     <Loading>Loading...</Loading>

@@ -1,10 +1,15 @@
+<!-- This is the main thought-tagging component that is used in Experiment.svelte as well as
+Quiz.svelte. It behaves differently in each case based upon input properties it receives. It makes
+use of the peaks.js waveform visualizer. -->
 <script>
-  // This is the main ThoughTagging component that gets rendered within Experiment.svelte. It takes as an "argument" a "src" value from Experiment.svelte that tells it which audo file to render
+  // IMPORTS
+  // -------------------------------------------
   import Peaks from 'peaks.js';
   import { onMount, createEventDispatcher } from 'svelte';
   import { db, serverTime } from '../utils.js';
 
-  // Input variables
+  // INPUTS FROM PARENT COMPONENT
+  // -------------------------------------------
   export let params;
   export let src;
   export let currentTrial = NaN;
@@ -14,6 +19,8 @@
   export let quizAnswers = [];
   export let quizState = '';
 
+  // COMPONENT VARIABLES
+  // -------------------------------------------
   // eslint-disable-next-line prefer-const
   let subjectId;
   let character;
@@ -46,6 +53,9 @@
   );
   $: ratingActive = segments.length === 0;
 
+  // COMPONENT LOGIC
+  // -------------------------------------------
+  // Validate the time input field with a delay of 600ms
   const debounce = (v) => {
     clearTimeout(timer);
     timer = setTimeout(() => {
@@ -147,6 +157,7 @@
     }
   };
 
+  // Check the user tags are close enough the correct tags
   const verifyTags = () => {
     const nearestValue = (arr, val) =>
       arr.reduce(
@@ -173,6 +184,7 @@
     console.log(`Quiz attempts: ${quizAttempts}`);
   };
 
+  // Let the user submit their thought tags
   const submitTags = () => {
     if (!segments || (segments && segments.length <= 2)) {
       alert('Please tag a few more thoughts');
@@ -187,7 +199,6 @@
   };
 
   // Store a new segment on button click
-  // TODO: move playback head to segment endTime ensuring next segment doesn't have overlapping start and end times
   function addSegment() {
     peaksInstance.segments.add({
       startTime: peaksInstance.player.getCurrentTime(),

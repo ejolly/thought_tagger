@@ -1,9 +1,13 @@
+<!-- This is a Tutorial component that appears like floating modal. It's rendered within Quiz.svelte
+and workers in conjunction with ThoughtTagger.svelte  -->
 <script>
-  // This is the main ThoughTagging component that gets rendered within Experiment.svelte. It takes as an "argument" a "src" value from Experiment.svelte that tells it which audo file to render
+  // IMPORTS
+  // -------------------------------------------
   import { createEventDispatcher } from 'svelte';
   import { db, serverTime } from '../utils.js';
 
-  // Input variables
+  // INPUTS FROM PARENT COMPONENT
+  // -------------------------------------------
   export let modalOpen;
   export let tutorial;
   export let tutorialStep = 0;
@@ -12,6 +16,8 @@
   export let numSegments;
   export let quizState;
 
+  // COMPONENT VARIABLES
+  // -------------------------------------------
   let modalTitle;
   let modalContent;
   let q;
@@ -40,21 +46,27 @@
 
   const dispatch = createEventDispatcher();
 
+  // COMPONENT LOGIC
+  // -------------------------------------------
+  // Move backwards through the tutorial pages
   const backward = () => {
     tutorialStep -= 1;
     tutorialStep = Math.max(tutorialStep, 0);
     dispatch('stateChange', { tutorialStep });
   };
 
+  // Move forwards through the tutorial pages
   const forward = () => {
     tutorialStep = Math.min(tutorialStep + 1, tutorial.length - 1);
     dispatch('stateChange', { tutorialStep });
   };
 
+  // Utility function for better screen position of the tutorial modal
   const setTranslate = (xPos, yPos, el) => {
     el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
   };
 
+  // Utility function for dragging the tutorial modal
   const dragStart = (ev) => {
     if (ev.target.parentElement.closest('.modal')) {
       modalXInitial = ev.clientX - modalXOffset;
@@ -63,6 +75,7 @@
     }
   };
 
+  // Utility function for dragging the tutorial modal
   const drag = (ev) => {
     if (dragActive) {
       modalXCurrent = ev.clientX - modalXInitial;
@@ -74,6 +87,7 @@
     }
   };
 
+  // Utility function for dragging the tutorial modal
   const dragEnd = (ev) => {
     modalXInitial = modalXCurrent;
     modalYInitial = modalYCurrent;

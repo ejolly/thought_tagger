@@ -1,9 +1,13 @@
+<!-- This is the Instructions page. It loops over the instructions array and finally notifies the main App.svelte component by dispatching a 'finished' event on the last instruction element. When the last page of the instructions are reached the forward button turns into a "Take Quiz" button, but currently there is no quiz and it goes straight to the experiment. -->
 <script>
-  // This is the Instructions page. It loops over the instructions array as a user reads and when click to the last page it notifies the main App.svelte component by dispatching a 'finished' event. When the last page of the instructions are reached the forward button turns into a "Take Quiz" button, but currently there is no quiz and it goes straight to the experiment
+  // IMPORTS
+  // -------------------------------------------
   import { createEventDispatcher } from 'svelte';
   import { globalVars } from '../utils.js';
 
-  // Add/remove items here to create more instructions pages
+  // COMPONENT VARIABLES
+  // -------------------------------------------
+  // This array determines the number of instruction screens
   const instructions = [
     "In this task, you will listen to a series of audio recordings (~2 min) in which you will hear people describing characters from a television drama. The goal of this task is to divide the audio into separate speech segments or <strong>thoughts.</strong><br><br>In written text, separate <em>sentences</em> are a straightforward way to group together complete idea. However, in verbal speech complete <strong>thoughts</strong> often span multiple sentences. Your goal is to try to identify the boundaries of these natural divisions within each audio recording.<br/><br/>While listening, pay close attention to where there are natural breaks in the person's speech, demarcating a separate thought.",
 
@@ -12,13 +16,18 @@
     'If these instructions make sense and you would like to begin, click the button below to proceed to the tutorial. Otherwise, please return this HIT.',
   ];
 
-  const dispatch = createEventDispatcher();
-  let currentPage = 0;
+  const finalButtonText = 'Go To Tutorial'; // button text on the last instruction page
+  const dispatch = createEventDispatcher(); // to notify App.svelte
+  let currentPage = 0; // page tracker
 
+  // COMPONENT LOGIC
+  // -------------------------------------------
+  // Move back a page
   const backward = () => {
     currentPage -= 1;
     currentPage = Math.max(currentPage, 0);
   };
+  // Move forward a page
   const forward = () => {
     // Check if we're increasing the value of currentPage beyond the number of instructions, if so tell App.svelte we're ready to move to the quiz
     if (currentPage + 1 === instructions.length) {

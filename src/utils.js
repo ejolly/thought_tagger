@@ -3,7 +3,6 @@ import firebase from 'firebase/app';
 import 'firebase/database';
 import 'firebase/storage';
 import 'firebase/auth';
-import { writable } from 'svelte/store';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBSDQTQrnklilGdmyZcEXMGhIwg0dFpNlY',
@@ -36,10 +35,6 @@ export const makeRecordingDict = async () => {
   return recordingDict;
 };
 
-// dev is referenced as a store elsewhere in the code, so cannot be a simple Boolean
-// eslint-disable-next-line no-undef
-export const dev = DEV_MODE ? writable(true) : writable(false);
-
 // Functions to parse the URL to get workerID, hitID, and assignmentID
 const unescapeURL = (s) => decodeURIComponent(s.replace(/\+/g, '%20'));
 export const getURLParams = () => {
@@ -63,8 +58,8 @@ export const getURLParams = () => {
       params.assignmentId = 'test-assignment';
       params.hitId = 'test-hit';
     }
+    console.log(`URL Params:\n ${JSON.stringify(params)}`);
   }
-  console.log(params);
   return params;
 };
 
@@ -86,7 +81,8 @@ export const fisherYatesShuffle = (array) => {
   }
 };
 
+// Global constant variables also useable throughout the app
 export const globalVars = {
-  bonusPerRecording: 0.5,
+  bonusPerRecording: 0.50,
   basePayment: 1.0
 };
