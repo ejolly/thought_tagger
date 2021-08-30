@@ -55,9 +55,10 @@ also makes use of the Loading component-->
   let filePromise = (async () => {
     try {
       const resp = await db
-        .ref(`participants/${params.workerId}`)
-        .once('value');
-      currentTrial = resp.val().currentTrial;
+        .collection('participants')
+        .doc(params.workerId)
+        .get();
+      currentTrial = resp.data().currentTrial;
       return await generateFileURL();
     } catch (error) {
       return console.error(error);
@@ -68,12 +69,14 @@ also makes use of the Loading component-->
   // RIGHT NOW THIS FUNCTION RUNS SUCCESSFULLY BUT ASYNC IS SOMEHOW OFF (ASK ESHIN)
   const getNextAudioFile = async () => {
     let trialDict = await makeRecordingDict(); // async from utils
-    let currentTrialNumber = trialDict[fileName]; // gets firebase number
+    let currentTrialFileId = trialDict[fileName]; // gets firebase number
     console.log('name: ', fileName);
-    console.log('number: ', currentTrialNumber);
+    console.log('id: ', currentTrialFileId);
 
     try {
-      const recordingRef = await db.ref(`recordings/${currentTrialNumber}`); // get reference for desired recording
+      const recordingRef = await db
+        .collection('recordings')
+        .doc(currentTrialFileId); // get reference for desired recording
       let transactionRes = incrementResponse(recordingRef);
       console.log(transactionRes);
     } catch (error) {

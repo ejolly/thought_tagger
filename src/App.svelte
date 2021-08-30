@@ -3,7 +3,14 @@
   // IMPORTS
   // -------------------------------------------
   import { onMount } from 'svelte';
-  import { db, auth, fisherYatesShuffle, serverTime, params } from './utils.js';
+  import {
+    db,
+    auth,
+    fisherYatesShuffle,
+    serverTime,
+    params,
+    initUser,
+  } from './utils.js';
   import Instructions from './pages/Instructions.svelte';
   import Quiz from './pages/Quiz.svelte';
   import Consent from './pages/Consent.svelte';
@@ -38,7 +45,7 @@
 
   // COMPONENT LOGIC
   // -------------------------------------------
-  // Update the app state and write to firebase
+  // Update the user state and write to firebase
   const updateState = async (newState) => {
     const oldState = currentState;
     currentState = newState;
@@ -48,7 +55,7 @@
       };
       doc[`${oldState}_end`] = serverTime;
       doc[`${currentState}_start`] = serverTime;
-      await db.ref(`participants/${params.workerId}`).update(doc);
+      await db.collection('participants').doc(params.workerId).update(doc);
       console.log('updated user state');
     } catch (error) {
       console.error(error);
@@ -58,33 +65,10 @@
   // Reset the firebase doc for test-worker and go back to the first app screen
   const resetTestWorker = async (newState) => {
     if (params.workerId === 'test-worker') {
-      currentState = 'consent';
-      trialOrder = [];
-      try {
-        const query = await db
-          .ref('recordings')
-          .orderByChild('responses')
-          .limitToFirst(10)
-          .once('value');
-        query.forEach((doc) => {
-          trialOrder.push(doc.val().name);
-        });
-        fisherYatesShuffle(trialOrder);
-        await db.ref(`participants/${params.workerId}`).set({
-          workerId: params.workerId,
-          assignmentId: params.assignmentId,
-          hitId: params.hitId,
-          consent_start: serverTime,
-          currentState: 'consent',
-          currentTrial: 1,
-          trialOrder,
-        });
-        console.log('reset test-worker in firebase');
-      } catch (error) {
-        console.error(error);
-      }
+      ({ trialOrder, currentState } = await initUser());
+      console.log(`Reset test-worker. New state is ${currentState}`);
     } else {
-      console.log(`Reset user requested but workerId is ${params.workerId}`);
+      console.log('Reset user requested but app is not in dev mode');
     }
   };
 
@@ -119,34 +103,19 @@
           } else {
             console.log('user already authenticated...');
             try {
-              const resp = await db
-                .ref(`participants/${params.workerId}`)
-                .once('value');
-              if (resp.val() !== null) {
-                const data = resp.val();
+              const userDocRef = await db
+                .collection('participants')
+                .doc(params.workerId)
+                .get();
+              // Resume existing user session
+              if (userDocRef.exists) {
+                console.log('previous document found...loading state...');
+                const data = userDocRef.data();
                 currentState = data.currentState;
                 trialOrder = data.trialOrder;
-                console.log('previous document found...loading state...');
               } else {
-                const query = await db
-                  .ref('recordings')
-                  .orderByChild('responses')
-                  .limitToFirst(10)
-                  .once('value');
-                query.forEach((doc) => {
-                  trialOrder.push(doc.val().name);
-                });
-                fisherYatesShuffle(trialOrder);
-                await db.ref(`participants/${params.workerId}`).set({
-                  workerId: params.workerId,
-                  assignmentId: params.assignmentId,
-                  hitId: params.hitId,
-                  consent_start: serverTime,
-                  currentState: 'consent',
-                  currentTrial: 1,
-                  trialOrder,
-                });
-                currentState = 'consent';
+                // Create new user session
+                ({ trialOrder, currentState } = await initUser());
                 console.log('no previous document found...creating new...');
               }
             } catch (error) {

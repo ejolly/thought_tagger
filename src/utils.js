@@ -1,6 +1,6 @@
 // Initialize firebase
 import firebase from 'firebase/app';
-import 'firebase/database';
+import 'firebase/firestore';
 import 'firebase/storage';
 import 'firebase/auth';
 
@@ -11,16 +11,16 @@ const firebaseConfig = {
   projectId: 'thought-segmentation',
   storageBucket: 'thought-segmentation.appspot.com',
   messagingSenderId: '456731753647',
-  appId: '1:456731753647:web:079b4e850e4c03f2e1a85a'
+  appId: '1:456731753647:web:079b4e850e4c03f2e1a85a',
 };
 
 firebase.initializeApp(firebaseConfig);
 
 // Export firebase globals for use elsewhere in the app
-export const db = firebase.database();
+export const db = firebase.firestore();
 export const storage = firebase.storage();
 export const auth = firebase.auth();
-export const serverTime = firebase.database.ServerValue.TIMESTAMP;
+export const serverTime = firebase.firestore.FieldValue.serverTimestamp();
 
 // Creates dictionary to allow for number referencing of recordings
 export const makeRecordingDict = async () => {
@@ -81,8 +81,36 @@ export const fisherYatesShuffle = (array) => {
   }
 };
 
+// Setup a fresh user account or reset an existing one
+export const initUser = async () => {
+  const trialOrder = [];
+  try {
+    const query = await db
+      .collection('recordings')
+      .orderBy('responses')
+      .limit(10)
+      .get();
+    query.forEach((doc) => {
+      trialOrder.push(doc.data().name);
+    });
+    fisherYatesShuffle(trialOrder);
+    await db.collection('participants').doc(params.workerId).set({
+      workerId: params.workerId,
+      assignmentId: params.assignmentId,
+      hitId: params.hitId,
+      consent_start: serverTime,
+      currentState: 'consent',
+      currentTrial: 1,
+      trialOrder,
+    });
+  } catch (error) {
+    console.error(error);
+  }
+  return { trialOrder, currentState: 'consent' };
+};
+
 // Global constant variables also useable throughout the app
 export const globalVars = {
-  bonusPerRecording: 0.50,
-  basePayment: 1.0
+  bonusPerRecording: 0.5,
+  basePayment: 1.0,
 };

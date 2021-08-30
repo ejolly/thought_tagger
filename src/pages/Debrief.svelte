@@ -29,7 +29,7 @@
   // Update completion status in firebase and submit the HIT to mturk using the recommended external HIT strategy of posting a form from within the iframe to the external window
   const submitHIT = async () => {
     try {
-      await db.ref(`participants/${params.workerId}`).update({
+      await db.collection('participants').doc(params.workerId).update({
         age,
         sex,
         ethnicity,

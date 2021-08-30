@@ -147,7 +147,7 @@ use of the peaks.js waveform visualizer. -->
         currentTrial: currentTrial + 1,
       };
       try {
-        await db.ref(`participants/${params.workerId}`).update(doc);
+        await db.collection('participants').doc(params.workerId).update(doc);
         console.log('document added successfully');
         peaksInstance.destroy();
         dispatch('next');
