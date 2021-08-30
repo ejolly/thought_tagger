@@ -2,7 +2,7 @@
 <script>
   // IMPORTS
   // -------------------------------------------
-  import { db, params, serverTime } from '../utils.js';
+  import { db, params, serverTime, userStore, updateUser } from '../utils.js';
 
   // COMPONENT VARIABLES
   // -------------------------------------------
@@ -28,25 +28,20 @@
   // -------------------------------------------
   // Update completion status in firebase and submit the HIT to mturk using the recommended external HIT strategy of posting a form from within the iframe to the external window
   const submitHIT = async () => {
-    try {
-      await db.collection('participants').doc(params.workerId).update({
-        age,
-        sex,
-        ethnicity,
-        race,
-        nativeLang,
-        birth,
-        handed,
-        feedback,
-        HIT_complete: serverTime,
-        currentState: 'completed',
-      });
-      console.log('exit survey added successfully');
-      window.top.postMessage('finished', '*');
-      console.log('back to MTurk!');
-    } catch (error) {
-      console.error(error);
-    }
+    $userStore.age = age;
+    $userStore.sex = sex;
+    $userStore.ethnicity = ethnicity;
+    $userStore.race = race;
+    $userStore.nativeLang = nativeLang;
+    $userStore.birth = birth;
+    $userStore.handed = handed;
+    $userStore.feedback = feedback;
+    $userStore.HIT_complete = serverTime;
+    $userStore.currentState = 'completed';
+    await updateUser($userStore);
+    console.log('exit survey added successfully');
+    window.top.postMessage('finished', '*');
+    console.log('back to MTurk!');
   };
 </script>
 

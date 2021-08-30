@@ -6,18 +6,15 @@ use of the peaks.js waveform visualizer. -->
   // -------------------------------------------
   import Peaks from 'peaks.js';
   import { onMount, createEventDispatcher } from 'svelte';
-  import { db, serverTime } from '../utils.js';
+  import { db, serverTime, userStore, updateUser } from '../utils.js';
 
   // INPUTS FROM PARENT COMPONENT
   // -------------------------------------------
-  export let params;
   export let src;
-  export let currentTrial = NaN;
   export let fileName = '';
   export let tutorialStep = -1;
   export let hasTutorial = false;
   export let quizAnswers = [];
-  export let quizState = '';
 
   // COMPONENT VARIABLES
   // -------------------------------------------
@@ -28,8 +25,6 @@ use of the peaks.js waveform visualizer. -->
     [subjectId, character] = fileName.split('_');
     [character] = character.split('_');
   }
-  let quizAttempts = 0;
-  let quizPassed = false;
   let peaksInstance;
   let segments = [];
   let selectedSegmentId;
@@ -112,7 +107,7 @@ use of the peaks.js waveform visualizer. -->
           moveForward: tutorialStep === 2,
         });
       } else if (evName === 'quizAttempt') {
-        dispatch('quizAttempt', { quizAttempts, quizPassed });
+        dispatch('quizAttempt');
       } else if (evName === 'finished') {
         dispatch('readyForExperiment');
       }
@@ -133,32 +128,25 @@ use of the peaks.js waveform visualizer. -->
           endTime: obj._endTime,
         };
       });
-      // Create a nested dictionary of data to save with the key being the current trial number and sub-dictionaries containing the subject id of the person speaking, the character being talked about and the tagged thoughts
-      const doc = {
-        [`trial_${currentTrial}`]: {
-          subject: subjectId,
-          character: character.slice(0, character.length - 4),
-          clarity,
-          confidence,
-          recordingLength: time,
-          thoughts: toSave,
-          submitTime: serverTime,
-        },
-        currentTrial: currentTrial + 1,
+      // Create a dictionary of data to save with the key being the current trial number and sub-dictionaries containing the subject id of the person speaking, the character being talked about and the tagged thoughts
+      $userStore[`trial_${$userStore.currentTrial}`] = {
+        subject: subjectId,
+        character: character.slice(0, character.length - 4),
+        clarity,
+        confidence,
+        recordingLength: time,
+        thoughts: toSave,
+        submitTime: serverTime,
       };
-      try {
-        await db.collection('participants').doc(params.workerId).update(doc);
-        console.log('document added successfully');
-        peaksInstance.destroy();
-        dispatch('next');
-      } catch (error) {
-        console.error(error);
-      }
+      $userStore.currentTrial += 1;
+      await updateUser($userStore);
+      peaksInstance.destroy();
+      dispatch('next');
     }
   };
 
   // Check the user tags are close enough the correct tags
-  const verifyTags = () => {
+  const verifyTags = async () => {
     const nearestValue = (arr, val) =>
       arr.reduce(
         (p, n) => (Math.abs(p) > Math.abs(n - val) ? n - val : p),
@@ -176,23 +164,22 @@ use of the peaks.js waveform visualizer. -->
       check.push(match);
     }
     const allCorrect = check.every((e) => e);
-    quizAttempts += 1;
+    $userStore.quizAttempts += 1;
     if (allCorrect) {
-      quizPassed = true;
+      $userStore.quizPassed = true;
     }
-    console.log(`Quiz passed: ${quizPassed}`);
-    console.log(`Quiz attempts: ${quizAttempts}`);
+    await updateUser($userStore);
   };
 
   // Let the user submit their thought tags
-  const submitTags = () => {
+  const submitTags = async () => {
     if (!segments || (segments && segments.length <= 2)) {
       alert('Please tag a few more thoughts');
     } else if (hasTutorial) {
       // check tutorial thoughts
-      verifyTags();
+      await verifyTags();
       communicateData('quizAttempt');
-      rate = quizPassed;
+      rate = $userStore.quizPassed;
     } else {
       rate = !rate;
     }
@@ -288,15 +275,15 @@ use of the peaks.js waveform visualizer. -->
   class="container is-fluid"
   class:blur={hasTutorial &&
     (tutorialStep === 0 ||
-      quizState === 'fail' ||
-      quizState === 'readyForExperiment')}>
+      $userStore.quizState === 'fail' ||
+      $userStore.quizState === 'readyForExperiment')}>
   <!-- Title + Waveform display row -->
   <div class="columns is-centered" id="row-title-waveform">
     <div class="column is-full has-text-centered">
       {#if hasTutorial}
         <h1 class="title">Example Recording</h1>
       {:else}
-        <h1 class="title">Recording #{currentTrial}</h1>
+        <h1 class="title">Recording #{$userStore.currentTrial}</h1>
       {/if}
       {#if peaksLoading}
         <h3 class="title is-3">Loading audio...</h3>

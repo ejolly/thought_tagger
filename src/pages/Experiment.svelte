@@ -6,18 +6,18 @@ also makes use of the Loading component-->
   // IMPORTS
   // -------------------------------------------
   import { createEventDispatcher } from 'svelte';
-  import { db, params, storage, makeRecordingDict } from '../utils.js';
+  import {
+    db,
+    params,
+    storage,
+    makeRecordingDict,
+    userStore,
+  } from '../utils.js';
   import ThoughtTagger from '../components/ThoughtTagger.svelte';
   import Loading from '../components/Loading.svelte';
 
-  // INPUTS FROM PARENT COMPONENT
-  // -------------------------------------------
-  // Get trialOrder from App.svelte, which pulls it from firebase
-  export let trialOrder;
-
   // COMPONENT VARIABLES
   // -------------------------------------------
-  let currentTrial;
   let fileName;
   const dispatch = createEventDispatcher();
 
@@ -40,7 +40,7 @@ also makes use of the Loading component-->
   // eslint-disable-next-line consistent-return
   const generateFileURL = async () => {
     try {
-      fileName = trialOrder[currentTrial - 1];
+      fileName = $userStore.trialOrder[$userStore.currentTrial - 1];
       const file = storage.refFromURL(
         `gs://thought-segmentation.appspot.com/${fileName}`
       );
@@ -54,11 +54,6 @@ also makes use of the Loading component-->
   // Before rendering anything see what trial we should be rendering. Because this is an async function we call immediately to dynamically show a loading screen before we get the data in the HTML below
   let filePromise = (async () => {
     try {
-      const resp = await db
-        .collection('participants')
-        .doc(params.workerId)
-        .get();
-      currentTrial = resp.data().currentTrial;
       return await generateFileURL();
     } catch (error) {
       return console.error(error);
@@ -82,10 +77,11 @@ also makes use of the Loading component-->
     } catch (error) {
       return console.error(error);
     }
-    if (currentTrial === trialOrder.length) {
+    if ($userStore.currentTrial === $userStore.trialOrder.length) {
       dispatch('finished');
     } else {
-      currentTrial += 1;
+      $userStore.currentTrial += 1;
+      updateUser($userStore);
       filePromise = generateFileURL();
     }
   };
@@ -94,10 +90,5 @@ also makes use of the Loading component-->
 {#await filePromise}
   <Loading>Preparing Recording...</Loading>
 {:then src}
-  <ThoughtTagger
-    {params}
-    {src}
-    {currentTrial}
-    {fileName}
-    on:next={getNextAudioFile} />
+  <ThoughtTagger {params} {src} {fileName} on:next={getNextAudioFile} />
 {/await}

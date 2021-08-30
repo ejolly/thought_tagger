@@ -1,7 +1,8 @@
 <!-- The Quiz component renders the Tutorial.svelte and ThoughtTagger.svelte components as children
 with properties set to ensure that user understands how to complete the task while evaluting their comprehension -->
 <script>
-  import { storage } from '../utils.js';
+  import { storage, db, globalVars, userStore, updateUser } from '../utils.js';
+  import { onMount } from 'svelte';
 
   // IMPORTS
   // -------------------------------------------
@@ -28,7 +29,7 @@ with properties set to ensure that user understands how to complete the task whi
     {
       title: 'Controls',
       content:
-        '<p>Next to the audio controls you will also find buttons to tag a new thought and submit your responses when you are finished tagging thoughts in this audio file. Below this you will see a section that lists your currently tagged thoughts. As you can see currently no thoughts have been tagged so nothing is visible.</p><br/><p><strong>Try clicking the Tag thought button now.</strong></p>',
+        '<p>Next to the audio controls you will also find buttons to tag a new thought and submit your responses when you are finished tagging thoughts in this audio file. Below this you will see a section that lists your currently tagged thoughts. As you can see currently no thoughts have been tagged so nothing is visible.</p><br/><p>Try clicking the <strong>Tag</strong> button now.</p>',
       state: 'controls',
     },
     {
@@ -110,14 +111,9 @@ with properties set to ensure that user understands how to complete the task whi
   ];
   let modalOpen = true; // always start with open tutorial
   let numSegments = 0; // keep track of the number of tagged thoughts
-  let quizState = 'overview'; // quiz always starts in the overview state
   const hasTutorial = true; // tell ThoughtTagger there is a tutorial it needs to communicate with
   let tutorialComplete = false; // tell Tutorial where to hide progress buttons based on tutorial state; this changes when a quiz is first attempted
   let tutorialStep = 0; // stage of tutorial
-
-  let quizAttempts = 0; // Number of quiz attempts so far
-  const maxQuizAttempts = 2; // Maximum number of permitted quiz attempts; used to change quiz state
-  let quizPassed = false; // where the quiz was passed; used to change quiz state
 
   // COMPONENT LOGIC
   // -------------------------------------------
@@ -127,25 +123,25 @@ with properties set to ensure that user understands how to complete the task whi
   };
 
   // new function to ensure modal pops open if help is closed upon success
-  const quizSuccess = () => {
-    quizState = 'readyForExperiment';
+  const quizSuccess = async () => {
+    $userStore.quizState = 'readyForExperiment';
+    await updateUser($userStore);
     modalOpen = true;
     tutorialComplete = true;
   };
 
   // ThoughtTagger Component triggered functions
-  const quizAttempt = (ev) => {
-    quizAttempts = ev.detail.quizAttempts;
-    quizPassed = ev.detail.quizPassed;
-    if (!quizPassed) {
-      if (quizAttempts === maxQuizAttempts) {
-        quizState = 'fail';
+  const quizAttempt = async () => {
+    if (!$userStore.quizPassed) {
+      if ($userStore.quizAttempts === globalVars.maxQuizAttempts) {
+        $userStore.quizState = 'fail';
       } else {
-        quizState = 'firstattempt';
+        $userStore.quizState = 'firstattempt';
       }
     } else {
-      quizState = 'pass';
+      $userStore.quizState = 'pass';
     }
+    await updateUser($userStore);
     modalOpen = true;
     tutorialComplete = true;
   };
@@ -186,7 +182,6 @@ with properties set to ensure that user understands how to complete the task whi
     {tutorialComplete}
     {quiz}
     {numSegments}
-    {quizState}
     on:stateChange={updateTutorialState}
     on:toggleTutorial={() => (modalOpen = !modalOpen)}
     on:finishedComplete
@@ -196,7 +191,6 @@ with properties set to ensure that user understands how to complete the task whi
     {hasTutorial}
     {tutorialStep}
     {quizAnswers}
-    {quizState}
     on:updateSegmentsCount={updateSegmentsCount}
     on:quizAttempt={quizAttempt}
     on:toggleTutorial={() => (modalOpen = !modalOpen)}

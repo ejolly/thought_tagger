@@ -3,6 +3,15 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/storage';
 import 'firebase/auth';
+import { writable } from 'svelte/store';
+
+// GLOBAL EXPERIMENT VARIABLES
+export const globalVars = {
+  bonusPerRecording: 0.5,
+  basePayment: 1.0,
+  maxQuizAttempts: 2,
+  numRecordings: 10,
+};
 
 const firebaseConfig = {
   apiKey: 'AIzaSyBSDQTQrnklilGdmyZcEXMGhIwg0dFpNlY',
@@ -81,36 +90,47 @@ export const fisherYatesShuffle = (array) => {
   }
 };
 
+// USER DATA MANAGEMENT
+// Initialize store to share user state across the app
+export const userStore = writable({});
+// Async update user firestore doc given a store as input
+export const updateUser = async (userDoc) => {
+  try {
+    await db.collection('participants').doc(params.workerId).update(userDoc);
+    console.log('user doc successfully updated');
+  } catch (err) {
+    console.error('Error updating user document in firestore');
+  }
+};
 // Setup a fresh user account or reset an existing one
 export const initUser = async () => {
+  // Get N random recordings based upon the least frequently tagged ones thus far
   const trialOrder = [];
   try {
     const query = await db
       .collection('recordings')
       .orderBy('responses')
-      .limit(10)
+      .limit(globalVars.numRecordings)
       .get();
     query.forEach((doc) => {
       trialOrder.push(doc.data().name);
     });
     fisherYatesShuffle(trialOrder);
+
+    // Create the user doc
     await db.collection('participants').doc(params.workerId).set({
       workerId: params.workerId,
       assignmentId: params.assignmentId,
       hitId: params.hitId,
       consent_start: serverTime,
       currentState: 'consent',
+      quizState: 'overview',
       currentTrial: 1,
+      quizAttempts: 0,
+      quizPassed: false,
       trialOrder,
     });
   } catch (error) {
     console.error(error);
   }
-  return { trialOrder, currentState: 'consent' };
-};
-
-// Global constant variables also useable throughout the app
-export const globalVars = {
-  bonusPerRecording: 0.5,
-  basePayment: 1.0,
 };

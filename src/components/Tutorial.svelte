@@ -4,7 +4,7 @@ and workers in conjunction with ThoughtTagger.svelte  -->
   // IMPORTS
   // -------------------------------------------
   import { createEventDispatcher } from 'svelte';
-  import { db, serverTime } from '../utils.js';
+  import { db, serverTime, userStore } from '../utils.js';
 
   // INPUTS FROM PARENT COMPONENT
   // -------------------------------------------
@@ -14,7 +14,6 @@ and workers in conjunction with ThoughtTagger.svelte  -->
   export let tutorialComplete;
   export let quiz;
   export let numSegments;
-  export let quizState;
 
   // COMPONENT VARIABLES
   // -------------------------------------------
@@ -27,7 +26,7 @@ and workers in conjunction with ThoughtTagger.svelte  -->
     modalTitle = tutorial[tutorialStep].title;
     modalContent = tutorial[tutorialStep].content;
   } else {
-    [q] = quiz.filter((obj) => obj.state === quizState);
+    [q] = quiz.filter((obj) => obj.state === $userStore.quizState);
     modalTitle = q.title;
     modalContent = q.content;
   }
@@ -40,7 +39,7 @@ and workers in conjunction with ThoughtTagger.svelte  -->
   let modalYOffset = 0;
   let dragActive = false;
   $: down = tutorialStep === 1;
-  $: up = tutorialStep === 2 || quizState === 'pass';
+  $: up = tutorialStep === 2 || $userStore.quizState === 'pass';
   $: right = tutorialStep === 3 || tutorialStep === 1;
   $: upp = tutorialStep === 3;
 
@@ -156,7 +155,7 @@ and workers in conjunction with ThoughtTagger.svelte  -->
             </button>
           {/if}
         </p>
-      {:else if quizState === 'readyForExperiment'}
+      {:else if $userStore.quizState === 'readyForExperiment'}
         <p class="card-footer-item">
           <button
             class="button is-warning is-large"
@@ -171,7 +170,7 @@ and workers in conjunction with ThoughtTagger.svelte  -->
             Do bonus work
           </button>
         </p>
-      {:else if quizState === 'firstattempt'}
+      {:else if $userStore.quizState === 'firstattempt'}
         <p class="card-footer-item">
           <button
             class="button is-link"
@@ -179,7 +178,7 @@ and workers in conjunction with ThoughtTagger.svelte  -->
             Try again
           </button>
         </p>
-      {:else if quizState === 'pass'}
+      {:else if $userStore.quizState === 'pass'}
         <p class="card-footer-item">
           <button
             class="button is-link"
@@ -187,12 +186,12 @@ and workers in conjunction with ThoughtTagger.svelte  -->
             Hide Help
           </button>
         </p>
-      {:else if quizState === 'fail'}
+      {:else if $userStore.quizState === 'fail'}
         <p class="card-footer-item">
           <button
             class="button is-success is-large"
             on:click={() => dispatch('finishedComplete')}>
-            Submit HIT
+            Finish
           </button>
         </p>
       {/if}

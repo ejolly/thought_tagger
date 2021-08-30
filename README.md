@@ -34,6 +34,7 @@ Only situation 3) above will proceed through the rest of the app which is *state
 
 For example, after accepting a HIT the user will be in the `consent` state and `App.svelte` will see this and render the `Consent.svelte` component. From within this component a user can choose to consent or not which will emit a `consent` or `reject` event back to `App.svelte`. `App.svelte` will then update the state to `instructions` or `noConsent` and as a result render `Instructions.svelte` or `ReturnHIT.svelte` respectively. 
 
-## Data management
+## Data and state management
+State management as well as experiment progress is handled by a Svelte store `userStore` defined in `utils.js`. The general pattern employed throughout the app is *subscribing* to the most up-to-date version of the `userStore` in firebase from within `App.svelte`, and then updating the store and writing back to firestore in the various pages and components via the `updateUser` function defined in `utils.js`. This ensure that pages and components are guaranteed to have the "freshest" user data  as long as they read from `$userStore.someField`, regardless of what page or component last updated that data. 
 
-All data is synced in real-time using Firebase. The initialization of the database occurs when the app first boots up in `utils.js`. This initialization is then used within `App.svelte` as well as other child components. 
+The initial subscription to the user data is setup in `App.svelte` when the app first boots up, additionally ensuring that refreshing (or closing an reopening) the app will always resume from the last state a user was in.
