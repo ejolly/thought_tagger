@@ -227,6 +227,15 @@ use of the peaks.js waveform visualizer. -->
     selectedSegmentId = `peaks.segment.${selectedSegmentId.toString()}`;
   }
 
+  // Clear any row selection by clicking within the containing div
+  function deselectRows() {
+    const rows = document.getElementsByClassName('table-row');
+    for (const r of rows) {
+      r.className = 'table-row';
+    }
+    rowSelected = false;
+  }
+
   // Play a selected segment on button click
   function playSegment() {
     const segment = peaksInstance.segments.getSegment(selectedSegmentId);
@@ -251,6 +260,10 @@ use of the peaks.js waveform visualizer. -->
   .table {
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .table-container {
+    min-height: 50vh;
   }
 
   .loading-button {
@@ -397,6 +410,7 @@ use of the peaks.js waveform visualizer. -->
     <div class="columns is-centered">
       <div class="column is-4-desktop is-3-fullhd has-text-centered">
         <div class="field">
+          <!-- svelte-ignore a11y-label-has-associated-control -->
           <label class="label has-text-weight-normal is-size-5">
             If the speaker did not talk for the full 2 min how long did they
             speak for?
@@ -466,7 +480,7 @@ use of the peaks.js waveform visualizer. -->
       class:blur={hasTutorial && tutorialStep < 2}>
       <div class="column is-full has-text-centered">
         {#if segments && segments.length}
-          <div class="table-container">
+          <div class="table-container" on:click|self={deselectRows}>
             <table class="table is-hoverable">
               <thead>
                 <tr>
