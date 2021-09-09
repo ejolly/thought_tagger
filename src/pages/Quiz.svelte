@@ -17,13 +17,13 @@ with properties set to ensure that user understands how to complete the task whi
     {
       title: 'Overview',
       content:
-        '<p>This brief tutorial will introduce you to the interface you will use to complete the task.</p><p><em>Feel free to drag and reposition this popup as you progress through each step of the tutorial.</em></p>',
+        '<p>This brief tutorial will introduce you to the interface you will use to complete the task.</p><br/><p><em>Feel free to drag and reposition this popup as you progress through each step of the tutorial.</em></p>',
       state: 'overview',
     },
     {
       title: 'Recording Display',
       content:
-        '<p>This part of the screen contains a visual representation of the audio recording. The top half of this display (in green) shows a zoomed in view of an <strong>audio snippet</strong> of the recording, while the bottom half displays the <strong>full recording</strong> along with a box highlighting the <strong>location of the snippet</strong> within the full recording. Below this are playback controls you can use to play, pause, and adjust the volume of the recording. Playback is synchronized between these controls and the visual display.</p><br><p>You can move to a specific location within the snippet or within the full recording by <strong>clicking</strong> in the top or bottom display respectively. This will move the vertical position indicator to a new timepoint in both displays. You can also scrub through the snippet or full recording by <strong>clicking & dragging</strong> left or right.</p><br/><p>Feel free to click around within this display to get a feel for how you can control your position within the recording. <strong>A help button is located next to the audio controls</strong>. The help button will show or hide this guide.</p>',
+        '<p>This part of the screen contains a visual representation of the audio recording. The top half of this display (in green) shows a zoomed in view of an <strong>audio snippet</strong> of the recording, while the bottom half displays the <strong>full recording</strong> along with a grey box highlighting the <strong>location of the snippet</strong> within the full recording. Below this are playback controls you can use to play, pause, and adjust the volume of the recording. Playback is synchronized between these controls and the visual display.</p><br><p>You can move to a specific location within the snippet (top) by <strong>clicking</strong> to move the position marker to a new location or by <strong>dragging</strong> the entire snippet display left or right. You can jump ahead or backwards in the full recording (bottom) by <strong>clicking</strong> anywhere in the audio waveform or by <strong>dragging</strong> the grey box.</p><br/><p>Feel free to click around within this display to get a feel for how you can control your position within the recording.</p>',
       state: 'recording',
     },
     {
@@ -35,13 +35,13 @@ with properties set to ensure that user understands how to complete the task whi
     {
       title: 'Tagging Thoughts',
       content:
-        'Notice how this added a row to the table along with markers to the visual display above. The <span class="has-text-weight-bold has-text-grey">start marker (light grey)</span> indicates the beginning of a tag based on your current position in the audio file. The <span class="has-text-weight-bold has-text-grey-darker">end marker (dark grey)</span> indicates the end of a tag and defaults to 5 seconds after the start marker. <br><br>You should edit these times to match when when you think a new thought begins and when that same thought ends. To edit these times first select this thought by <strong>clicking on its row</strong> within the table. Then <strong>drag the markers</strong> in the display above to make an adjustment. Notice how the values in the table change in sync with your actions in the display above. You can also delete a tag or play audio within a tag verify your work using the buttons that appear. After you finish editing just click on the same thought in the table to deselect it.',
+        'Notice how this added a row to the table along with markers to the visual display above. The <span class="has-text-weight-bold has-text-grey">start marker (light grey)</span> indicates the beginning of a tag based on your current position in the audio file. The <span class="has-text-weight-bold has-text-grey-darker">end marker (dark grey)</span> indicates the end of a tag and defaults to 5 seconds after the start marker. <br><br>You should edit these times to match when when you think a new thought begins and when that same thought ends. To edit these times first select this thought by <strong>clicking on its row</strong> within the table. Then <strong>drag the markers</strong> in the display above to make an adjustment. Notice how the values in the table change in sync with your actions in the display above. You can also delete a tag or play audio within a tag verify your work using the buttons that appear. After you finish editing just click on the same row in the table or in the surrounding whitespace to deselect it.',
       state: 'overview',
     },
     {
       title: 'Comprehension Check',
       content:
-        '<p>You now know how to use the controls. Try to identify <strong>three thoughts</strong> within this audio file to continue. We will verify your tags to determine your eligibility to continue with this HIT and earn a bonus payment for tagging more files. If you fail to correctly identify these thoughts you will be paid for the HIT but will not be permitted to continute tagging.</p><br><p>You can bring up and toggle through this guide by clicking the help icon next to the audio controls.</p>',
+        '<p>You now know how to use the controls. Try to identify <strong>three thoughts</strong> within this audio file to continue. We will verify your tags to determine your eligibility to continue with this HIT and earn a bonus payment for tagging more files. If you fail to correctly identify these thoughts you will be paid for the HIT but will not be permitted to continute tagging.</p><br><p>You can bring up and toggle through this guide by clicking the <strong>help icon</strong> next to the audio controls.</p>',
       state: 'overview',
     },
   ];

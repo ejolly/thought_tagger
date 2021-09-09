@@ -100,21 +100,10 @@ and workers in conjunction with ThoughtTagger.svelte  -->
     box-shadow: 3px 3px 3px rgba(10, 10, 10, 0.1),
       0 0 0 1px rgba(10, 10, 10, 0.1);
     pointer-events: auto;
+    top: 25vh;
   }
   .modal {
     pointer-events: none;
-  }
-  .down {
-    top: 15%;
-  }
-  .up {
-    top: -15%;
-  }
-  .upp {
-    top: -21%;
-  }
-  .right {
-    left: 12%;
   }
   .controls {
     min-width: 50%;
@@ -126,7 +115,7 @@ and workers in conjunction with ThoughtTagger.svelte  -->
   on:mousedown|preventDefault={dragStart}
   on:mouseup|preventDefault={dragEnd}
   on:mousemove|preventDefault={drag}>
-  <div class="modal-card" id="modal" class:up class:right class:down class:upp>
+  <div class="modal-card" id="modal">
     <header class="modal-card-head">
       <p class="modal-card-title">{modalTitle}</p>
     </header>
@@ -136,9 +125,11 @@ and workers in conjunction with ThoughtTagger.svelte  -->
     <footer class="modal-card-foot">
       {#if !tutorialComplete}
         <p class="card-footer-item">
-          <button class="button is-link controls" on:click={backward}>
-            <span class="icon"> <i class="fas fa-backward" /> </span>
-          </button>
+          {#if tutorialStep > 0}
+            <button class="button is-link controls" on:click={backward}>
+              <span class="icon"> <i class="fas fa-backward" /> </span>
+            </button>
+          {/if}
         </p>
         <p class="card-footer-item">
           {#if tutorialStep === tutorial.length - 1}

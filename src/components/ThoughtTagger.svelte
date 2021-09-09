@@ -185,17 +185,40 @@ use of the peaks.js waveform visualizer. -->
     }
   };
 
+  // Check for overlapping segments
+  function isSegmentOverlapping() {
+    const currentTime = peaksInstance.player.getCurrentTime();
+    for (const s of segments) {
+      if (currentTime > s.startTime && currentTime < s.endTime) {
+        return true;
+      }
+    }
+  }
+
   // Store a new segment on button click
   function addSegment() {
+    // Prevent overlapping tags
+    if (isSegmentOverlapping()) {
+      alert(
+        "The Thought you're trying to tag overlaps with an existing Thought. Try moving the position marker outside the start and stop times of the existing Thought (colored region in the bottom waveform) or edit/delete the previous Thought to continue."
+      );
+      return;
+    }
     peaksInstance.segments.add({
       startTime: peaksInstance.player.getCurrentTime(),
       endTime: peaksInstance.player.getCurrentTime() + 5,
-      labelText: `Thought ${segmentPrevMax.toString()}`,
+      labelText: `Thought ${(segmentPrevMax + 1).toString()}`,
       editable: true,
     });
+    // Move the player to the end of the current segment to prevent overlapping segments
+    peaksInstance.player.seek(peaksInstance.player.getCurrentTime() + 5);
     // Update the variable that stores all the segments for dynamic rendering
     segments = peaksInstance.segments.getSegments();
     segmentPrevMax += 1;
+    if (DEV_MODE) {
+      console.log(segments);
+      console.log(segmentPrevMax);
+    }
     communicateData('updateSegmentsCount');
   }
 
@@ -220,10 +243,8 @@ use of the peaks.js waveform visualizer. -->
       rowSelected = true;
     }
     // Save the segment id
-    selectedSegmentId = parseInt(
-      row.querySelector('td.segment-id').innerText,
-      10
-    );
+    selectedSegmentId =
+      parseInt(row.querySelector('td.segment-id').innerText, 10) - 1;
     selectedSegmentId = `peaks.segment.${selectedSegmentId.toString()}`;
   }
 
@@ -252,6 +273,10 @@ use of the peaks.js waveform visualizer. -->
     }
     rowSelected = false;
     segments = peaksInstance.segments.getSegments();
+    if (DEV_MODE) {
+      console.log(segments);
+      console.log(segmentPrevMax);
+    }
     communicateData('updateSegmentsCount');
   }
 </script>
@@ -306,7 +331,7 @@ use of the peaks.js waveform visualizer. -->
         id="waveform-container"
         class:blur={hasTutorial && tutorialStep < 1}
         class={hasTutorial && tutorialStep === 1
-          ? 'animated flash slow'
+          ? 'animated flash slower repeat-2'
           : ''} />
     </div>
   </div>
@@ -323,7 +348,7 @@ use of the peaks.js waveform visualizer. -->
                 controls="controls"
                 controlslist="nodownload"
                 class={hasTutorial && tutorialStep === 1
-                  ? 'animated flash slow'
+                  ? 'animated flash slower repeat-2'
                   : ''}>
                 <source {src} type="audio/wav" />
                 Your browser does not support the audio element.
@@ -347,7 +372,7 @@ use of the peaks.js waveform visualizer. -->
           {#if rate}
             <button
               class={hasTutorial
-                ? 'button is-primary is-large animated flash delay-1s'
+                ? 'button is-primary is-large animated flash slower delay-1s'
                 : 'button is-primary is-large'}
               on:click={finish}
               disabled={nextTrialActive}>
@@ -360,7 +385,7 @@ use of the peaks.js waveform visualizer. -->
                   <div class="column button-col">
                     <button
                       class={hasTutorial && tutorialStep === 2
-                        ? 'button is-primary is-large animated flash delay-1s'
+                        ? 'button is-primary is-large animated flash slower repeat-2 delay-1s'
                         : 'button is-primary is-large'}
                       class:blur={hasTutorial && tutorialStep < 2}
                       on:click={addSegment}>
@@ -484,7 +509,7 @@ use of the peaks.js waveform visualizer. -->
             <table class="table is-hoverable">
               <thead>
                 <tr>
-                  <th>Thought Number</th>
+                  <th>Thought ID</th>
                   <th>Start time</th>
                   <th>End time</th>
                 </tr>
@@ -493,7 +518,8 @@ use of the peaks.js waveform visualizer. -->
                 {#each segments as segment, i (segment.id)}
                   <tr on:click={selectSegment} class="table-row">
                     <td type="text" class="segment-id"
-                      >{segment.id.split('.').slice(-1)[0]}</td>
+                      >{parseInt(segment.id.split('.').slice(-1)[0], 10) +
+                        1}</td>
                     <td type="number">{segment.startTime.toFixed(2)}</td>
                     <td type="number">{segment.endTime.toFixed(2)}</td>
                   </tr>
