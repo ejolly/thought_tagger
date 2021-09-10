@@ -8,10 +8,11 @@ also makes use of the Loading component-->
   import { createEventDispatcher } from 'svelte';
   import {
     db,
-    params,
     storage,
     makeRecordingDict,
     userStore,
+    globalVars,
+    updateUser,
   } from '../utils.js';
   import ThoughtTagger from '../components/ThoughtTagger.svelte';
   import Loading from '../components/Loading.svelte';
@@ -54,35 +55,24 @@ also makes use of the Loading component-->
   // Before rendering anything see what trial we should be rendering. Because this is an async function we call immediately to dynamically show a loading screen before we get the data in the HTML below
   let filePromise = (async () => {
     try {
+      // filename = await getRandomAudioFilename();
       return await generateFileURL();
     } catch (error) {
       return console.error(error);
     }
   })();
 
-  // Function to try to get the next trial's audio file or tell App.svelte to end the experiment
-  // RIGHT NOW THIS FUNCTION RUNS SUCCESSFULLY BUT ASYNC IS SOMEHOW OFF (ASK ESHIN)
+  // Get the next audio file or end the experiment
   const getNextAudioFile = async () => {
-    let trialDict = await makeRecordingDict(); // async from utils
-    let currentTrialFileId = trialDict[fileName]; // gets firebase number
-    console.log('name: ', fileName);
-    console.log('id: ', currentTrialFileId);
-
+    // ThoughtTagger.svelte updates the user's currentTrial and the response count for the audio file they just rated inside of finish(). Since the userStore subscribes to the changes in the user doc, we can simply call generateFileURL() defined above, which makes use of the latest value of the user store and therefore pulls the correct next file or ends the experiment.
     try {
-      const recordingRef = await db
-        .collection('recordings')
-        .doc(currentTrialFileId); // get reference for desired recording
-      let transactionRes = incrementResponse(recordingRef);
-      console.log(transactionRes);
+      if ($userStore.currentTrial - 1 === globalVars.numRecordings) {
+        dispatch('finished');
+      } else {
+        filePromise = generateFileURL();
+      }
     } catch (error) {
-      return console.error(error);
-    }
-    if ($userStore.currentTrial === $userStore.trialOrder.length) {
-      dispatch('finished');
-    } else {
-      $userStore.currentTrial += 1;
-      updateUser($userStore);
-      filePromise = generateFileURL();
+      console.error(error);
     }
   };
 </script>
@@ -90,5 +80,5 @@ also makes use of the Loading component-->
 {#await filePromise}
   <Loading>Preparing Recording...</Loading>
 {:then src}
-  <ThoughtTagger {params} {src} {fileName} on:next={getNextAudioFile} />
+  <ThoughtTagger {src} {fileName} on:next={getNextAudioFile} />
 {/await}

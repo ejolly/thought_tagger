@@ -6,7 +6,13 @@ use of the peaks.js waveform visualizer. -->
   // -------------------------------------------
   import Peaks from 'peaks.js';
   import { onMount, createEventDispatcher } from 'svelte';
-  import { db, serverTime, userStore, updateUser } from '../utils.js';
+  import {
+    db,
+    serverTime,
+    userStore,
+    updateUser,
+    updateAudioFileResponseCount,
+  } from '../utils.js';
 
   // INPUTS FROM PARENT COMPONENT
   // -------------------------------------------
@@ -121,15 +127,14 @@ use of the peaks.js waveform visualizer. -->
     } else {
       // We have to strip-out the extra properties that segment objects have (e.g. like waveform color) because firebase doesn't like that. Plus we only care about start and end times
       const toSave = {};
-      console.log(segments);
       segments.forEach((obj) => {
         toSave[obj._id.replace(/\./g, '_')] = {
           startTime: obj._startTime,
           endTime: obj._endTime,
         };
       });
-      // Create a dictionary of data to save with the key being the current trial number and sub-dictionaries containing the subject id of the person speaking, the character being talked about and the tagged thoughts
-      $userStore[`trial_${$userStore.currentTrial}`] = {
+      // Create a dictionary of data to save with the key being the current filename, e.g. 's07_TamyTaylor.wav' and the value being a dict with key:vals for each rating made by the user (clarity, confidence, etc) as well as attributes of the file. A special key called 'thoughts' contains the data of interest which is itself a dict of the thoughts for this recording.
+      $userStore['trials'][fileName] = {
         subject: subjectId,
         character: character.slice(0, character.length - 4),
         clarity,
@@ -140,6 +145,7 @@ use of the peaks.js waveform visualizer. -->
       };
       $userStore.currentTrial += 1;
       await updateUser($userStore);
+      await updateAudioFileResponseCount(fileName);
       peaksInstance.destroy();
       dispatch('next');
     }

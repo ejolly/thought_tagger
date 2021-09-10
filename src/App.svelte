@@ -63,12 +63,13 @@
   const resetTestWorker = async (newState) => {
     if (params.workerId === 'test-worker') {
       await initUser();
-      console.log(`Reset test-worker. New state is ${currentState}`);
+      console.log(`Reset test-worker. New state is ${$userStore.currentState}`);
     } else {
       console.log('Reset user requested but app is not in dev mode');
     }
   };
 
+  // SETUP USER DATA SUBSCRIPTION
   // If we're in situation 2 above (i.e. initExperiment) then handle firebase auth
   // Check to see if there's an existing user and doc under
   // U:workerId@experiment.com
@@ -107,6 +108,7 @@
               // Resume existing user session
               if (userDoc.exists) {
                 console.log('previous document found...loading state...');
+                // hookup subscription to $userStore
                 userDocRef.onSnapshot((doc) => {
                   userStore.set(doc.data());
                 });
@@ -114,6 +116,7 @@
                 // Create new user session
                 console.log('no previous document found...creating new...');
                 await initUser();
+                // hookup subscription to $userStore
                 userDocRef.onSnapshot((doc) => {
                   userStore.set(doc.data());
                 });

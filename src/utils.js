@@ -10,7 +10,7 @@ export const globalVars = {
   bonusPerRecording: 0.5,
   basePayment: 1.0,
   maxQuizAttempts: 2,
-  numRecordings: 10,
+  numRecordings: 3,
 };
 
 const firebaseConfig = {
@@ -30,6 +30,7 @@ export const db = firebase.firestore();
 export const storage = firebase.storage();
 export const auth = firebase.auth();
 export const serverTime = firebase.firestore.FieldValue.serverTimestamp();
+export const increment = firebase.firestore.FieldValue.increment(1);
 
 // Creates dictionary to allow for number referencing of recordings
 export const makeRecordingDict = async () => {
@@ -90,9 +91,63 @@ export const fisherYatesShuffle = (array) => {
   }
 };
 
+// STIMULI DATA MANGEMENT
+// Get a random recording document filename guaranteed to have a low number of responses at the time
+// this query is made; currently unused
+export const getRandomAudioFilename = async () => {
+  try {
+    const doc = await db
+      .collection('recordings')
+      .orderBy('responses')
+      .limit(1)
+      .get();
+    return doc.data().name;
+  } catch (err) {
+    console.error(err);
+  }
+  return null;
+};
+
+// Given a file name from getRandomAudioFilename, get the actual .wav file for HTML <audio> element playback
+export const generateFileURL = async (filename) => {
+  try {
+    const file = storage.refFromURL(
+      `gs://thought-segmentation.appspot.com/${filename}`
+    );
+    const url = await file.getDownloadURL();
+    return url;
+  } catch (error) {
+    console.error(error);
+  }
+  return null;
+};
+
+// Given a filename update the response count for that file
+export const updateAudioFileResponseCount = async (filename) => {
+  try {
+    const query = await db
+      .collection('recordings')
+      .where('name', '==', filename)
+      .limit(1)
+      .get();
+    const docId = query.docs[0].id;
+    await db
+      .collection('recordings')
+      .doc(docId)
+      .update({ responses: increment });
+    console.log(
+      `successfully incremented response count for: ${filename} ${docId}`
+    );
+  } catch (err) {
+    console.error(err);
+  }
+  return null;
+};
+
 // USER DATA MANAGEMENT
 // Initialize store to share user state across the app
 export const userStore = writable({});
+
 // Async update user firestore doc given a store as input
 export const updateUser = async (userDoc) => {
   try {
@@ -100,6 +155,7 @@ export const updateUser = async (userDoc) => {
     console.log('user doc successfully updated');
   } catch (err) {
     console.error('Error updating user document in firestore');
+    console.log(err);
   }
 };
 // Setup a fresh user account or reset an existing one
@@ -128,6 +184,7 @@ export const initUser = async () => {
       currentTrial: 1,
       quizAttempts: 0,
       quizPassed: false,
+      trials: {},
       trialOrder,
     });
   } catch (error) {
