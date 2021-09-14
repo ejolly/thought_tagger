@@ -39,9 +39,15 @@ with properties set to ensure that user understands how to complete the task whi
       state: 'overview',
     },
     {
+      title: 'Example Thought',
+      content:
+        "We have now added a second tag to provide a concrete example of a <strong>correctly tagged thought.</strong> Try clicking on the second row and playing the thought to hear it. Notice that even though the speaker made multiple pauses and disfluencies ('umm', 'ah') and even restarted their sentence half-way through, this entire segment constitutes a single thought describing the character. When tagging thoughts on your own, take care to identify segments like this one that may extend across natural pauses and interruptions in the speaker's speech. Other thoughts, may be easier to identify as they more closely follow natural speech breaks.",
+      state: 'overview',
+    },
+    {
       title: 'Comprehension Check',
       content:
-        '<p>You now know how to use the controls. Try to identify <strong>three thoughts</strong> within this audio file to continue. We will verify your tags to determine your eligibility to continue with this HIT and earn a bonus payment for tagging more files. If you fail to correctly identify these thoughts you will be paid for the HIT but will not be permitted to continute tagging.</p><br><p>You can bring up and toggle through this guide by clicking the <strong>help icon</strong> next to the audio controls.</p>',
+        '<p>You now know how to use the controls and what constitutes a complete thought. Try to identify <strong>one more thought</strong> within this audio file to continue. We will verify your tags to determine your eligibility to continue with this HIT and earn a bonus payment for tagging more files. If you fail to correctly identify these thoughts you will be paid for the HIT but will not be permitted to continute tagging.</p><br><p>You can bring up and toggle through this guide by clicking the <strong>help icon</strong> next to the audio controls.</p>',
       state: 'overview',
     },
   ];
@@ -66,18 +72,17 @@ with properties set to ensure that user understands how to complete the task whi
     },
     {
       title: 'Begin HIT',
-      content:
-        '<p>Perfect! You are now eligible to tag more recordings. You will earn a $0.50 bonus for each additional recording you tag thoughts for. Otherwise you can complete this HIT and earn your payment without any bonuses. Please select your preference below </p>',
+      content: `<p>Perfect! You are now eligible to tag more recordings. You will earn a <strong>$${globalVars.bonusPerRecording}</strong> bonus for each additional recording you tag thoughts for. Otherwise you can complete this HIT and earn your payment without any bonuses. Please select your preference below </p>`,
       state: 'readyForExperiment',
     },
   ];
   const quizAnswers = [
     {
-      startTime: 1.0,
-      endTime: 7.0,
+      startTime: 1.9,
+      endTime: 7.4,
     },
     {
-      startTime: 7.0,
+      startTime: 7.4,
       endTime: 21.0,
     },
     {

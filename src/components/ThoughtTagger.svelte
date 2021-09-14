@@ -104,6 +104,20 @@ use of the peaks.js waveform visualizer. -->
     });
   });
 
+  // Reactive listener that adds in an example tag when users reach step 4 of the tutorial
+  $: {
+    if (hasTutorial && tutorialStep === 4 && segments.length === 1) {
+      peaksInstance.segments.add({
+        startTime: 7.4,
+        endTime: 21,
+        labelText: `Thought ${(segmentPrevMax + 1).toString()}`,
+        editable: true,
+      });
+      peaksInstance.player.seek(7.4);
+      segments = peaksInstance.segments.getSegments();
+      segmentPrevMax += 1;
+    }
+  }
   // General purpose function to call event dispatcher if this component knows theres a tutorial component it should be working in tandem with
   const communicateData = (evName) => {
     if (hasTutorial) {
@@ -183,9 +197,15 @@ use of the peaks.js waveform visualizer. -->
       alert('Please tag a few more thoughts');
     } else if (hasTutorial) {
       // check tutorial thoughts
-      await verifyTags();
-      communicateData('quizAttempt');
-      rate = $userStore.quizPassed;
+      if (segments.length < 4) {
+        alert(
+          'Please make sure at least 4 total thoughts have been tagged (including the examples) to submit your answers'
+        );
+      } else {
+        await verifyTags();
+        communicateData('quizAttempt');
+        rate = $userStore.quizPassed;
+      }
     } else {
       rate = !rate;
     }
@@ -193,9 +213,10 @@ use of the peaks.js waveform visualizer. -->
 
   // Check for overlapping segments
   function isSegmentOverlapping() {
-    const currentTime = peaksInstance.player.getCurrentTime();
+    const start = peaksInstance.player.getCurrentTime();
+    const end = start + 5;
     for (const s of segments) {
-      if (currentTime > s.startTime && currentTime < s.endTime) {
+      if (start <= s.endTime && end >= s.startTime) {
         return true;
       }
     }
@@ -361,7 +382,7 @@ use of the peaks.js waveform visualizer. -->
               </audio>
             </div>
             <div
-              class={hasTutorial && tutorialStep === 4
+              class={hasTutorial && tutorialStep === 5
                 ? 'column animated shake delay-2s'
                 : 'column'}>
               {#if hasTutorial}
@@ -394,13 +415,18 @@ use of the peaks.js waveform visualizer. -->
                         ? 'button is-primary is-large animated flash slower repeat-2 delay-1s'
                         : 'button is-primary is-large'}
                       class:blur={hasTutorial && tutorialStep < 2}
-                      on:click={addSegment}>
+                      on:click={addSegment}
+                      disabled={tutorialStep === 3 || tutorialStep === 4}>
                       Tag
                     </button>
                     <button
                       class="button is-info is-large"
                       class:blur={hasTutorial && tutorialStep < 2}
-                      disabled={ratingActive}
+                      disabled={(!hasTutorial && ratingActive) ||
+                        (hasTutorial &&
+                          (ratingActive ||
+                            tutorialStep === 3 ||
+                            tutorialStep === 4))}
                       on:click={submitTags}>
                       Done
                     </button>
