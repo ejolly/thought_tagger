@@ -7,8 +7,8 @@ import { writable } from 'svelte/store';
 
 // GLOBAL EXPERIMENT VARIABLES
 export const globalVars = {
-  bonusPerRecording: 0.5,
-  basePayment: 1.0,
+  bonusPerRecording: 1.0,
+  basePayment: 0.5,
   maxQuizAttempts: 2,
   numRecordings: 3,
 };
@@ -31,19 +31,6 @@ export const storage = firebase.storage();
 export const auth = firebase.auth();
 export const serverTime = firebase.firestore.FieldValue.serverTimestamp();
 export const increment = firebase.firestore.FieldValue.increment(1);
-
-// Creates dictionary to allow for number referencing of recordings
-export const makeRecordingDict = async () => {
-  let count = -1; // accounts for quiz.mp3
-  const recordingDict = {};
-  const storageItems = await storage.ref().listAll();
-  storageItems.items.forEach((itemRef) => {
-    // All the items under listRef.
-    recordingDict[itemRef.location.path] = count;
-    count += 1;
-  });
-  return recordingDict;
-};
 
 // Functions to parse the URL to get workerID, hitID, and assignmentID
 const unescapeURL = (s) => decodeURIComponent(s.replace(/\+/g, '%20'));
@@ -93,31 +80,21 @@ export const fisherYatesShuffle = (array) => {
 
 // STIMULI DATA MANGEMENT
 // Get a random recording document filename guaranteed to have a low number of responses at the time
-// this query is made; currently unused
+// this query is made; Used to retrieve subsequent trials for each user after trial 1
 export const getRandomAudioFilename = async () => {
+  const fileName = [];
   try {
-    const doc = await db
+    const query = await db
       .collection('recordings')
       .orderBy('responses')
       .limit(1)
       .get();
-    return doc.data().name;
+    query.forEach((doc) => {
+      fileName.push(doc.data().name);
+    });
+    return fileName[0];
   } catch (err) {
     console.error(err);
-  }
-  return null;
-};
-
-// Given a file name from getRandomAudioFilename, get the actual .wav file for HTML <audio> element playback
-export const generateFileURL = async (filename) => {
-  try {
-    const file = storage.refFromURL(
-      `gs://thought-segmentation.appspot.com/${filename}`
-    );
-    const url = await file.getDownloadURL();
-    return url;
-  } catch (error) {
-    console.error(error);
   }
   return null;
 };
@@ -160,13 +137,18 @@ export const updateUser = async (userDoc) => {
 };
 // Setup a fresh user account or reset an existing one
 export const initUser = async () => {
-  // Get N random recordings based upon the least frequently tagged ones thus far
+  // Get 1 random recording based upon the least frequently tagged ones thus far
+  // Experiment.svelte will handle selecting the next audio file by requerying the lowest tagged
+  // audio files thus far. This is better than pregenerating a list of audio files ahead of time,
+  // because all initial users will get the same files and we'll get lots of tags for those files
+  // but none for others. By querying one at a time, we can better ensure uniform sampling of the
+  // files based on whether they've been rated already in *real-time*.
   const trialOrder = [];
   try {
     const query = await db
       .collection('recordings')
       .orderBy('responses')
-      .limit(globalVars.numRecordings)
+      .limit(1)
       .get();
     query.forEach((doc) => {
       trialOrder.push(doc.data().name);

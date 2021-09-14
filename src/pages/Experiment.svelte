@@ -9,10 +9,10 @@ also makes use of the Loading component-->
   import {
     db,
     storage,
-    makeRecordingDict,
     userStore,
     globalVars,
     updateUser,
+    getRandomAudioFilename,
   } from '../utils.js';
   import ThoughtTagger from '../components/ThoughtTagger.svelte';
   import Loading from '../components/Loading.svelte';
@@ -41,7 +41,7 @@ also makes use of the Loading component-->
   // eslint-disable-next-line consistent-return
   const generateFileURL = async () => {
     try {
-      fileName = $userStore.trialOrder[$userStore.currentTrial - 1];
+      // fileName = $userStore.trialOrder[$userStore.currentTrial - 1];
       const file = storage.refFromURL(
         `gs://thought-segmentation.appspot.com/${fileName}`
       );
@@ -55,7 +55,7 @@ also makes use of the Loading component-->
   // Before rendering anything see what trial we should be rendering. Because this is an async function we call immediately to dynamically show a loading screen before we get the data in the HTML below
   let filePromise = (async () => {
     try {
-      // filename = await getRandomAudioFilename();
+      fileName = $userStore.trialOrder[0];
       return await generateFileURL();
     } catch (error) {
       return console.error(error);
@@ -64,11 +64,15 @@ also makes use of the Loading component-->
 
   // Get the next audio file or end the experiment
   const getNextAudioFile = async () => {
-    // ThoughtTagger.svelte updates the user's currentTrial and the response count for the audio file they just rated inside of finish(). Since the userStore subscribes to the changes in the user doc, we can simply call generateFileURL() defined above, which makes use of the latest value of the user store and therefore pulls the correct next file or ends the experiment.
+    // ThoughtTagger.svelte updates the user's currentTrial (an int) and the response count for the audio file they just rated inside of finish(). Since the userStore subscribes to the changes in the user doc, we can simply get a new random audio file by querying the least rated audio files thus far and then call generateFileURL() defined above, which makes use of the latest value of the user store and therefore pulls the correct next file or ends the experiment.
     try {
       if ($userStore.currentTrial - 1 === globalVars.numRecordings) {
         dispatch('finished');
       } else {
+        // Get a new audio file name based on which have been least rated at the point this function is called (i.e. on a trial-by-trial basis per user)
+        fileName = await getRandomAudioFilename();
+        $userStore.trialOrder = [...$userStore.trialOrder, fileName];
+        await updateUser($userStore);
         filePromise = generateFileURL();
       }
     } catch (error) {
