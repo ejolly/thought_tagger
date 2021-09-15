@@ -45,6 +45,7 @@ use of the peaks.js waveform visualizer. -->
   let time = '';
   let timer;
   let invalidTime = false;
+  let audioFinished = false;
   $: nextTrialActive = !(
     clarityRated &&
     confidenceRated &&
@@ -119,6 +120,7 @@ use of the peaks.js waveform visualizer. -->
       peaksInstance.player.seek(0);
     }
   }
+
   // General purpose function to call event dispatcher if this component knows theres a tutorial component it should be working in tandem with
   const communicateData = (evName) => {
     if (hasTutorial) {
@@ -196,6 +198,10 @@ use of the peaks.js waveform visualizer. -->
   const submitTags = async () => {
     if (!segments || (segments && segments.length <= 2)) {
       alert('Please tag a few more thoughts');
+    } else if (!audioFinished) {
+      alert(
+        'Please listen to the ENTIRE audio recording before submitting your tags'
+      );
     } else if (hasTutorial) {
       // check tutorial thoughts
       if (segments.length < 4) {
@@ -373,7 +379,8 @@ use of the peaks.js waveform visualizer. -->
                 controlslist="nodownload"
                 class={hasTutorial && $userStore.tutorialStep === 1
                   ? 'animated flash slower repeat-2'
-                  : ''}>
+                  : ''}
+                on:ended={() => (audioFinished = true)}>
                 <source {src} type="audio/wav" />
                 Your browser does not support the audio element.
               </audio>
