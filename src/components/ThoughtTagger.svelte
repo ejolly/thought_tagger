@@ -18,7 +18,6 @@ use of the peaks.js waveform visualizer. -->
   // -------------------------------------------
   export let src;
   export let fileName = '';
-  export let tutorialStep = -1;
   export let hasTutorial = false;
   export let quizAnswers = [];
 
@@ -106,7 +105,7 @@ use of the peaks.js waveform visualizer. -->
 
   // Reactive listener that adds in an example tag when users reach step 4 of the tutorial
   $: {
-    if (hasTutorial && tutorialStep === 4 && segments.length === 1) {
+    if (hasTutorial && $userStore.tutorialStep === 4 && segments.length === 1) {
       peaksInstance.segments.add({
         startTime: 7.4,
         endTime: 21,
@@ -116,7 +115,7 @@ use of the peaks.js waveform visualizer. -->
       peaksInstance.player.seek(7.4);
       segments = peaksInstance.segments.getSegments();
       segmentPrevMax += 1;
-    } else if (hasTutorial && tutorialStep == 2) {
+    } else if (hasTutorial && $userStore.tutorialStep == 2) {
       peaksInstance.player.seek(0);
     }
   }
@@ -126,7 +125,7 @@ use of the peaks.js waveform visualizer. -->
       if (evName === 'updateSegmentsCount') {
         dispatch('updateSegmentsCount', {
           numSegments: segments.length,
-          moveForward: tutorialStep === 2,
+          moveForward: $userStore.tutorialStep === 2,
         });
       } else if (evName === 'quizAttempt') {
         dispatch('quizAttempt');
@@ -337,7 +336,7 @@ use of the peaks.js waveform visualizer. -->
 <div
   class="container is-fluid"
   class:blur={hasTutorial &&
-    (tutorialStep === 0 ||
+    ($userStore.tutorialStep === 0 ||
       $userStore.quizState === 'fail' ||
       $userStore.quizState === 'readyForExperiment')}>
   <!-- Title + Waveform display row -->
@@ -354,8 +353,8 @@ use of the peaks.js waveform visualizer. -->
       {/if}
       <div
         id="waveform-container"
-        class:blur={hasTutorial && tutorialStep < 1}
-        class={hasTutorial && tutorialStep === 1
+        class:blur={hasTutorial && $userStore.tutorialStep < 1}
+        class={hasTutorial && $userStore.tutorialStep === 1
           ? 'animated flash slower repeat-2'
           : ''} />
     </div>
@@ -372,7 +371,7 @@ use of the peaks.js waveform visualizer. -->
                 id="audio"
                 controls="controls"
                 controlslist="nodownload"
-                class={hasTutorial && tutorialStep === 1
+                class={hasTutorial && $userStore.tutorialStep === 1
                   ? 'animated flash slower repeat-2'
                   : ''}>
                 <source {src} type="audio/wav" />
@@ -380,7 +379,7 @@ use of the peaks.js waveform visualizer. -->
               </audio>
             </div>
             <div
-              class={hasTutorial && tutorialStep === 5
+              class={hasTutorial && $userStore.tutorialStep === 5
                 ? 'column animated shake delay-2s'
                 : 'column'}>
               {#if hasTutorial}
@@ -409,22 +408,23 @@ use of the peaks.js waveform visualizer. -->
                 <div class="columns button-row">
                   <div class="column button-col">
                     <button
-                      class={hasTutorial && tutorialStep === 2
+                      class={hasTutorial && $userStore.tutorialStep === 2
                         ? 'button is-primary is-large animated flash slower repeat-2 delay-1s'
                         : 'button is-primary is-large'}
-                      class:blur={hasTutorial && tutorialStep < 2}
+                      class:blur={hasTutorial && $userStore.tutorialStep < 2}
                       on:click={addSegment}
-                      disabled={tutorialStep === 3 || tutorialStep === 4}>
+                      disabled={$userStore.tutorialStep === 3 ||
+                        $userStore.tutorialStep === 4}>
                       Tag
                     </button>
                     <button
                       class="button is-info is-large"
-                      class:blur={hasTutorial && tutorialStep < 2}
+                      class:blur={hasTutorial && $userStore.tutorialStep < 2}
                       disabled={(!hasTutorial && ratingActive) ||
                         (hasTutorial &&
                           (ratingActive ||
-                            tutorialStep === 3 ||
-                            tutorialStep === 4))}
+                            $userStore.tutorialStep === 3 ||
+                            $userStore.tutorialStep === 4))}
                       on:click={submitTags}>
                       Done
                     </button>
@@ -532,7 +532,7 @@ use of the peaks.js waveform visualizer. -->
     <!-- Table row only if rating not displayed -->
     <div
       class="columns is-centered"
-      class:blur={hasTutorial && tutorialStep < 2}>
+      class:blur={hasTutorial && $userStore.tutorialStep < 2}>
       <div class="column is-full has-text-centered">
         {#if segments && segments.length}
           <div class="table-container">

@@ -4,14 +4,12 @@ and workers in conjunction with ThoughtTagger.svelte  -->
   // IMPORTS
   // -------------------------------------------
   import { createEventDispatcher } from 'svelte';
-  import { db, serverTime, userStore } from '../utils.js';
+  import { db, serverTime, userStore, updateUser } from '../utils.js';
 
   // INPUTS FROM PARENT COMPONENT
   // -------------------------------------------
   export let modalOpen;
   export let tutorial;
-  export let tutorialStep = 0;
-  export let tutorialComplete;
   export let quiz;
   export let numSegments;
 
@@ -22,9 +20,9 @@ and workers in conjunction with ThoughtTagger.svelte  -->
   let q;
 
   // Reactively determine what to show in the modal depending on whether the tutorial is still going or what state of the quiz we're in
-  $: if (!tutorialComplete) {
-    modalTitle = tutorial[tutorialStep].title;
-    modalContent = tutorial[tutorialStep].content;
+  $: if (!$userStore.tutorialComplete) {
+    modalTitle = tutorial[$userStore.tutorialStep].title;
+    modalContent = tutorial[$userStore.tutorialStep].content;
   } else {
     [q] = quiz.filter((obj) => obj.state === $userStore.quizState);
     modalTitle = q.title;
@@ -38,26 +36,29 @@ and workers in conjunction with ThoughtTagger.svelte  -->
   let modalXOffset = 0;
   let modalYOffset = 0;
   let dragActive = false;
-  $: down = tutorialStep === 1;
-  $: up = tutorialStep === 2 || $userStore.quizState === 'pass';
-  $: right = tutorialStep === 3 || tutorialStep === 1;
-  $: upp = tutorialStep === 3;
+  $: down = $userStore.tutorialStep === 1;
+  $: up = $userStore.tutorialStep === 2 || $userStore.quizState === 'pass';
+  $: right = $userStore.tutorialStep === 3 || $userStore.tutorialStep === 1;
+  $: upp = $userStore.tutorialStep === 3;
 
   const dispatch = createEventDispatcher();
 
   // COMPONENT LOGIC
   // -------------------------------------------
   // Move backwards through the tutorial pages
-  const backward = () => {
-    tutorialStep -= 1;
-    tutorialStep = Math.max(tutorialStep, 0);
-    dispatch('stateChange', { tutorialStep });
+  const backward = async () => {
+    $userStore.tutorialStep -= 1;
+    $userStore.tutorialStep = Math.max($userStore.tutorialStep, 0);
+    await updateUser($userStore);
   };
 
   // Move forwards through the tutorial pages
-  const forward = () => {
-    tutorialStep = Math.min(tutorialStep + 1, tutorial.length - 1);
-    dispatch('stateChange', { tutorialStep });
+  const forward = async () => {
+    $userStore.tutorialStep = Math.min(
+      $userStore.tutorialStep + 1,
+      tutorial.length - 1
+    );
+    await updateUser($userStore);
   };
 
   // Utility function for better screen position of the tutorial modal
@@ -123,16 +124,16 @@ and workers in conjunction with ThoughtTagger.svelte  -->
       {@html modalContent}
     </section>
     <footer class="modal-card-foot">
-      {#if !tutorialComplete}
+      {#if !$userStore.tutorialComplete}
         <p class="card-footer-item">
-          {#if tutorialStep > 0}
+          {#if $userStore.tutorialStep > 0}
             <button class="button is-link controls" on:click={backward}>
               <span class="icon"> <i class="fas fa-backward" /> </span>
             </button>
           {/if}
         </p>
         <p class="card-footer-item">
-          {#if tutorialStep === tutorial.length - 1}
+          {#if $userStore.tutorialStep === tutorial.length - 1}
             <button
               class="button is-link"
               on:click={() => {
@@ -140,7 +141,7 @@ and workers in conjunction with ThoughtTagger.svelte  -->
               }}>
               Hide Help
             </button>
-          {:else if tutorialStep !== 2 || numSegments > 0}
+          {:else if $userStore.tutorialStep !== 2 || numSegments > 0}
             <button class="button is-link controls" on:click={forward}>
               <span class="icon"> <i class="fas fa-forward" /> </span>
             </button>

@@ -3,6 +3,7 @@ button when developing locally with a test-worker account. It gets rendered by A
 use of the DEV_MODE variable thats set when the app is compiled-->
 <script>
   import { createEventDispatcher } from 'svelte';
+  import { userStore } from '../utils.js';
 
   const dispatch = createEventDispatcher();
 </script>
@@ -12,10 +13,9 @@ use of the DEV_MODE variable thats set when the app is compiled-->
     position: fixed;
     left: 0;
     bottom: 0;
-    width: 100%;
-    text-align: center;
+    width: 100vw;
     padding: 0.5rem;
-    border-radius: 0.25rem;
+    font-weight: bold;
   }
   .icon:hover {
     cursor: pointer;
@@ -23,23 +23,41 @@ use of the DEV_MODE variable thats set when the app is compiled-->
   p {
     display: inline;
   }
+  button {
+    font-weight: bold;
+  }
 </style>
 
 <!-- svelte-ignore missing-declaration -->
 <div
-  class="has-text-white banner"
+  class="has-text-white banner is-flex is-justify-content-space-around"
   class:has-background-danger={DEV_MODE}
   class:has-background-grey-light={!DEV_MODE}>
   <!-- svelte-ignore missing-declaration -->
   {#if DEV_MODE}
-    <p>Development mode</p>
-    <span class="icon" on:click={() => dispatch('resetTestWorker')}>
-      <i class="fas fa-redo-alt" />
-    </span>
-  {:else}
-    <p>
-      If if you have questions about this HIT please <a
-        href="mailto:eshin.jolly@dartmouth.edu">email us</a>
-    </p>
+    <div>
+      <p>
+        Development mode
+        <span class="icon" on:click={() => dispatch('resetTestWorker')}>
+          <i class="fas fa-redo-alt" />
+        </span>
+      </p>
+    </div>
+  {/if}
+  {#if $userStore.currentState === 'experiment'}
+    <div>
+      <p>Bonus Earned: ${$userStore.bonus}</p>
+    </div>
+  {/if}
+  <div>
+    If you have questions about this HIT please <a
+      href="mailto:eshin.jolly@dartmouth.edu">email us</a>
+  </div>
+  {#if $userStore.currentState === 'experiment'}
+    <div>
+      <button
+        class="button is-success is-small"
+        on:click={() => dispatch('finished')}>I'm finished</button>
+    </div>
   {/if}
 </div>

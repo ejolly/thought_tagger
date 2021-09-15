@@ -170,4 +170,6 @@
     <ReturnHIT />
   {/if}
 </section>
-<Footer on:resetTestWorker={resetTestWorker} />
+<Footer
+  on:resetTestWorker={resetTestWorker}
+  on:finished={() => updateState('debrief')} />

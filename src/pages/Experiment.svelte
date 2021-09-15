@@ -66,6 +66,8 @@ also makes use of the Loading component-->
   const getNextAudioFile = async () => {
     // ThoughtTagger.svelte updates the user's currentTrial (an int) and the response count for the audio file they just rated inside of finish(). Since the userStore subscribes to the changes in the user doc, we can simply get a new random audio file by querying the least rated audio files thus far and then call generateFileURL() defined above, which makes use of the latest value of the user store and therefore pulls the correct next file or ends the experiment.
     try {
+      $userStore.bonus = $userStore.bonus + globalVars.bonusPerRecording;
+      await updateUser($userStore);
       if ($userStore.currentTrial - 1 === globalVars.numRecordings) {
         dispatch('finished');
       } else {

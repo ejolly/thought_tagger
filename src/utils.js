@@ -163,9 +163,12 @@ export const initUser = async () => {
       consent_start: serverTime,
       currentState: 'consent',
       quizState: 'overview',
+      tutorialComplete: false,
+      tutorialStep: 0,
       currentTrial: 1,
       quizAttempts: 0,
       quizPassed: false,
+      bonus: 0,
       trials: {},
       trialOrder,
     });

@@ -72,7 +72,15 @@ with properties set to ensure that user understands how to complete the task whi
     },
     {
       title: 'Begin HIT',
-      content: `<p>Perfect! You are now eligible to tag more recordings. You will earn a <strong>$${globalVars.bonusPerRecording}</strong> bonus for each additional recording you tag thoughts for. Otherwise you can complete this HIT and earn your payment (<strong>$${globalVars.basePayment}</strong>) without any bonuses. Please select your preference below </p>`,
+      content: `<p>Perfect! You are now eligible to tag more recordings. You will earn a <strong>$${
+        globalVars.bonusPerRecording
+      }</strong> bonus for each additional recording you tag thoughts for. You will be able to tag up to <strong>${
+        globalVars.numRecordings
+      } recordings</strong> earning a potentional total bonus of <strong>$${
+        globalVars.bonusPerRecording * globalVars.numRecordings
+      }.</strong> You will also be able to stop working and submit this HIT at any time using the green <em>I'm finished</em> button that will appear at the bottom of the screen.<br/><br/><strong>Make sure to click the <em>Next</em> button once you are finished tagging and answering questions for a recording otherwise your work will not count towards your bonus payment!</strong><br/><br/> Alternatively you can submit this HIT now and earn your base payment (<strong>$${
+        globalVars.basePayment
+      }</strong>) without any bonuses. Please select your preference below </p>`,
       state: 'readyForExperiment',
     },
   ];
@@ -117,24 +125,17 @@ with properties set to ensure that user understands how to complete the task whi
   let modalOpen = true; // always start with open tutorial
   let numSegments = 0; // keep track of the number of tagged thoughts
   const hasTutorial = true; // tell ThoughtTagger there is a tutorial it needs to communicate with
-  let tutorialComplete = false; // tell Tutorial where to hide progress buttons based on tutorial state; this changes when a quiz is first attempted
-  let tutorialStep = 0; // stage of tutorial
   // Reactive listener for printing current tutorial step
-  $: console.log(`Current tutorial step: ${tutorialStep}`);
+  $: console.log(`Current tutorial step: ${$userStore.tutorialStep}`);
 
   // COMPONENT LOGIC
   // -------------------------------------------
-  // Tutorial Component triggered functions
-  const updateTutorialState = (ev) => {
-    tutorialStep = ev.detail.tutorialStep;
-  };
-
   // new function to ensure modal pops open if help is closed upon success
   const quizSuccess = async () => {
     $userStore.quizState = 'readyForExperiment';
+    $userStore.tutorialComplete = true;
     await updateUser($userStore);
     modalOpen = true;
-    tutorialComplete = true;
   };
 
   // ThoughtTagger Component triggered functions
@@ -148,15 +149,16 @@ with properties set to ensure that user understands how to complete the task whi
     } else {
       $userStore.quizState = 'pass';
     }
+    $userStore.tutorialComplete = true;
     await updateUser($userStore);
     modalOpen = true;
-    tutorialComplete = true;
   };
 
-  const updateSegmentsCount = (ev) => {
+  const updateSegmentsCount = async (ev) => {
     numSegments = ev.detail.numSegments;
     if (ev.detail.moveForward) {
-      tutorialStep += 1;
+      $userStore.tutorialStep = $userStore.tutorialStep + 1;
+      await updateUser($userStore);
     }
   };
 
@@ -185,18 +187,14 @@ with properties set to ensure that user understands how to complete the task whi
   <Tutorial
     {modalOpen}
     {tutorial}
-    {tutorialStep}
-    {tutorialComplete}
     {quiz}
     {numSegments}
-    on:stateChange={updateTutorialState}
     on:toggleTutorial={() => (modalOpen = !modalOpen)}
     on:finishedComplete
     on:finishedContinue />
   <ThoughtTagger
     {src}
     {hasTutorial}
-    {tutorialStep}
     {quizAnswers}
     on:updateSegmentsCount={updateSegmentsCount}
     on:quizAttempt={quizAttempt}

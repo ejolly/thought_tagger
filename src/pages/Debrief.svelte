@@ -2,7 +2,14 @@
 <script>
   // IMPORTS
   // -------------------------------------------
-  import { db, params, serverTime, userStore, updateUser } from '../utils.js';
+  import {
+    db,
+    params,
+    serverTime,
+    userStore,
+    updateUser,
+    globalVars,
+  } from '../utils.js';
 
   // COMPONENT VARIABLES
   // -------------------------------------------
@@ -61,8 +68,15 @@
 <div class="container">
   <div class="columns is-centered">
     <div class="column is-three-quarters">
-      <p class="title is-3 has-text-centered">Thank You For Participating!</p>
-      <p class="subtitle is-6 has-text-centered">
+      <p class="title is-3 has-text-centered is-spaced">
+        Thank You For Participating!
+      </p>
+      <p class="subtitle is-5 has-text-centered">
+        <strong
+          >You earned a total of ${globalVars.basePayment +
+            $userStore.bonus}</strong>
+      </p>
+      <p class="is-6 has-text-centered">
         <em>All questions are optional</em>
       </p>
       <form name="mturk" action={submitURL} method="POST">
