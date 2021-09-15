@@ -39,6 +39,7 @@
   ) {
     // 2) WorkedId, assignmentId, and hitID so the HIT was accepted
     initExperiment = true;
+    currentState = 'mturk'; // this it just to disable the non-mturk and preview-mturk logic guards in the HTML below. The real experiment makes use of the $userStore.currentState
   } else {
     // 3) No URL params so the app was navigated to from outside of mturk
     currentState = 'non-mturk';
@@ -135,9 +136,7 @@
 
 <!-- Core state management ("client-side router") that determines what a user sees -->
 <section class="section">
-  {#if !$userStore.currentState}
-    <Loading>Loading...</Loading>
-  {:else if $userStore.currentState === 'non-mturk'}
+  {#if currentState === 'non-mturk'}
     <h1 class="title">Oops</h1>
     <p>
       It seems you are accessing this app without an mturk referral. If you
@@ -145,13 +144,15 @@
       <code>npm run dev</code>
       .
     </p>
+  {:else if currentState === 'mturk-preview'}
+    <MturkPreview />
+  {:else if !$userStore.currentState}
+    <Loading>Loading...</Loading>
   {:else if $userStore.currentState === 'completed'}
     <h1 class="title">Completed</h1>
     <p>
       This HIT is no longer available because you have already completed it.
     </p>
-  {:else if $userStore.currentState === 'mturk-preview'}
-    <MturkPreview />
   {:else if $userStore.currentState === 'consent'}
     <Consent
       on:consent={() => updateState('instructions')}
