@@ -2,7 +2,7 @@
 <script>
   import { globalVars } from '../utils.js';
 
-  const ad = `In this HIT you will be asked to listen to multiple 2-minute recordings and identify complete thoughts within each recording. You will earn a <strong>base payment of $${globalVars.basePayment}</strong> for completing the instructions and comprehension quiz, irrespective of whether you pass the quiz. Then you will be given the choice to identify thoughts in additional recordings to earn <strong>bonus payments of $${globalVars.bonusPerRecording}0 per additional recording</strong> you complete. If you would like to participate, please accept this HIT!<br/><br/>`;
+  const ad = `In this HIT you will be asked to listen to multiple 2-minute recordings and identify complete thoughts within each recording. You will earn a <strong>base payment of $${globalVars.basePayment}</strong> for completing the instructions and comprehension quiz, irrespective of whether you pass the quiz. Then you will be given the choice to identify thoughts in additional recordings to earn <strong>bonus payments of $${globalVars.bonusPerRecording} per additional recording</strong> you complete. If you would like to participate, please accept this HIT!<br/><br/>`;
 </script>
 
 <style>

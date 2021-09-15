@@ -10,9 +10,11 @@
     updateUser,
     globalVars,
   } from '../utils.js';
+  import { createEventDispatcher } from 'svelte';
 
   // COMPONENT VARIABLES
   // -------------------------------------------
+  const dispatch = createEventDispatcher();
   let submitURL = params.turkSubmitTo + '/mturk/externalSubmit';
   let age = '';
   let feedback = '';
@@ -44,10 +46,9 @@
     $userStore.handed = handed;
     $userStore.feedback = feedback;
     $userStore.HIT_complete = serverTime;
-    $userStore.currentState = 'completed';
     await updateUser($userStore);
     console.log('exit survey added successfully');
-    window.top.postMessage('finished', '*');
+    // dispatch('submit');
     console.log('back to MTurk!');
   };
 </script>
@@ -79,7 +80,7 @@
       <p class="is-6 has-text-centered">
         <em>All questions are optional</em>
       </p>
-      <form name="mturk" action={submitURL} method="POST">
+      <form name="mturk" id="form" action={submitURL} method="POST">
         <input
           type="hidden"
           name="assignmentId"
