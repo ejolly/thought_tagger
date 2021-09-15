@@ -70,10 +70,6 @@
     }
   };
 
-  const completeHIT = async () => {
-    $userStore.currentState = 'completed';
-    await updateUser($userStore);
-  };
   // SETUP USER DATA SUBSCRIPTION
   // If we're in situation 2 above (i.e. initExperiment) then handle firebase auth
   // Check to see if there's an existing user and doc under

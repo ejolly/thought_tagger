@@ -10,11 +10,9 @@
     updateUser,
     globalVars,
   } from '../utils.js';
-  import { createEventDispatcher } from 'svelte';
 
   // COMPONENT VARIABLES
   // -------------------------------------------
-  const dispatch = createEventDispatcher();
   let submitURL = params.turkSubmitTo + '/mturk/externalSubmit';
   let age = '';
   let feedback = '';
@@ -36,6 +34,7 @@
   // COMPONENT LOGIC
   // -------------------------------------------
   // Update completion status in firebase and submit the HIT to mturk using the recommended external HIT strategy of posting a form from within the iframe to the external window
+  // We don't update the user state here because we encounter a race condition where the UI updates as the $userStore.currentState now equal 'complete' so the form is gone and can't be submitted
   const submitHIT = async () => {
     $userStore.age = age;
     $userStore.sex = sex;
@@ -48,7 +47,6 @@
     $userStore.HIT_complete = serverTime;
     await updateUser($userStore);
     console.log('exit survey added successfully');
-    // dispatch('submit');
     console.log('back to MTurk!');
   };
 </script>
