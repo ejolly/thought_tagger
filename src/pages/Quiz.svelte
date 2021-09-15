@@ -35,7 +35,7 @@ with properties set to ensure that user understands how to complete the task whi
     {
       title: 'Tagging Thoughts',
       content:
-        'Notice how this added a row to the table along with markers to the visual display above. The <span class="has-text-weight-bold has-text-grey">start marker (light grey)</span> indicates the beginning of a tag based on your current position in the audio file. The <span class="has-text-weight-bold has-text-grey-darker">end marker (dark grey)</span> indicates the end of a tag and defaults to 5 seconds after the start marker. <br><br>You should edit these times to match when when you think a new thought begins and when that same thought ends. To edit these times first select this thought by <strong>clicking on its row</strong> within the table. Then <strong>drag the markers</strong> in the display above to make an adjustment. Notice how the values in the table change in sync with your actions in the display above. You can also delete a tag or play audio within a tag verify your work using the buttons that appear. After you finish editing just click on the same row in the table or in the surrounding whitespace to deselect it.',
+        'Notice how this added a <strong>row to the table</strong> along with markers to the visual display above. The <span class="has-text-weight-bold has-text-grey">start marker (light grey)</span> indicates the beginning of a tag based on your current position in the audio file. The <span class="has-text-weight-bold has-text-grey-darker">end marker (dark grey)</span> indicates the end of a tag and defaults to 5 seconds after the start marker. <br><br>You should edit these times to match when when you think a new thought begins and when that same thought ends. To edit these times first select this thought by <strong>clicking on its row within the table</strong>. This will automatically move the player to the start time of this thought. Then <strong>drag the markers</strong> in the top display using the square notch to make an adjustment. Notice how the values in the table change in sync with your actions in the display above. You can also delete a tag or play audio within a tag to verify your work using the buttons that appear. After you finish editing just click on the same row in the table to deselect it. Deselecting a row will automatically move the player to the end time of this thought.',
       state: 'overview',
     },
     {
@@ -47,7 +47,7 @@ with properties set to ensure that user understands how to complete the task whi
     {
       title: 'Comprehension Check',
       content:
-        '<p>You now know how to use the controls and what constitutes a complete thought. Try to identify <strong>one more thought</strong> within this audio file to continue. We will verify your tags to determine your eligibility to continue with this HIT and earn a bonus payment for tagging more files. If you fail to correctly identify these thoughts you will be paid for the HIT but will not be permitted to continute tagging.</p><br><p>You can bring up and toggle through this guide by clicking the <strong>help icon</strong> next to the audio controls.</p>',
+        '<p>You now know how to use the controls and what constitutes a complete thought. Try to identify <strong>two more thoughts</strong> within this audio file to continue. We will verify your tags to determine your eligibility to continue with this HIT and earn a bonus payment for tagging more files. If you fail to correctly identify these thoughts you will be paid for the HIT but will not be permitted to continute tagging.</p><br><p>You can bring up and toggle through this guide by clicking the <strong>help icon</strong> next to the audio controls.</p>',
       state: 'overview',
     },
   ];
@@ -72,7 +72,7 @@ with properties set to ensure that user understands how to complete the task whi
     },
     {
       title: 'Begin HIT',
-      content: `<p>Perfect! You are now eligible to tag more recordings. You will earn a <strong>$${globalVars.bonusPerRecording}</strong> bonus for each additional recording you tag thoughts for. Otherwise you can complete this HIT and earn your payment without any bonuses. Please select your preference below </p>`,
+      content: `<p>Perfect! You are now eligible to tag more recordings. You will earn a <strong>$${globalVars.bonusPerRecording}</strong> bonus for each additional recording you tag thoughts for. Otherwise you can complete this HIT and earn your payment (<strong>$${globalVars.basePayment}</strong>) without any bonuses. Please select your preference below </p>`,
       state: 'readyForExperiment',
     },
   ];
@@ -119,6 +119,8 @@ with properties set to ensure that user understands how to complete the task whi
   const hasTutorial = true; // tell ThoughtTagger there is a tutorial it needs to communicate with
   let tutorialComplete = false; // tell Tutorial where to hide progress buttons based on tutorial state; this changes when a quiz is first attempted
   let tutorialStep = 0; // stage of tutorial
+  // Reactive listener for printing current tutorial step
+  $: console.log(`Current tutorial step: ${tutorialStep}`);
 
   // COMPONENT LOGIC
   // -------------------------------------------

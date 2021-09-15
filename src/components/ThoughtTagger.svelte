@@ -116,6 +116,8 @@ use of the peaks.js waveform visualizer. -->
       peaksInstance.player.seek(7.4);
       segments = peaksInstance.segments.getSegments();
       segmentPrevMax += 1;
+    } else if (hasTutorial && tutorialStep == 2) {
+      peaksInstance.player.seek(0);
     }
   }
   // General purpose function to call event dispatcher if this component knows theres a tutorial component it should be working in tandem with
@@ -255,12 +257,19 @@ use of the peaks.js waveform visualizer. -->
     const rows = document.getElementsByClassName('table-row');
     // Get click row
     const row = ev.target.parentNode;
+    // Save the segment id
+    selectedSegmentId =
+      parseInt(row.querySelector('td.segment-id').innerText, 10) - 1;
+    selectedSegmentId = `peaks.segment.${selectedSegmentId.toString()}`;
+    const segment = peaksInstance.segments.getSegment(selectedSegmentId);
     // If clicked row already has class unselected it and all other rows
     if (row.className === 'table-row is-selected') {
       for (const r of rows) {
         r.className = 'table-row';
       }
       rowSelected = false;
+      // Seek to the start of that segment
+      peaksInstance.player.seek(segment.endTime);
     } else {
       // Otherwise unselect everything else first then select this one
       for (const r of rows) {
@@ -268,20 +277,9 @@ use of the peaks.js waveform visualizer. -->
       }
       row.className += ' is-selected';
       rowSelected = true;
+      // Seek to the start of that segment
+      peaksInstance.player.seek(segment.startTime);
     }
-    // Save the segment id
-    selectedSegmentId =
-      parseInt(row.querySelector('td.segment-id').innerText, 10) - 1;
-    selectedSegmentId = `peaks.segment.${selectedSegmentId.toString()}`;
-  }
-
-  // Clear any row selection by clicking within the containing div
-  function deselectRows() {
-    const rows = document.getElementsByClassName('table-row');
-    for (const r of rows) {
-      r.className = 'table-row';
-    }
-    rowSelected = false;
   }
 
   // Play a selected segment on button click
@@ -531,13 +529,13 @@ use of the peaks.js waveform visualizer. -->
       </div>
     </div>
   {:else}
-    <!-- Table row only if rating now displayed -->
+    <!-- Table row only if rating not displayed -->
     <div
       class="columns is-centered"
       class:blur={hasTutorial && tutorialStep < 2}>
       <div class="column is-full has-text-centered">
         {#if segments && segments.length}
-          <div class="table-container" on:click|self={deselectRows}>
+          <div class="table-container">
             <table class="table is-hoverable">
               <thead>
                 <tr>
