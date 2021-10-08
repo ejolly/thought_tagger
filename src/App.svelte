@@ -70,6 +70,11 @@
     }
   };
 
+  const submitHIT = async (ev) => {
+    $userStore.submitted = true;
+    await updateUser($userStore);
+    await fetch(ev.detail.submitURL, { method: 'POST' });
+  };
   // SETUP USER DATA SUBSCRIPTION
   // If we're in situation 2 above (i.e. initExperiment) then handle firebase auth
   // Check to see if there's an existing user and doc under
@@ -148,7 +153,7 @@
     <MturkPreview />
   {:else if !$userStore.currentState}
     <Loading>Loading...</Loading>
-  {:else if $userStore.currentState === 'completed'}
+  {:else if $userStore.submitted}
     <h1 class="title">Completed</h1>
     <p>
       This HIT is no longer available because you have already completed it.
@@ -166,7 +171,7 @@
   {:else if $userStore.currentState === 'experiment'}
     <Experiment on:finished={() => updateState('debrief')} />
   {:else if $userStore.currentState === 'debrief'}
-    <Debrief />
+    <Debrief on:submit={submitHIT} />
   {:else if $userStore.currentState === 'noConsent'}
     <ReturnHIT />
   {/if}

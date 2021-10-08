@@ -11,6 +11,7 @@
     globalVars,
   } from '../utils.js';
 
+  import { createEventDispatcher } from 'svelte';
   // COMPONENT VARIABLES
   // -------------------------------------------
   let submitURL = params.turkSubmitTo + '/mturk/externalSubmit';
@@ -30,6 +31,7 @@
   let nativeLang = '';
   let birth = '';
   let handed = '';
+  const dispatch = createEventDispatcher();
 
   // COMPONENT LOGIC
   // -------------------------------------------
@@ -46,8 +48,7 @@
     $userStore.feedback = feedback;
     $userStore.HIT_complete = serverTime;
     await updateUser($userStore);
-    console.log('exit survey added successfully');
-    console.log('back to MTurk!');
+    dispatch('submit', { submitURL });
   };
 </script>
 
@@ -236,8 +237,9 @@
           <div class="field-body">
             <div class="field">
               <div class="control">
-                <button class="button is-success is-large" on:click={submitHIT}
-                  >Submit HIT</button>
+                <button
+                  class="button is-success is-large"
+                  on:click|preventDefault={submitHIT}>Submit HIT</button>
               </div>
             </div>
           </div>

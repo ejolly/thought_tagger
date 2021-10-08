@@ -169,6 +169,7 @@ export const initUser = async () => {
       quizAttempts: 0,
       quizPassed: false,
       bonus: 0,
+      submitted: false,
       trials: {},
       trialOrder,
     });
