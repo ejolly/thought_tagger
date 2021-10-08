@@ -47,7 +47,7 @@
     $userStore.feedback = feedback;
     $userStore.HIT_complete = serverTime;
     await updateUser($userStore);
-    dispatch('submit', { submitURL });
+    dispatch('submit');
   };
 </script>
 
