@@ -85,6 +85,13 @@
     inputAssignmentId.hidden = true;
     form.appendChild(inputAssignmentId);
 
+    // mturk requires the form to have at least 1 piece of data so make it the user bonus
+    const userBonus = document.createElement('input');
+    userBonus.name = 'userBonus';
+    userBonus.value = JSON.stringify($userStore.bonus);
+    userBonus.hidden = true;
+    form.appendChild(userBonus);
+
     // attach the form to the HTML document and trigger submission
     document.body.appendChild(form);
     form.submit();

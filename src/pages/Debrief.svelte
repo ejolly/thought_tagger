@@ -78,13 +78,7 @@
       <p class="is-6 has-text-centered">
         <em>All questions are optional</em>
       </p>
-      <form name="mturk" id="form">
-        <input
-          type="hidden"
-          name="assignmentId"
-          id="assignmentId"
-          value={params.assignmentId} />
-        <input type="hidden" name="dummy_input_DONT_REMOVE" value="1" />
+      <form name="debrief" id="form">
         <div class="field is-horizontal">
           <div class="field-label is-normal">
             <label class="label">Age</label>
