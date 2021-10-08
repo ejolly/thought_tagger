@@ -71,8 +71,8 @@
   };
 
   const submitHIT = async (ev) => {
-    $userStore.submitted = true;
-    await updateUser($userStore);
+    // Now we update the app state to the complete screen and upon doing so create an invisible form and submit that. Since this function is only triggered on the submit event from Debrief.svelte, it only occurs once. So if a user tries to return to the app again, they will see the completion screen but the logic for creating and submitting a form won't execute, thus blocking them from repeat participation.
+    await updateState('complete');
     // create the form element and point it to the correct endpoint
     const form = document.createElement('form');
     form.action = params.turkSubmitTo + '/mturk/externalSubmit';
@@ -175,8 +175,8 @@
     <MturkPreview />
   {:else if !$userStore.currentState}
     <Loading>Loading...</Loading>
-  {:else if $userStore.submitted}
-    <h1 class="title">Completed</h1>
+  {:else if $userStore.currentState === 'complete'}
+    <h1 class="title">Thank You for Participating!</h1>
     <p>
       This HIT is no longer available because you have already completed it.
     </p>

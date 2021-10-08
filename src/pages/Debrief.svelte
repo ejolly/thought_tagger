@@ -34,8 +34,11 @@
 
   // COMPONENT LOGIC
   // -------------------------------------------
-  // Update completion status in firebase and submit the HIT to mturk using the recommended external HIT strategy of posting a form from within the iframe to the external window
-  // We don't update the user state here because we encounter a race condition where the UI updates as the $userStore.currentState now equal 'complete' so the form is gone and can't be submitted
+  // Write the debrief form data to firebase and then notify App.svelte we're ready to submit to mturk. We don't do the submission here for 2 reasons that cause a race condition:
+  // 1) Submitting an external form is analgous to navigating away from the current URL which means that no further component logic (e.g. writing to firebase) can occur after the form is submitted. This make it impossible to write to firebase that the user has completed the HIT so they can't participate again in the future.
+  // 2) Updating the user status in firebase changes the app state instantly because we want to prevent repeat participation. But that means this component gets destroyed and thus the form DOM element gets destroyed and we can't submit anything. The DOM element must exist in some form to make submission possible.
+  // The race condition is basically: if we submit first, we can't update firebase to prevent repeat participantion; if we update firebase we lose the form and can't submit
+  // Solution: Write the debrief data to firebase, but don't update the app state or submit anything to mturk. Instead dispatch a notification to App.svelte which will handle it in submitHIT(). See that function for more details.
   const submitHIT = async () => {
     $userStore.age = age;
     $userStore.sex = sex;
@@ -45,7 +48,6 @@
     $userStore.birth = birth;
     $userStore.handed = handed;
     $userStore.feedback = feedback;
-    $userStore.HIT_complete = serverTime;
     await updateUser($userStore);
     dispatch('submit');
   };
