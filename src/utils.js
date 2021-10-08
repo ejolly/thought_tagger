@@ -10,7 +10,7 @@ export const globalVars = {
   bonusPerRecording: 1.0,
   basePayment: 0.5,
   maxQuizAttempts: 2,
-  numRecordings: 3,
+  numRecordings: 10,
 };
 
 const firebaseConfig = {

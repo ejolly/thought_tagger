@@ -107,12 +107,18 @@ use of the peaks.js waveform visualizer. -->
   // Reactive listener that adds in an example tag when users reach step 4 of the tutorial
   $: {
     if (hasTutorial && $userStore.tutorialStep === 4 && segments.length === 1) {
+      // Add correct example segment
       peaksInstance.segments.add({
         startTime: 7.4,
         endTime: 21,
         labelText: `Thought ${(segmentPrevMax + 1).toString()}`,
         editable: true,
       });
+
+      // Adjust first tag user made so it doesn't mess up their quiz
+      const seg1 = peaksInstance.segments.getSegments()[0];
+      seg1.update({ startTime: 1.9, endTime: 7.39 });
+
       peaksInstance.player.seek(7.4);
       segments = peaksInstance.segments.getSegments();
       segmentPrevMax += 1;
@@ -198,7 +204,7 @@ use of the peaks.js waveform visualizer. -->
   const submitTags = async () => {
     if (!segments || (segments && segments.length <= 2)) {
       alert('Please tag a few more thoughts');
-    } else if (!audioFinished) {
+    } else if (!audioFinished && !hasTutorial) {
       alert(
         'Please listen to the ENTIRE audio recording before submitting your tags'
       );
