@@ -73,8 +73,23 @@
   const submitHIT = async (ev) => {
     $userStore.submitted = true;
     await updateUser($userStore);
-    await fetch(ev.detail.submitURL, { method: 'POST' });
+    // create the form element and point it to the correct endpoint
+    const form = document.createElement('form');
+    form.action = params.turkSubmitTo + '/mturk/externalSubmit';
+    form.method = 'post';
+
+    // attach the assignmentId
+    const inputAssignmentId = document.createElement('input');
+    inputAssignmentId.name = 'assignmentId';
+    inputAssignmentId.value = params.assignmentId;
+    inputAssignmentId.hidden = true;
+    form.appendChild(inputAssignmentId);
+
+    // attach the form to the HTML document and trigger submission
+    document.body.appendChild(form);
+    form.submit();
   };
+
   // SETUP USER DATA SUBSCRIPTION
   // If we're in situation 2 above (i.e. initExperiment) then handle firebase auth
   // Check to see if there's an existing user and doc under

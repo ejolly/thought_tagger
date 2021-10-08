@@ -14,7 +14,6 @@
   import { createEventDispatcher } from 'svelte';
   // COMPONENT VARIABLES
   // -------------------------------------------
-  let submitURL = params.turkSubmitTo + '/mturk/externalSubmit';
   let age = '';
   let feedback = '';
   let sex = '';
@@ -79,7 +78,7 @@
       <p class="is-6 has-text-centered">
         <em>All questions are optional</em>
       </p>
-      <form name="mturk" id="form" action={submitURL} method="POST">
+      <form name="mturk" id="form">
         <input
           type="hidden"
           name="assignmentId"
