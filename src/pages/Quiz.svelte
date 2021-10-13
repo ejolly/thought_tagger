@@ -17,7 +17,7 @@ with properties set to ensure that user understands how to complete the task whi
     {
       title: 'Overview',
       content:
-        '<p>This brief tutorial will introduce you to the interface you will use to complete the task.</p><br/><p><em>Feel free to drag and reposition this popup as you progress through each step of the tutorial.</em></p>',
+        '<p>This brief tutorial will introduce you to the interface you will use to complete the task.</p><p><strong>Please disable any ad-blocker to ensure the interface works properly!</strong></p><br/><p><em>Feel free to drag and reposition this popup as you progress through each step of the tutorial.</em></p>',
       state: 'overview',
     },
     {

@@ -463,7 +463,8 @@ use of the peaks.js waveform visualizer. -->
                 <button
                   class="button is-danger is-large"
                   class:is-invisible={!rowSelected}
-                  on:click={deleteSegment}>
+                  on:click={deleteSegment}
+                  disabled={hasTutorial && $userStore.tutorialStep < 5}>
                   Delete
                 </button>
               </div>
