@@ -2,15 +2,13 @@ module.exports = {
   extends: 'airbnb-base',
   parserOptions: {
     ecmaVersion: 2019,
-    sourceType: 'module'
+    sourceType: 'module',
   },
   env: {
     es6: true,
-    browser: true
+    browser: true,
   },
-  plugins: [
-    'svelte3'
-  ],
+  plugins: ['svelte3'],
   rules: {
     'no-var': 1,
     'no-console': 0,
@@ -30,13 +28,11 @@ module.exports = {
     'no-return-assign': 0,
     'no-param-reassign': 0,
     'implicit-arrow-linebreak': 0,
-    'operator-linebreak': 0
+    'operator-linebreak': 0,
   },
   overrides: [
     {
-      files: [
-        '**/*.svelte'
-      ],
+      files: ['**/*.svelte'],
       rules: {
         'import/no-duplicates': 0,
         'import/first': 0,
@@ -44,9 +40,9 @@ module.exports = {
         'import/no-unresolved': 0,
         'import/no-extraneous-dependencies': 0,
         'import/extensions': 0,
-        'no-unused-vars': 1
+        'no-unused-vars': 1,
       },
-      processor: 'svelte3/svelte3'
-    }
-  ]
+      processor: 'svelte3/svelte3',
+    },
+  ],
 };
