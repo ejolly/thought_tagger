@@ -9,8 +9,9 @@ import { writable } from 'svelte/store';
 export const globalVars = {
   bonusPerRecording: 1.0,
   basePayment: 0.5,
-  maxQuizAttempts: 2,
+  maxQuizAttempts: 3,
   numRecordings: 10,
+  quizAnswerBuffer: 5,
 };
 
 const firebaseConfig = {

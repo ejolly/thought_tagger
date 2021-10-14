@@ -41,7 +41,7 @@ with properties set to ensure that user understands how to complete the task whi
     {
       title: 'Example Thought',
       content:
-        "We have now added a second tag to provide a concrete example of a <strong>correctly tagged thought.</strong> Try clicking on the second row and playing the thought to hear it. Notice that even though the speaker made multiple pauses and disfluencies ('umm', 'ah') and even restarted their sentence half-way through, this entire segment constitutes a single thought describing the character. When tagging thoughts on your own, take care to identify segments like this one that may extend across natural pauses and interruptions in the speaker's speech. Other thoughts, may be easier to identify as they more closely follow natural speech breaks.",
+        "We have now adjusted the times of this tag and added a second tag to provide concrete examples of a <strong>correctly tagged thoughts.</strong> Try clicking on each row and playing the thought to hear it. Notice that even though the speaker made multiple pauses and disfluencies ('umm', 'ah') and even restarted their sentence half-way through, each tag consists of a <strong>single complete idea</strong> about the character. When tagging thoughts on your own, take care to identify segments like these that may extend across natural pauses and interruptions in the speaker's speech. Other thoughts, may be easier to identify as they more closely follow natural speech breaks.",
       state: 'overview',
     },
     {
@@ -60,9 +60,8 @@ with properties set to ensure that user understands how to complete the task whi
     },
     {
       title: 'Try Again',
-      content:
-        '<p>Hmm your tags are not quite what we are looking for. Please adjust your tags and click Done to try verifying your responses again. <br><br> You will only have <strong>1 more chance</strong> to identify the correct tags before you forfeit any bonus payments. Use the help button next to the audio controls to close this guide.</p>',
-      state: 'firstattempt',
+      content: `<p>Hmm your tags are not quite what we are looking for. We have highlighted the errors in red to distinguish which start and end times are incorrect. Please adjust your tags and click Done to try verifying your responses again.</p> <br><br>`,
+      state: 'attempt',
     },
     {
       title: 'Ineligible',
@@ -144,7 +143,7 @@ with properties set to ensure that user understands how to complete the task whi
       if ($userStore.quizAttempts === globalVars.maxQuizAttempts) {
         $userStore.quizState = 'fail';
       } else {
-        $userStore.quizState = 'firstattempt';
+        $userStore.quizState = 'attempt';
       }
     } else {
       $userStore.quizState = 'pass';
@@ -190,6 +189,7 @@ with properties set to ensure that user understands how to complete the task whi
     {quiz}
     {numSegments}
     on:toggleTutorial={() => (modalOpen = !modalOpen)}
+    on:finishedTutorial
     on:finishedComplete
     on:finishedContinue />
   <ThoughtTagger

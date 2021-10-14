@@ -4,7 +4,13 @@ and workers in conjunction with ThoughtTagger.svelte  -->
   // IMPORTS
   // -------------------------------------------
   import { createEventDispatcher } from 'svelte';
-  import { db, serverTime, userStore, updateUser } from '../utils.js';
+  import {
+    globalVars,
+    db,
+    serverTime,
+    userStore,
+    updateUser,
+  } from '../utils.js';
 
   // INPUTS FROM PARENT COMPONENT
   // -------------------------------------------
@@ -36,10 +42,10 @@ and workers in conjunction with ThoughtTagger.svelte  -->
   let modalXOffset = 0;
   let modalYOffset = 0;
   let dragActive = false;
-  $: down = $userStore.tutorialStep === 1;
-  $: up = $userStore.tutorialStep === 2 || $userStore.quizState === 'pass';
-  $: right = $userStore.tutorialStep === 3 || $userStore.tutorialStep === 1;
-  $: upp = $userStore.tutorialStep === 3;
+  // $: down = $userStore.tutorialStep === 1;
+  // $: up = $userStore.tutorialStep === 2 || $userStore.quizState === 'pass';
+  // $: right = $userStore.tutorialStep === 3 || $userStore.tutorialStep === 1;
+  // $: upp = $userStore.tutorialStep === 3;
 
   const dispatch = createEventDispatcher();
 
@@ -58,6 +64,13 @@ and workers in conjunction with ThoughtTagger.svelte  -->
       $userStore.tutorialStep + 1,
       tutorial.length - 1
     );
+    // Request a state change to the quiz once they hit the last step of the tutorial. This doesn't provoke a UI change, but lets us log different durations for the tutorial vs the actual quiz
+    if (
+      $userStore.tutorialStep === 5 &&
+      $userStore.currentState === 'tutorial'
+    ) {
+      dispatch('finishedTutorial');
+    }
     await updateUser($userStore);
   };
 
@@ -122,6 +135,11 @@ and workers in conjunction with ThoughtTagger.svelte  -->
     </header>
     <section class="modal-card-body">
       {@html modalContent}
+      {#if $userStore.quizState === 'attempt'}
+        You will only have <strong
+          >{globalVars.maxQuizAttempts - $userStore.quizAttempts} more chance(s)
+          to identify the correct tags before you forfeit any bonus payments.</strong>
+      {/if}
     </section>
     <footer class="modal-card-foot">
       {#if !$userStore.tutorialComplete}
@@ -162,7 +180,7 @@ and workers in conjunction with ThoughtTagger.svelte  -->
             Do bonus work
           </button>
         </p>
-      {:else if $userStore.quizState === 'firstattempt'}
+      {:else if $userStore.quizState === 'attempt'}
         <p class="card-footer-item">
           <button
             class="button is-link"

@@ -185,9 +185,10 @@
       on:consent={() => updateState('instructions')}
       on:reject={() => updateState('noConsent')} />
   {:else if $userStore.currentState === 'instructions'}
-    <Instructions on:finished={() => updateState('quiz')} />
-  {:else if $userStore.currentState === 'quiz'}
+    <Instructions on:finished={() => updateState('tutorial')} />
+  {:else if $userStore.currentState === 'tutorial' || $userStore.currentState == 'quiz'}
     <Quiz
+      on:finishedTutorial={() => updateState('quiz')}
       on:finishedComplete={() => updateState('debrief')}
       on:finishedContinue={() => updateState('experiment')} />
   {:else if $userStore.currentState === 'experiment'}

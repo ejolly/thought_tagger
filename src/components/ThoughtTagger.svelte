@@ -7,6 +7,7 @@ use of the peaks.js waveform visualizer. -->
   import Peaks from 'peaks.js';
   import { onMount, createEventDispatcher } from 'svelte';
   import {
+    globalVars,
     db,
     serverTime,
     userStore,
@@ -122,7 +123,7 @@ use of the peaks.js waveform visualizer. -->
       peaksInstance.player.seek(7.4);
       segments = peaksInstance.segments.getSegments();
       segmentPrevMax += 1;
-    } else if (hasTutorial && $userStore.tutorialStep == 2) {
+    } else if (hasTutorial && $userStore.tutorialStep === 2) {
       peaksInstance.player.seek(0);
     }
   }
@@ -143,20 +144,25 @@ use of the peaks.js waveform visualizer. -->
     }
   };
 
+  // We have to strip-out the extra properties that segment objects have (e.g. like waveform color) because firebase doesn't like that. Plus we only care about start and end times
+  const parseThoughts = () => {
+    const toSave = {};
+    segments.forEach((obj) => {
+      toSave[obj._id.replace(/\./g, '_')] = {
+        startTime: obj._startTime,
+        endTime: obj._endTime,
+      };
+    });
+    return toSave;
+  };
+
   // Grab the start and end time for each thought and save them into firebase
   const finish = async () => {
     if (hasTutorial) {
       communicateData('finished');
     } else {
-      // We have to strip-out the extra properties that segment objects have (e.g. like waveform color) because firebase doesn't like that. Plus we only care about start and end times
-      const toSave = {};
-      segments.forEach((obj) => {
-        toSave[obj._id.replace(/\./g, '_')] = {
-          startTime: obj._startTime,
-          endTime: obj._endTime,
-        };
-      });
       // Create a dictionary of data to save with the key being the current filename, e.g. 's07_TamyTaylor.wav' and the value being a dict with key:vals for each rating made by the user (clarity, confidence, etc) as well as attributes of the file. A special key called 'thoughts' contains the data of interest which is itself a dict of the thoughts for this recording.
+      const toSave = parseThoughts();
       $userStore['trials'][fileName] = {
         subject: subjectId,
         character: character.slice(0, character.length - 4),
@@ -176,27 +182,46 @@ use of the peaks.js waveform visualizer. -->
 
   // Check the user tags are close enough the correct tags
   const verifyTags = async () => {
-    const nearestValue = (arr, val) =>
-      arr.reduce(
-        (p, n) => (Math.abs(p) > Math.abs(n - val) ? n - val : p),
-        Infinity
-      ) + val;
+    // const nearestValue = (arr, val) =>
+    //   arr.reduce(
+    //     (p, n) => (Math.abs(p) > Math.abs(n - val) ? n - val : p),
+    //     Infinity
+    //   ) + val;
+    const rows = document.getElementsByClassName('table-row');
     const check = [];
-    let match;
+    let startMatch;
+    let endMatch;
     const correctStartTimes = quizAnswers.map((obj) => obj.startTime);
     const correctEndTimes = quizAnswers.map((obj) => obj.endTime);
+    // Only check the 3rd and 4th entries since we gave them the first 2
     for (const [i, obj] of segments.entries()) {
-      match =
-        nearestValue(correctStartTimes, obj.startTime) ===
-          correctStartTimes[i] &&
-        nearestValue(correctEndTimes, obj.endTime) === correctEndTimes[i];
-      check.push(match);
+      // Check if their start and end times are within the range we expect
+      if (i > 1) {
+        let minStart = correctStartTimes[i] - globalVars.quizAnswerBuffer;
+        let maxStart = correctStartTimes[i] + globalVars.quizAnswerBuffer;
+        let minEnd = correctEndTimes[i] - globalVars.quizAnswerBuffer;
+        let maxEnd = correctEndTimes[i] + globalVars.quizAnswerBuffer;
+
+        startMatch = minStart <= obj.startTime && obj.startTime <= maxStart;
+        startMatch ? null : (rows[i].children[1].style.color = 'red');
+        endMatch = minEnd <= obj.endTime && obj.endTime <= maxEnd;
+        endMatch ? null : (rows[i].children[2].style.color = 'red');
+        // match =
+        //   nearestValue(correctStartTimes, obj.startTime) ===
+        //     correctStartTimes[i] &&
+        //   nearestValue(correctEndTimes, obj.endTime) === correctEndTimes[i];
+        check.push(startMatch && endMatch);
+      }
     }
     const allCorrect = check.every((e) => e);
+    $userStore.quizPassed = allCorrect;
     $userStore.quizAttempts += 1;
-    if (allCorrect) {
-      $userStore.quizPassed = true;
-    }
+    // Store quiz data
+    // For some reason adding submitTime: serverTime like for real trials just writes a null value for the quiz data. So ommitting it for now because we can approximate the quiz duration based on the quiz_start and quiz_end fields
+    const toSave = parseThoughts();
+    $userStore['trials'][`quiz_${$userStore.quizAttempts}`] = {
+      thoughts: toSave,
+    };
     await updateUser($userStore);
   };
 
@@ -343,6 +368,10 @@ use of the peaks.js waveform visualizer. -->
   .button-col {
     padding-bottom: 0 !important;
   }
+
+  .is-wrong {
+    color: #f14668 !important;
+  }
 </style>
 
 <div
@@ -425,6 +454,7 @@ use of the peaks.js waveform visualizer. -->
                         ? 'button is-primary is-large animated flash slower repeat-2 delay-1s'
                         : 'button is-primary is-large'}
                       class:blur={hasTutorial && $userStore.tutorialStep < 2}
+                      class:is-invisible={hasTutorial && segments.length === 4}
                       on:click={addSegment}
                       disabled={$userStore.tutorialStep === 3 ||
                         $userStore.tutorialStep === 4}>
@@ -460,11 +490,15 @@ use of the peaks.js waveform visualizer. -->
                   on:click={playSegment}>
                   Play
                 </button>
+                <!-- Disable delete button during tutorial and for first 2 rows of the quiz which
+                are examples we provide -->
                 <button
                   class="button is-danger is-large"
                   class:is-invisible={!rowSelected}
                   on:click={deleteSegment}
-                  disabled={hasTutorial && $userStore.tutorialStep < 5}>
+                  disabled={(hasTutorial && $userStore.tutorialStep < 5) ||
+                    (hasTutorial && selectedSegmentId === 'peaks.segment.0') ||
+                    (hasTutorial && selectedSegmentId === 'peaks.segment.1')}>
                   Delete
                 </button>
               </div>

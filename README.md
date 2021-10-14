@@ -28,11 +28,13 @@ When the app first loads it first checks to see which of the following 3 ways it
 ## Component hierarchy and internal app state
 
 Only situation 3) above will proceed through the rest of the app which is *state* based. You can think of this is a "router" that determines what should be shown to a user based on what *state* the app is in. At any given time a user will be in one of the following states which are always recorded to firebase making states persist across browser closes/refreshes:
-- `consent`, `instructions`, `quiz`, `experiment`, `debrief`, `completed` or `noConsent` 
+- `consent`, `instructions`, `tutorial/quiz`, `experiment`, `debrief`, `completed` or `noConsent` 
 
 `App.svelte` is the parent-most component keeping track of the current state and rendering child components ("pages") accordingly. Child components expect user interaction which will in turn emit an event back to `App.svelte` with information about what state transition should occur. 
 
 For example, after accepting a HIT the user will be in the `consent` state and `App.svelte` will see this and render the `Consent.svelte` component. From within this component a user can choose to consent or not which will emit a `consent` or `reject` event back to `App.svelte`. `App.svelte` will then update the state to `instructions` or `noConsent` and as a result render `Instructions.svelte` or `ReturnHIT.svelte` respectively. 
+
+The only user state that doesn't induced a UI change is going from `tutorial` -> `quiz` because they're part of the same component (`Quiz.svelte`). We simply distinguish these to be able live monitor the app and get separate timings for these two phases of the same application state.
 
 ## Data and state management
 State management as well as experiment progress is handled by a Svelte store `userStore` defined in `utils.js`. The general pattern employed throughout the app is *subscribing* to the most up-to-date version of the `userStore` in firebase from within `App.svelte`, and then updating the store and writing back to firestore in the various pages and components via the `updateUser` function defined in `utils.js`. This ensure that pages and components are guaranteed to have the "freshest" user data  as long as they read from `$userStore.someField`, regardless of what page or component last updated that data. 
