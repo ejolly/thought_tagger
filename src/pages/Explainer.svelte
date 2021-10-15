@@ -1,3 +1,5 @@
+<!-- This is the page users see after the Instructions. It contains a video explainer of the task
+with a button that appears to go to the quiz after the video stops playing -->
 <script>
   import { globalVars, storage } from '../utils.js';
   import { createEventDispatcher } from 'svelte';
