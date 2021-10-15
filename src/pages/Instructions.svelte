@@ -11,9 +11,7 @@
   const instructions = [
     "In this task, you will listen to a series of audio recordings (~2 min each) in which you will hear people describing characters from a television drama. The goal of this task is to divide the audio into separate speech segments or <strong>thoughts.</strong><br><br>In written text, separate <em>sentences</em> are a straightforward way to separate complete thoughts. However, in verbal speech complete thoughts often span multiple sentences. Your goal is to try to <strong>identify the boundaries of these natural divisions within each audio recording.</strong><br/><br/>While listening, pay close attention to where there are natural breaks in the person's speech and thought process.",
 
-    `To faciliate this task, the next screen will walk you through a guided tutorial that teaches you how to use our custom interface for <em>tagging</em> thoughts. A short comprehension quiz is provided at the end of this tutorial to check the quality of your tags. You will have <strong>2 attempts</strong> to pass this quiz.<br><br> If you fail to pass this quiz you will only be paid the base amount for accepting this HIT (<strong>$${globalVars.basePayment}</strong>).<br><br> If you pass this quiz you will be eligible to earn bonus payments for each audio recording you tag at the rate of <strong>$${globalVars.bonusPerRecording} per recording.</strong>`,
-
-    'If these instructions make sense and you would like to begin, click the button below to proceed to the tutorial. Otherwise, please return this HIT.',
+    `The next page will show you video describing how to use our custom interface to complete this task. After watching the video you will take an interactive quiz in which you will tag thoughts in a sample recording. This will give you an opportunity to become familiar with the interface while also checking the quality of your tags You will have <strong>${globalVars.maxQuizAttempts} attempts</strong> to pass this quiz.<br><br> If you fail to pass this quiz you will only be paid the base amount for accepting this HIT (<strong>$${globalVars.basePayment}</strong>).<br><br> If you pass this quiz you will be eligible to earn bonus payments for each audio recording you tag at the rate of <strong>$${globalVars.bonusPerRecording} per recording.</strong>`,
   ];
 
   const finalButtonText = 'Go To Tutorial'; // button text on the last instruction page
@@ -67,7 +65,10 @@
         </div>
         <footer class="card-footer">
           <p class="card-footer-item">
-            <button class="button is-link controls" on:click={backward}>
+            <button
+              class="button is-link controls"
+              class:is-invisible={currentPage === 0}
+              on:click={backward}>
               <span class="icon">
                 <i class="fas fa-backward" />
               </span>
@@ -76,7 +77,7 @@
           <p class="card-footer-item">
             <button class="button is-link controls" on:click={forward}>
               {#if currentPage === instructions.length - 1}
-                Go To Tutorial
+                Watch Tutorial Video
               {:else}
                 <span class="icon">
                   <i class="fas fa-forward" />

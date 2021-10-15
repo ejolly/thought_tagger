@@ -19,7 +19,8 @@ use of the peaks.js waveform visualizer. -->
   // -------------------------------------------
   export let src;
   export let fileName = '';
-  export let hasTutorial = false;
+  export let modalOpen = false;
+  export let isQuiz = false;
   export let quizAnswers = [];
 
   // COMPONENT VARIABLES
@@ -53,7 +54,8 @@ use of the peaks.js waveform visualizer. -->
     time &&
     !invalidTime
   );
-  $: ratingActive = segments.length === 0;
+  // $: ratingActive = segments.length === 0;
+  $: numRemaining = 4 - segments.length;
 
   // COMPONENT LOGIC
   // -------------------------------------------
@@ -90,6 +92,23 @@ use of the peaks.js waveform visualizer. -->
       } else {
         peaksLoading = false;
         console.log('Peaks instance ready');
+        if (isQuiz) {
+          peaksInstance.segments.add({
+            startTime: 1.9,
+            endTime: 7.4,
+            labelText: `Thought ${(segmentPrevMax + 1).toString()}`,
+            editable: false,
+          });
+          segmentPrevMax += 1;
+          peaksInstance.segments.add({
+            startTime: 7.4,
+            endTime: 21,
+            labelText: `Thought ${(segmentPrevMax + 1).toString()}`,
+            editable: false,
+          });
+          segmentPrevMax += 1;
+          peaksInstance.player.seek(1.9);
+        }
         segments = peaksInstance.segments.getSegments();
       }
     });
@@ -103,34 +122,12 @@ use of the peaks.js waveform visualizer. -->
     peaksInstance.on('segments.dragged', (segment) => {
       segments = peaksInstance.segments.getSegments();
     });
+    // Add in example tags if we're in the quiz
   });
-
-  // Reactive listener that adds in an example tag when users reach step 4 of the tutorial
-  $: {
-    if (hasTutorial && $userStore.tutorialStep === 4 && segments.length === 1) {
-      // Add correct example segment
-      peaksInstance.segments.add({
-        startTime: 7.4,
-        endTime: 21,
-        labelText: `Thought ${(segmentPrevMax + 1).toString()}`,
-        editable: true,
-      });
-
-      // Adjust first tag user made so it doesn't mess up their quiz
-      const seg1 = peaksInstance.segments.getSegments()[0];
-      seg1.update({ startTime: 1.9, endTime: 7.39 });
-
-      peaksInstance.player.seek(7.4);
-      segments = peaksInstance.segments.getSegments();
-      segmentPrevMax += 1;
-    } else if (hasTutorial && $userStore.tutorialStep === 2) {
-      peaksInstance.player.seek(0);
-    }
-  }
 
   // General purpose function to call event dispatcher if this component knows theres a tutorial component it should be working in tandem with
   const communicateData = (evName) => {
-    if (hasTutorial) {
+    if (isQuiz) {
       if (evName === 'updateSegmentsCount') {
         dispatch('updateSegmentsCount', {
           numSegments: segments.length,
@@ -158,7 +155,7 @@ use of the peaks.js waveform visualizer. -->
 
   // Grab the start and end time for each thought and save them into firebase
   const finish = async () => {
-    if (hasTutorial) {
+    if (isQuiz) {
       communicateData('finished');
     } else {
       // Create a dictionary of data to save with the key being the current filename, e.g. 's07_TamyTaylor.wav' and the value being a dict with key:vals for each rating made by the user (clarity, confidence, etc) as well as attributes of the file. A special key called 'thoughts' contains the data of interest which is itself a dict of the thoughts for this recording.
@@ -229,11 +226,11 @@ use of the peaks.js waveform visualizer. -->
   const submitTags = async () => {
     if (!segments || (segments && segments.length <= 2)) {
       alert('Please tag a few more thoughts');
-    } else if (!audioFinished && !hasTutorial) {
+    } else if (!audioFinished && !isQuiz) {
       alert(
         'Please listen to the ENTIRE audio recording before submitting your tags'
       );
-    } else if (hasTutorial) {
+    } else if (isQuiz) {
       // check tutorial thoughts
       if (segments.length < 4) {
         alert(
@@ -372,19 +369,25 @@ use of the peaks.js waveform visualizer. -->
   .is-wrong {
     color: #f14668 !important;
   }
+  .icon {
+    cursor: pointer;
+  }
 </style>
 
-<div
-  class="container is-fluid"
-  class:blur={hasTutorial &&
-    ($userStore.tutorialStep === 0 ||
-      $userStore.quizState === 'fail' ||
-      $userStore.quizState === 'readyForExperiment')}>
+<div class="container is-fluid" class:blur={modalOpen}>
   <!-- Title + Waveform display row -->
   <div class="columns is-centered" id="row-title-waveform">
     <div class="column is-full has-text-centered">
-      {#if hasTutorial}
-        <h1 class="title">Example Recording</h1>
+      {#if isQuiz}
+        <h1 class="title">Quiz Recording</h1>
+        {#if $userStore.quizState === 'attempt'}
+          <p>
+            Please correct your tags to continue. Errors are highlighted in red
+            in the table.
+          </p>
+        {:else}
+          <p>Please tag {numRemaining} thoughts to continue</p>
+        {/if}
       {:else}
         <h1 class="title">Recording #{$userStore.currentTrial}</h1>
       {/if}
@@ -392,12 +395,7 @@ use of the peaks.js waveform visualizer. -->
         <h3 class="title is-3">Loading audio...</h3>
         <button class="button is-white is-loading loading-button" disabled />
       {/if}
-      <div
-        id="waveform-container"
-        class:blur={hasTutorial && $userStore.tutorialStep < 1}
-        class={hasTutorial && $userStore.tutorialStep === 1
-          ? 'animated flash slower repeat-2'
-          : ''} />
+      <div id="waveform-container" />
     </div>
   </div>
   <!-- Controls + Button row -->
@@ -412,22 +410,14 @@ use of the peaks.js waveform visualizer. -->
                 id="audio"
                 controls="controls"
                 controlslist="nodownload"
-                class={hasTutorial && $userStore.tutorialStep === 1
-                  ? 'animated flash slower repeat-2'
-                  : ''}
                 on:ended={() => (audioFinished = true)}>
                 <source {src} type="audio/wav" />
                 Your browser does not support the audio element.
               </audio>
             </div>
-            <div
-              class={hasTutorial && $userStore.tutorialStep === 5
-                ? 'column animated shake delay-2s'
-                : 'column'}>
-              {#if hasTutorial}
-                <span
-                  class="icon is-large"
-                  on:click={() => dispatch('toggleTutorial')}>
+            <div class="column">
+              {#if isQuiz}
+                <span class="icon is-large" on:click={() => dispatch('help')}>
                   <i class="fas fa-question-circle fa-2x fa-fw" />
                 </span>
               {/if}
@@ -437,39 +427,26 @@ use of the peaks.js waveform visualizer. -->
         <div class="column">
           {#if rate}
             <button
-              class={hasTutorial
-                ? 'button is-primary is-large animated flash slower delay-1s'
-                : 'button is-primary is-large'}
+              class="button is-primary is-large"
               on:click={finish}
               disabled={nextTrialActive}>
               Next
             </button>
           {:else}
-            <div class="columns is-gapless">
+            <div class="columns">
               <div class="column is-narrow">
                 <div class="columns button-row">
                   <div class="column button-col">
                     <button
-                      class={hasTutorial && $userStore.tutorialStep === 2
-                        ? 'button is-primary is-large animated flash slower repeat-2 delay-1s'
-                        : 'button is-primary is-large'}
-                      class:blur={hasTutorial && $userStore.tutorialStep < 2}
-                      class:is-invisible={hasTutorial && segments.length === 4}
-                      on:click={addSegment}
-                      disabled={$userStore.tutorialStep === 3 ||
-                        $userStore.tutorialStep === 4}>
-                      Tag
-                    </button>
+                      class="button is-primary is-large"
+                      class:is-invisible={isQuiz && segments.length === 4}
+                      on:click={addSegment}>Tag</button>
                     <button
                       class="button is-info is-large"
-                      class:blur={hasTutorial && $userStore.tutorialStep < 2}
-                      disabled={(!hasTutorial && ratingActive) ||
-                        (hasTutorial &&
-                          (ratingActive ||
-                            $userStore.tutorialStep === 3 ||
-                            $userStore.tutorialStep === 4))}
+                      disabled={segments.length === 0 ||
+                        (isQuiz && segments.length !== 4)}
                       on:click={submitTags}>
-                      Done
+                      Submit
                     </button>
                   </div>
                 </div>
@@ -496,9 +473,9 @@ use of the peaks.js waveform visualizer. -->
                   class="button is-danger is-large"
                   class:is-invisible={!rowSelected}
                   on:click={deleteSegment}
-                  disabled={(hasTutorial && $userStore.tutorialStep < 5) ||
-                    (hasTutorial && selectedSegmentId === 'peaks.segment.0') ||
-                    (hasTutorial && selectedSegmentId === 'peaks.segment.1')}>
+                  disabled={(isQuiz &&
+                    selectedSegmentId === 'peaks.segment.0') ||
+                    (isQuiz && selectedSegmentId === 'peaks.segment.1')}>
                   Delete
                 </button>
               </div>
@@ -578,9 +555,7 @@ use of the peaks.js waveform visualizer. -->
     </div>
   {:else}
     <!-- Table row only if rating not displayed -->
-    <div
-      class="columns is-centered"
-      class:blur={hasTutorial && $userStore.tutorialStep < 2}>
+    <div class="columns is-centered">
       <div class="column is-full has-text-centered">
         {#if segments && segments.length}
           <div class="table-container">

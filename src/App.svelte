@@ -16,6 +16,7 @@
   import Instructions from './pages/Instructions.svelte';
   import Quiz from './pages/Quiz.svelte';
   import Consent from './pages/Consent.svelte';
+  import Explainer from './pages/Explainer.svelte';
   import Experiment from './pages/Experiment.svelte';
   import Debrief from './pages/Debrief.svelte';
   import Loading from './components/Loading.svelte';
@@ -186,7 +187,9 @@
       on:reject={() => updateState('noConsent')} />
   {:else if $userStore.currentState === 'instructions'}
     <Instructions on:finished={() => updateState('tutorial')} />
-  {:else if $userStore.currentState === 'tutorial' || $userStore.currentState == 'quiz'}
+  {:else if $userStore.currentState === 'tutorial'}
+    <Explainer on:finished={() => updateState('quiz')} />
+  {:else if $userStore.currentState == 'quiz'}
     <Quiz
       on:finishedTutorial={() => updateState('quiz')}
       on:finishedComplete={() => updateState('debrief')}
