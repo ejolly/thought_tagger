@@ -16,10 +16,13 @@ also makes use of the Loading component-->
   } from '../utils.js';
   import ThoughtTagger from '../components/ThoughtTagger.svelte';
   import Loading from '../components/Loading.svelte';
+  import VideoModal from '../components/VideoModal.svelte';
 
   // COMPONENT VARIABLES
   // -------------------------------------------
   let fileName;
+  let showVideo = false;
+  let videosrc;
   const dispatch = createEventDispatcher();
 
   // COMPONENT LOGIC
@@ -81,10 +84,27 @@ also makes use of the Loading component-->
       console.error(error);
     }
   };
+
+  // Similar to the filePromise iife above, we request the tutorial video from firebase once so we don't need to reload it each trial. Instead we just do it now even before the component loads and then we have it available to pass into <VideoModal> on all subsequent trials
+  (async () => {
+    try {
+      const tutorialFile = storage.refFromURL(globalVars.tutorialURL);
+      videosrc = await tutorialFile.getDownloadURL();
+    } catch (err) {
+      console.error(err);
+    }
+  })();
 </script>
 
 {#await filePromise}
   <Loading>Preparing Recording...</Loading>
 {:then src}
-  <ThoughtTagger {src} {fileName} on:next={getNextAudioFile} />
+  {#if showVideo}
+    <VideoModal {videosrc} on:close={() => (showVideo = !showVideo)} />
+  {/if}
+  <ThoughtTagger
+    {src}
+    {fileName}
+    on:next={getNextAudioFile}
+    on:help={() => (showVideo = !showVideo)} />
 {/await}

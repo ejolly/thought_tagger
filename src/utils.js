@@ -12,6 +12,8 @@ export const globalVars = {
   maxQuizAttempts: 3,
   numRecordings: 10,
   quizAnswerBuffer: 5,
+  quizURL: 'gs://thought-segmentation.appspot.com/quiz.mp3',
+  tutorialURL: 'gs://thought-segmentation.appspot.com/demo.mp4',
 };
 
 const firebaseConfig = {

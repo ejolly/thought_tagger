@@ -416,11 +416,9 @@ use of the peaks.js waveform visualizer. -->
               </audio>
             </div>
             <div class="column">
-              {#if isQuiz}
-                <span class="icon is-large" on:click={() => dispatch('help')}>
-                  <i class="fas fa-question-circle fa-2x fa-fw" />
-                </span>
-              {/if}
+              <span class="icon is-large" on:click={() => dispatch('help')}>
+                <i class="fas fa-question-circle fa-2x fa-fw" />
+              </span>
             </div>
           </div>
         </div>

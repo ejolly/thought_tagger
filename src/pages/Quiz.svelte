@@ -1,5 +1,5 @@
-<!-- The Quiz component renders the Tutorial.svelte and ThoughtTagger.svelte components as children
-with properties set to ensure that user understands how to complete the task while evaluting their comprehension -->
+<!-- The Quiz component renders the Tutorial.svelte, ThoughtTagger.svelte, and VideoModal.svelte
+components as children with properties set to ensure that user understands how to complete the task while evaluting their comprehension -->
 <script>
   import { storage, db, globalVars, userStore, updateUser } from '../utils.js';
   import { onMount } from 'svelte';
@@ -9,6 +9,7 @@ with properties set to ensure that user understands how to complete the task whi
   import ThoughtTagger from '../components/ThoughtTagger.svelte';
   import Modal from '../components/Modal.svelte';
   import Loading from '../components/Loading.svelte';
+  import VideoModal from '../components/VideoModal.svelte';
 
   // COMPONENT VARIABLES
   // -------------------------------------------
@@ -132,39 +133,29 @@ with properties set to ensure that user understands how to complete the task whi
   };
 
   // Initialization
-  // Generate the file URL for the quiz audio and return as a promise
+  // Unlike Experiment.svelte this function simulatenously requests the quiz audio and tutorial video from firebase and svelte will await both of them since we need both to be availbe right away when they start the quiz.
   // eslint-disable-next-line consistent-return
   const generateFileUrl = async () => {
     try {
-      const file = storage.refFromURL(
-        'gs://thought-segmentation.appspot.com/quiz.mp3'
-      );
-      const url = await file.getDownloadURL();
-      return url;
+      const quizFile = storage.refFromURL(globalVars.quizURL);
+      const tutorialFile = storage.refFromURL(globalVars.tutorialURL);
+      const URLs = await Promise.all([
+        quizFile.getDownloadURL(),
+        tutorialFile.getDownloadURL(),
+      ]);
+      return URLs;
     } catch (error) {
       console.error(error);
     }
   };
-
+  // Actually make the async request so we can await it in the markup below
   // eslint-disable-next-line prefer-const
-  let quizAudio = generateFileUrl();
+  let files = generateFileUrl();
 </script>
 
-<style>
-  .modal-card {
-    border-radius: 6px;
-    box-shadow: 3px 3px 3px rgba(10, 10, 10, 0.1),
-      0 0 0 1px rgba(10, 10, 10, 0.1);
-    pointer-events: auto;
-  }
-  .modal {
-    pointer-events: none;
-  }
-</style>
-
-{#await quizAudio}
+{#await files}
   <Loading>Loading...</Loading>
-{:then src}
+{:then [src, videosrc]}
   <Modal
     {modalOpen}
     {tutorial}
@@ -175,33 +166,7 @@ with properties set to ensure that user understands how to complete the task whi
     on:finishedComplete
     on:finishedContinue />
   {#if showVideo}
-    <div class="modal is-active">
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Tutorial</p>
-        </header>
-        <section class="modal-card-body">
-          <div class="columns">
-            <div class="column has-text-centered">
-              <video
-                controls
-                poster="https://sveltejs.github.io/assets/caminandes-llamigos.jpg"
-                src="https://sveltejs.github.io/assets/caminandes-llamigos.mp4"
-                ><track kind="captions" /></video>
-            </div>
-          </div>
-        </section>
-        <footer class="modal-card-foot has-text-centered">
-          <p class="card-footer-item">
-            <button
-              class="button is-primary"
-              on:click={() => (showVideo = false)}>
-              Close
-            </button>
-          </p>
-        </footer>
-      </div>
-    </div>
+    <VideoModal {videosrc} on:close={() => (showVideo = !showVideo)} />
   {/if}
   <ThoughtTagger
     {src}
