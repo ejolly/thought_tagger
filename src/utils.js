@@ -10,7 +10,7 @@ export const globalVars = {
   bonusPerRecording: 1.0,
   basePayment: 0.5,
   maxQuizAttempts: 3,
-  numRecordings: 10,
+  numRecordings: 385,
   quizAnswerBuffer: 5,
   quizURL: 'gs://thought-segmentation.appspot.com/quiz.mp3',
   tutorialURL: 'gs://thought-segmentation.appspot.com/demo.mp4',
@@ -54,7 +54,7 @@ export const getURLParams = () => {
       console.log(
         'App running in dev mode so HIT submission will not work!\nTo test in the sandbox make sure to deploy the app.'
       );
-      params.workerId = 'test-worker';
+      params.workerId = 'Jonathan';
       params.assignmentId = 'test-assignment';
       params.hitId = 'test-hit';
     }
@@ -148,11 +148,7 @@ export const initUser = async () => {
   // files based on whether they've been rated already in *real-time*.
   const trialOrder = [];
   try {
-    const query = await db
-      .collection('recordings')
-      .orderBy('responses')
-      .limit(1)
-      .get();
+    const query = await db.collection('recordings').orderBy('name').get();
     query.forEach((doc) => {
       trialOrder.push(doc.data().name);
     });
@@ -160,18 +156,10 @@ export const initUser = async () => {
 
     // Create the user doc
     await db.collection('participants').doc(params.workerId).set({
-      workerId: params.workerId,
-      assignmentId: params.assignmentId,
-      hitId: params.hitId,
-      consent_start: serverTime,
-      currentState: 'consent',
+      workerId: 'Jonathan',
+      currentState: 'experiment',
       quizState: 'overview',
-      tutorialComplete: false,
-      tutorialStep: 0,
       currentTrial: 1,
-      quizAttempts: 0,
-      quizPassed: false,
-      bonus: 0,
       submitted: false,
       trials: {},
       trialOrder,

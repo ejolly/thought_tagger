@@ -16,7 +16,6 @@ also makes use of the Loading component-->
   } from '../utils.js';
   import ThoughtTagger from '../components/ThoughtTagger.svelte';
   import Loading from '../components/Loading.svelte';
-  import VideoModal from '../components/VideoModal.svelte';
 
   // COMPONENT VARIABLES
   // -------------------------------------------
@@ -27,19 +26,6 @@ also makes use of the Loading component-->
 
   // COMPONENT LOGIC
   // -------------------------------------------
-  // helper function that uses Google's transaction function to ensure that multi-user conflicts don't lead to an innacurate response count
-  function incrementResponse(recordingRef) {
-    recordingRef.transaction(function (recording) {
-      if (recording) {
-        recording.responses++;
-        console.log('recording responses incremented in firebase');
-      } else {
-        console.log('recording does not exist');
-      }
-      return recording;
-    });
-  }
-
   // Get firebase storage URL for a specific audio file that we can ultimately render with Peaks JS
   // eslint-disable-next-line consistent-return
   const generateFileURL = async () => {
@@ -58,7 +44,7 @@ also makes use of the Loading component-->
   // Before rendering anything see what trial we should be rendering. Because this is an async function we call immediately to dynamically show a loading screen before we get the data in the HTML below
   let filePromise = (async () => {
     try {
-      fileName = $userStore.trialOrder[0];
+      fileName = $userStore.trialOrder[$userStore.currentTrial - 1];
       return await generateFileURL();
     } catch (error) {
       return console.error(error);
@@ -69,15 +55,11 @@ also makes use of the Loading component-->
   const getNextAudioFile = async () => {
     // ThoughtTagger.svelte updates the user's currentTrial (an int) and the response count for the audio file they just rated inside of finish(). Since the userStore subscribes to the changes in the user doc, we can simply get a new random audio file by querying the least rated audio files thus far and then call generateFileURL() defined above, which makes use of the latest value of the user store and therefore pulls the correct next file or ends the experiment.
     try {
-      $userStore.bonus = $userStore.bonus + globalVars.bonusPerRecording;
-      await updateUser($userStore);
       if ($userStore.currentTrial - 1 === globalVars.numRecordings) {
         dispatch('finished');
       } else {
-        // Get a new audio file name based on which have been least rated at the point this function is called (i.e. on a trial-by-trial basis per user)
-        fileName = await getRandomAudioFilename();
-        $userStore.trialOrder = [...$userStore.trialOrder, fileName];
-        await updateUser($userStore);
+        // Get next audio file
+        fileName = $userStore.trialOrder[$userStore.currentTrial - 1];
         filePromise = generateFileURL();
       }
     } catch (error) {
@@ -86,25 +68,10 @@ also makes use of the Loading component-->
   };
 
   // Similar to the filePromise iife above, we request the tutorial video from firebase once so we don't need to reload it each trial. Instead we just do it now even before the component loads and then we have it available to pass into <VideoModal> on all subsequent trials
-  (async () => {
-    try {
-      const tutorialFile = storage.refFromURL(globalVars.tutorialURL);
-      videosrc = await tutorialFile.getDownloadURL();
-    } catch (err) {
-      console.error(err);
-    }
-  })();
 </script>
 
 {#await filePromise}
   <Loading>Preparing Recording...</Loading>
 {:then src}
-  {#if showVideo}
-    <VideoModal {videosrc} on:close={() => (showVideo = !showVideo)} />
-  {/if}
-  <ThoughtTagger
-    {src}
-    {fileName}
-    on:next={getNextAudioFile}
-    on:help={() => (showVideo = !showVideo)} />
+  <ThoughtTagger {src} {fileName} on:next={getNextAudioFile} />
 {/await}

@@ -33,31 +33,14 @@ use of the DEV_MODE variable thats set when the app is compiled-->
   class="has-text-white banner is-flex is-justify-content-space-around"
   class:has-background-danger={DEV_MODE}
   class:has-background-grey-light={!DEV_MODE}>
-  <!-- svelte-ignore missing-declaration -->
-  {#if DEV_MODE}
-    <div>
-      <p>
-        Development mode
-        <span class="icon" on:click={() => dispatch('resetTestWorker')}>
-          <i class="fas fa-redo-alt" />
-        </span>
-      </p>
-    </div>
-  {/if}
   {#if $userStore.currentState === 'experiment'}
     <div>
-      <p>Bonus Earned: ${$userStore.bonus}</p>
+      <p>Recording {$userStore.currentTrial} of 385</p>
     </div>
   {/if}
-  <div>
-    If you have questions about this HIT please <a
-      href="mailto:eshin.jolly@dartmouth.edu">email us</a>
+  <div>TAG = add thoughts; FINISHED= rate recording; SAVE = save your work</div>
+  <div class:is-invisible={$userStore.currentTrial <= 1}>
+    <button class="button is-success is-small" on:click={() => dispatch('redo')}
+      >Redo previous</button>
   </div>
-  {#if $userStore.currentState === 'experiment'}
-    <div>
-      <button
-        class="button is-success is-small"
-        on:click={() => dispatch('finished')}>I'm finished</button>
-    </div>
-  {/if}
 </div>

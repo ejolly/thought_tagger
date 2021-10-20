@@ -45,6 +45,7 @@ use of the peaks.js waveform visualizer. -->
   let clarityRated = false;
   let confidenceRated = false;
   let time = '';
+  let notes = '';
   let timer;
   let invalidTime = false;
   let audioFinished = false;
@@ -165,13 +166,13 @@ use of the peaks.js waveform visualizer. -->
         character: character.slice(0, character.length - 4),
         clarity,
         confidence,
+        notes,
         recordingLength: time,
         thoughts: toSave,
         submitTime: serverTime,
       };
       $userStore.currentTrial += 1;
       await updateUser($userStore);
-      await updateAudioFileResponseCount(fileName);
       peaksInstance.destroy();
       dispatch('next');
     }
@@ -224,23 +225,8 @@ use of the peaks.js waveform visualizer. -->
 
   // Let the user submit their thought tags
   const submitTags = async () => {
-    if (!segments || (segments && segments.length <= 2)) {
+    if (!segments) {
       alert('Please tag a few more thoughts');
-    } else if (!audioFinished && !isQuiz) {
-      alert(
-        'Please listen to the ENTIRE audio recording before submitting your tags'
-      );
-    } else if (isQuiz) {
-      // check tutorial thoughts
-      if (segments.length < 4) {
-        alert(
-          'Please make sure at least 4 total thoughts have been tagged (including the examples) to submit your answers'
-        );
-      } else {
-        await verifyTags();
-        communicateData('quizAttempt');
-        rate = $userStore.quizPassed;
-      }
     } else {
       rate = !rate;
     }
@@ -389,7 +375,9 @@ use of the peaks.js waveform visualizer. -->
           <p>Please tag {numRemaining} thoughts to continue</p>
         {/if}
       {:else}
-        <h1 class="title">Recording #{$userStore.currentTrial}</h1>
+        <h1 class="title">
+          {subjectId}: {character.slice(0, character.length - 4)}
+        </h1>
       {/if}
       {#if peaksLoading}
         <h3 class="title is-3">Loading audio...</h3>
@@ -415,20 +403,20 @@ use of the peaks.js waveform visualizer. -->
                 Your browser does not support the audio element.
               </audio>
             </div>
-            <div class="column">
-              <span class="icon is-large" on:click={() => dispatch('help')}>
-                <i class="fas fa-question-circle fa-2x fa-fw" />
-              </span>
-            </div>
           </div>
         </div>
         <div class="column">
           {#if rate}
             <button
+              class="button is-info is-large"
+              on:click={() => (rate = false)}>
+              Back to edit Tags
+            </button>
+            <button
               class="button is-primary is-large"
               on:click={finish}
               disabled={nextTrialActive}>
-              Next
+              Save
             </button>
           {:else}
             <div class="columns">
@@ -444,7 +432,7 @@ use of the peaks.js waveform visualizer. -->
                       disabled={segments.length === 0 ||
                         (isQuiz && segments.length !== 4)}
                       on:click={submitTags}>
-                      Submit
+                      Finished
                     </button>
                   </div>
                 </div>
@@ -489,10 +477,8 @@ use of the peaks.js waveform visualizer. -->
       <div class="column is-4-desktop is-3-fullhd has-text-centered">
         <div class="field">
           <!-- svelte-ignore a11y-label-has-associated-control -->
-          <label class="label has-text-weight-normal is-size-5">
-            If the speaker did not talk for the full 2 min how long did they
-            speak for?
-          </label>
+          <label class="label has-text-weight-normal is-size-5"
+            >How long did they speak for?</label>
           <div class="control">
             <input
               class={invalidTime
@@ -511,9 +497,7 @@ use of the peaks.js waveform visualizer. -->
         </div>
       </div>
       <div class="column is-4-desktop is-3-fullhd has-text-centered">
-        <p class="has-text-centered is-size-5">
-          How clear was the quality of the recording?
-        </p>
+        <p class="has-text-centered is-size-5">Clarity of the recording?</p>
         <input
           step="1"
           min="0"
@@ -531,9 +515,7 @@ use of the peaks.js waveform visualizer. -->
         </div>
       </div>
       <div class="column is-4-desktop is-3-fullhd has-text-centered">
-        <p class="has-text-centered is-size-5">
-          How easy was it to tag different thoughts?
-        </p>
+        <p class="has-text-centered is-size-5">Difficulty tagging thoughts?</p>
         <input
           step="1"
           min="0"
@@ -547,6 +529,21 @@ use of the peaks.js waveform visualizer. -->
           </div>
           <div class="column has-text-right">
             <p class="subtitle is-size-6">Effortless</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-half has-text-centered">
+        <div class="field">
+          <!-- svelte-ignore a11y-label-has-associated-control -->
+          <label class="label has-text-weight-normal is-size-5"
+            >Any thing else to note:</label>
+          <div class="control">
+            <textarea
+              class="textarea is-primary is-medium"
+              placeholder="Add anything here thats worth noting about this recording"
+              bind:value={notes} />
           </div>
         </div>
       </div>

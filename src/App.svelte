@@ -14,37 +14,17 @@
     updateUser,
   } from './utils.js';
   import Instructions from './pages/Instructions.svelte';
-  import Quiz from './pages/Quiz.svelte';
-  import Consent from './pages/Consent.svelte';
-  import Explainer from './pages/Explainer.svelte';
+  import LoginModal from './components/LoginModal.svelte';
   import Experiment from './pages/Experiment.svelte';
-  import Debrief from './pages/Debrief.svelte';
   import Loading from './components/Loading.svelte';
   import Footer from './components/Footer.svelte';
-  import MturkPreview from './pages/MTurkPreview.svelte';
-  import ReturnHIT from './pages/ReturnHIT.svelte';
 
   // COMPONENT VARIABLES
   // -------------------------------------------
   let currentState; // Initially set by URL params and then overwritten by firestore if app is accessed via mturk in non-preview mode
   let initExperiment = false; // whether to launch the app, stay in mturk preview mode or display a message if the live app is accessed outside of Mturk
-
-  // Check how the app was navigated to:
-  if (params.assignmentId === 'ASSIGNMENT_ID_NOT_AVAILABLE') {
-    // 1) No assignmentId so HIT is being previewed
-    currentState = 'mturk-preview';
-  } else if (
-    params.workerId &&
-    params.assignmentId !== 'ASSIGNMENT_ID_NOT_AVAILABLE' &&
-    params.hitId
-  ) {
-    // 2) WorkedId, assignmentId, and hitID so the HIT was accepted
-    initExperiment = true;
-    currentState = 'mturk'; // this it just to disable the non-mturk and preview-mturk logic guards in the HTML below. The real experiment makes use of the $userStore.currentState
-  } else {
-    // 3) No URL params so the app was navigated to from outside of mturk
-    currentState = 'non-mturk';
-  }
+  let showLogin = true;
+  let wrongPwd = false;
 
   // COMPONENT LOGIC
   // -------------------------------------------
@@ -98,110 +78,77 @@
     form.submit();
   };
 
-  // SETUP USER DATA SUBSCRIPTION
-  // If we're in situation 2 above (i.e. initExperiment) then handle firebase auth
-  // Check to see if there's an existing user and doc under
-  // U:workerId@experiment.com
-  // P: workerId
-  // If there is, subscribe to it for live changes
-  // Otherwise create a new user document (initUser() from utils.js)
-  onMount(async () => {
-    if (initExperiment) {
-      try {
-        auth.onAuthStateChanged(async (user) => {
-          if (!user) {
-            try {
-              await auth.signInWithEmailAndPassword(
-                `${params.workerId}@experiment.com`,
-                params.workerId
-              );
-              console.log('user found...signing in with credentials');
-            } catch (error) {
-              if (error.code === 'auth/user-not-found') {
-                console.log('no user found...creating new credentials');
-                await auth.createUserWithEmailAndPassword(
-                  `${params.workerId}@experiment.com`,
-                  params.workerId
-                );
-              } else {
-                console.error(error);
-              }
-            }
-          } else {
-            console.log('user already authenticated...');
-            try {
-              const userDocRef = db
-                .collection('participants')
-                .doc(params.workerId);
-              const userDoc = await userDocRef.get();
-              // Resume existing user session
-              if (userDoc.exists) {
-                console.log('previous document found...loading state...');
-                // hookup subscription to $userStore
-                userDocRef.onSnapshot((doc) => {
-                  userStore.set(doc.data());
-                });
-              } else {
-                // Create new user session
-                console.log('no previous document found...creating new...');
-                await initUser();
-                // hookup subscription to $userStore
-                userDocRef.onSnapshot((doc) => {
-                  userStore.set(doc.data());
-                });
-              }
-            } catch (error) {
-              console.error(error);
-            }
-          }
-        });
-      } catch (error) {
-        console.error(error);
+  const redoPrevious = async () => {
+    $userStore.currentTrial -= 1;
+    await updateUser($userStore);
+    location.reload();
+  };
+
+  const login = async (ev) => {
+    let password = ev.detail.password;
+    try {
+      await auth.signInWithEmailAndPassword(`Jonathan@cosanlab.com`, password);
+      console.log('Login successful');
+      showLogin = false;
+    } catch (error) {
+      if (error.code === 'auth/wrong-password') {
+        wrongPwd = true;
       }
+      console.error(error);
+    }
+  };
+  // SETUP USER DATA SUBSCRIPTION
+  onMount(async () => {
+    try {
+      auth.onAuthStateChanged(async (user) => {
+        if (!user) {
+          showLogin = true;
+        } else {
+          console.log('user already authenticated...');
+          console.log(user);
+          showLogin = false;
+          try {
+            const userDocRef = db.collection('participants').doc('Jonathan');
+            const userDoc = await userDocRef.get();
+            // Resume existing user session
+            if (userDoc.exists) {
+              console.log('previous document found...loading state...');
+              // hookup subscription to $userStore
+              userDocRef.onSnapshot((doc) => {
+                userStore.set(doc.data());
+              });
+            } else {
+              // Create new user session
+              console.log('no previous document found...creating new...');
+              await initUser();
+              // hookup subscription to $userStore
+              userDocRef.onSnapshot((doc) => {
+                userStore.set(doc.data());
+              });
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        }
+      });
+    } catch (error) {
+      console.error(error);
     }
   });
 </script>
 
 <!-- Core state management ("client-side router") that determines what a user sees -->
-<section class="section">
-  {#if currentState === 'non-mturk'}
-    <h1 class="title">Oops</h1>
-    <p>
-      It seems you are accessing this app without an mturk referral. If you
-      meant to test it locally, make sure you launch it with
-      <code>npm run dev</code>
-      .
-    </p>
-  {:else if currentState === 'mturk-preview'}
-    <MturkPreview />
-  {:else if !$userStore.currentState}
-    <Loading>Loading...</Loading>
-  {:else if $userStore.currentState === 'complete'}
-    <h1 class="title">Thank You for Participating!</h1>
-    <p>
-      This HIT is no longer available because you have already completed it.
-    </p>
-  {:else if $userStore.currentState === 'consent'}
-    <Consent
-      on:consent={() => updateState('instructions')}
-      on:reject={() => updateState('noConsent')} />
-  {:else if $userStore.currentState === 'instructions'}
-    <Instructions on:finished={() => updateState('tutorial')} />
-  {:else if $userStore.currentState === 'tutorial'}
-    <Explainer on:finished={() => updateState('quiz')} />
-  {:else if $userStore.currentState == 'quiz'}
-    <Quiz
-      on:finishedTutorial={() => updateState('quiz')}
-      on:finishedComplete={() => updateState('debrief')}
-      on:finishedContinue={() => updateState('experiment')} />
-  {:else if $userStore.currentState === 'experiment'}
-    <Experiment on:finished={() => updateState('debrief')} />
-  {:else if $userStore.currentState === 'debrief'}
-    <Debrief on:submit={submitHIT} />
-  {:else if $userStore.currentState === 'noConsent'}
-    <ReturnHIT />
-  {/if}
-</section>
-<Footer
-  on:resetTestWorker={resetTestWorker}
-  on:finished={() => updateState('debrief')} />
+{#if showLogin}
+  <LoginModal {wrongPwd} on:login={login} />
+{:else}
+  <section class="section">
+    {#if !$userStore.currentState}
+      <Loading>Loading...</Loading>
+    {:else if $userStore.currentState === 'complete'}
+      <h1 class="title">Thanks you're all done!</h1>
+    {:else if $userStore.currentState === 'experiment'}
+      <Experiment on:finished={() => updateState('complete')} />
+    {/if}
+  </section>
+  <Footer on:resetTestWorker={resetTestWorker} on:redo={redoPrevious} />
+{/if}
