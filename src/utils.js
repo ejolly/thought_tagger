@@ -36,30 +36,34 @@ export const serverTime = firebase.firestore.FieldValue.serverTimestamp();
 export const increment = firebase.firestore.FieldValue.increment(1);
 
 // Functions to parse the URL to get workerID, hitID, and assignmentID
-const unescapeURL = (s) => decodeURIComponent(s.replace(/\+/g, '%20'));
+// const unescapeURL = (s) => decodeURIComponent(s.replace(/\+/g, '%20'));
 export const getURLParams = () => {
   const params = {};
-  const m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g);
-  if (m) {
-    let i = 0;
-    while (i < m.length) {
-      const a = m[i].match(/.([^=]+)=(.*)/);
-      params[unescapeURL(a[1])] = unescapeURL(a[2]);
-      i += 1;
-    }
-  }
-  if (!params.workerId && !params.assignmentId && !params.hitId) {
-    // eslint-disable-next-line no-undef
-    if (DEV_MODE) {
-      console.log(
-        'App running in dev mode so HIT submission will not work!\nTo test in the sandbox make sure to deploy the app.'
-      );
-      params.workerId = 'Jonathan';
-      params.assignmentId = 'test-assignment';
-      params.hitId = 'test-hit';
-    }
-    console.log(`URL Params:\n ${JSON.stringify(params)}`);
-  }
+  params.workerId = 'Jonathan';
+  params.assignmentId = 'test-assignment';
+  params.hitId = 'test-hit';
+  console.log(`URL Params:\n ${JSON.stringify(params)}`);
+  // const m = window.location.href.match(/[\\?&]([^=]+)=([^&#]*)/g);
+  // if (m) {
+  //   let i = 0;
+  //   while (i < m.length) {
+  //     const a = m[i].match(/.([^=]+)=(.*)/);
+  //     params[unescapeURL(a[1])] = unescapeURL(a[2]);
+  //     i += 1;
+  //   }
+  // }
+  // if (!params.workerId && !params.assignmentId && !params.hitId) {
+  //   // eslint-disable-next-line no-undef
+  //   if (DEV_MODE) {
+  //     console.log(
+  //       'App running in dev mode so HIT submission will not work!\nTo test in the sandbox make sure to deploy the app.'
+  //     );
+  //   }
+  //   params.workerId = 'Jonathan';
+  //   params.assignmentId = 'test-assignment';
+  //   params.hitId = 'test-hit';
+  //   console.log(`URL Params:\n ${JSON.stringify(params)}`);
+  // }
   return params;
 };
 
