@@ -44,3 +44,23 @@ The initial subscription to the user data is setup in `App.svelte` when the app 
 ## Styles and Animation
 
 All styles are handled by the [Bulma](https://bulma.io/) CSS framework along with *v3* of [Animate.css](https://animate.style/#migration).
+
+## Configure CORS for firebase storage
+
+In order to actually make any stored files (i.e. mp3s, videos, etc) accessible by the app you must set the [CORS access policy](https://cloud.google.com/storage/docs/configuring-cors) on google cloud:
+
+1. Download [gsutil](https://cloud.google.com/storage/docs/gsutil_install) 
+2. Unzip it, `cd` into the unzipped folder, and run: `install.sh`
+3. Then run `gcloud init` and login with the same google account you used to create your firebase project
+4. Create a file called `cors.json` that contains the following:
+  ```
+    [
+      {
+        "origin": ["*"],
+        "method": ["GET"],
+        "maxAgeSeconds": 3600
+      }
+    ]
+  ```
+  5. Find your google storage URL which should be something like `gs://yourproject.appspot.com`
+  6. Run `gsutil cors set cors.json yourURL` 
